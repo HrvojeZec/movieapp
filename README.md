@@ -35,13 +35,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-<<<<<<< HEAD
-# Valere Margins Frontend Developer Assignment
-
-I developed this application as a solution for the Valere Margins frontend developer assignment. My primary goal was to not only meet every requirement but also to build a truly robust, production-ready product by implementing advanced features like a dual-system for favorites and a full-stack authentication system.
-
-=======
->>>>>>> 2e5b45da38986880065400aa1d662392c9b32769
 ## **📝 How to Test Subscriptions and Payments**
 
 https://docs.stripe.com/testing
