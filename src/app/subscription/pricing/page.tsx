@@ -30,6 +30,8 @@ export default function PricingPage() {
   const isStripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
   const handleSubscribe = async (plan: keyof typeof STRIPE_CONFIG.PLANS) => {
+    console.log(plan);
+
     if (!user) {
       router.push("/auth/login");
       return;

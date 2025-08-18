@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as Stripe.Invoice;
-
+        /* 
         const subscriptionId = invoice.subscription;
 
         if (typeof subscriptionId === "string") {
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
           console.log(
             `Received invoice.payment_succeeded for a one-time payment (Invoice ID: ${invoice.id}). No subscription action taken.`
           );
-        }
+        } */
         break;
       }
 

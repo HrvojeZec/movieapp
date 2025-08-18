@@ -117,7 +117,7 @@ export const Navbar = () => {
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current);
     }
-    searchTimeout.current = setTimeout(() => handleSearch(query), 300);
+    searchTimeout.current = setTimeout(() => handleSearch(query), 500);
   };
 
   const handleSearchChange = (value: string) => {

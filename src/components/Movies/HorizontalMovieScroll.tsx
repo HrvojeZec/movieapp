@@ -15,6 +15,8 @@ export const HorizontalMovieScroll = ({
   movies,
   loading,
 }: HorizontalMovieScrollProps) => {
+  console.log(movies);
+
   return (
     <Box mb="xl">
       <Text size="xl" fw={700} mb="md" c="white" component="div">

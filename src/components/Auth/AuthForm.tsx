@@ -49,13 +49,13 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         router.push("/");
       } else if (result.error) {
         setError(result.error.message);
-        if (result.error.errors) {
+        /*   if (result.error.errors) {
           const errors: { [key: string]: string } = {};
           result.error.errors.forEach((err: any) => {
             errors[err.field] = err.message;
           });
           setFieldErrors(errors);
-        }
+        } */
       }
     } finally {
       setLoading(false);

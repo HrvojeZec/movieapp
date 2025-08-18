@@ -131,7 +131,7 @@ export interface ValidationError {
 
 export type ValidationSchema<T> = {
   parse: (data: unknown) => T;
-  safeParse: (data: unknown) => { success: boolean; data?: T; error?: any };
+  safeParse: (data: unknown) => { success: boolean; data?: T; error?: Error };
 };
 
 export interface IUser {
@@ -187,12 +187,12 @@ export interface AuthContextType {
   login: (
     email: string,
     password: string
-  ) => Promise<{ success: boolean; error?: any }>;
+  ) => Promise<{ success: boolean; error?: Error }>;
   register: (
     email: string,
     password: string,
     name: string
-  ) => Promise<{ success: boolean; error?: any }>;
+  ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => void;
   loading: boolean;
   updateFavorites: (

@@ -39,9 +39,9 @@ export async function POST(request: NextRequest) {
     let planName = "premium";
     const priceId = subscription.items.data[0]?.price.id;
 
-    if (priceId === "price_1RvMFDC5af6NCCUEsIQfGj0d") {
+    if (priceId === process.env.STRIPE_WEBHOOK_SECRET) {
       planName = "pro";
-    } else if (priceId === "price_1RvMEmC5af6NCCUEtaqTrv4u") {
+    } else if (priceId === process.env.STRIPE_PREMIUM_PRICE_ID) {
       planName = "premium";
     }
 

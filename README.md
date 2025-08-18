@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Valere Margins Frontend Developer Assignment
+
+I developed this application as a solution for the Valere Margins frontend developer assignment. My primary goal was to not only meet every requirement but also to build a truly robust, production-ready product by implementing advanced features like a dual-system for favorites and a full-stack authentication system.
+
+## **📝 How to Test Subscriptions and Payments**
+
+https://docs.stripe.com/testing
+
+This application uses the Stripe API for subscription management. To test the payment flow, please use the following test card information.
+
+### **Test Card Details**
+
+| Field               | Value                           |
+| :------------------ | :------------------------------ |
+| **Card Number**     | `4242 4242 4242 4242`           |
+| **Expiry Date**     | `12/34` (any valid future date) |
+| **CVC**             | `123` (any 3-digit number)      |
+| **Cardholder Name** | `Zhang San` (or any name)       |
+| **Address**         | Any value                       |
