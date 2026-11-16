@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
-import { getStripe } from "@/lib/payments/stripe";
+import { getStripe } from "@/features/subscription/server/stripe";
 import {
   getSubscriptionIdFromInvoice,
   getSubscriptionIdFromSession,
   linkStripeCustomer,
   syncSubscription,
-} from "@/lib/payments/subscriptions";
+} from "@/features/subscription/server/subscriptions";
 
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
