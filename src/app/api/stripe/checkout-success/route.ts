@@ -1,57 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/payments/stripe";
-import { verifyToken, updateUserStripeInfo } from "@/lib/auth/serverAuth";
+import { findUserById, verifyToken } from "@/lib/auth/serverAuth";
+import { getStripe } from "@/lib/payments/stripe";
+import {
+  getSubscriptionIdFromSession,
+  linkStripeCustomer,
+  syncSubscription,
+} from "@/lib/payments/subscriptions";
+import { checkoutSuccessSchema } from "@/lib/validation/validation";
 
+/**
+ * Called by the success page right after Checkout so the user sees the new plan immediately.
+ * The webhook remains the source of truth; this only re-syncs the user's own subscription.
+ */
 export async function POST(request: NextRequest) {
+  const token = request.cookies.get("token")?.value;
+  const decoded = token ? verifyToken(token) : null;
+  if (!decoded) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const parsed = checkoutSuccessSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ message: "Invalid checkout session ID" }, { status: 400 });
+  }
+
   try {
-    const token = request.cookies.get("token")?.value;
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const session = await getStripe().checkout.sessions.retrieve(parsed.data.sessionId);
+
+    // Without this check any logged-in user could submit someone else's paid session.
+    // Respond with 404 so session IDs of other users can't be probed.
+    if (session.client_reference_id !== decoded.userId) {
+      return NextResponse.json({ message: "Checkout session not found" }, { status: 404 });
     }
 
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    const subscriptionId = getSubscriptionIdFromSession(session);
+    if (session.mode !== "subscription" || !subscriptionId) {
+      return NextResponse.json({ message: "Not a subscription checkout" }, { status: 400 });
     }
 
-    const { sessionId } = await request.json();
-    if (!sessionId) {
-      return NextResponse.json({ message: "Session ID required" }, { status: 400 });
+    if (session.payment_status === "unpaid") {
+      return NextResponse.json({ message: "Payment is still processing" }, { status: 409 });
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    if (session.payment_status !== "paid") {
-      return NextResponse.json({ message: "Payment not completed" }, { status: 400 });
+    if (typeof session.customer === "string") {
+      await linkStripeCustomer(decoded.userId, session.customer);
     }
+    await syncSubscription(subscriptionId);
 
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
-    const customerId = session.customer as string;
-
-    let planName = "premium";
-    const priceId = subscription.items.data[0]?.price.id;
-
-    if (priceId === process.env.STRIPE_WEBHOOK_SECRET) {
-      planName = "pro";
-    } else if (priceId === process.env.STRIPE_PREMIUM_PRICE_ID) {
-      planName = "premium";
-    }
-
-    const updatedUser = await updateUserStripeInfo(
-      decoded.userId,
-      customerId,
-      subscription.status,
-      planName,
-    );
-
-    if (!updatedUser) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      user: updatedUser,
-    });
+    const user = await findUserById(decoded.userId);
+    return NextResponse.json({ success: true, user });
   } catch (error) {
     console.error("Checkout success error:", error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });

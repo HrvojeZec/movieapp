@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PAID_PLANS } from "@/lib/payments/plans";
 
 export const registerSchema = z.object({
   email: z.string().email("Please enter a valid email address").min(1, "Email is required"),
@@ -23,6 +24,14 @@ export const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address").min(1, "Email is required"),
 
   password: z.string().min(1, "Password is required"),
+});
+
+export const checkoutSessionSchema = z.object({
+  plan: z.enum(PAID_PLANS),
+});
+
+export const checkoutSuccessSchema = z.object({
+  sessionId: z.string().startsWith("cs_", "Invalid checkout session ID"),
 });
 
 export const favoritesSchema = z.object({

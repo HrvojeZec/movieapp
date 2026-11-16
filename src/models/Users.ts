@@ -85,6 +85,7 @@ const UserSchema = new Schema<IUser>(
         "incomplete",
         "incomplete_expired",
         "past_due",
+        "paused",
         "trialing",
         "unpaid",
       ],

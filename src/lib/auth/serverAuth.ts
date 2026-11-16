@@ -112,37 +112,6 @@ export const updateLastLogin = async (userId: string): Promise<void> => {
   await User.findByIdAndUpdate(userId, { lastLogin: new Date() });
 };
 
-export const updateUserStripeInfo = async (
-  userId: string,
-  stripeCustomerId: string,
-  subscriptionStatus: string,
-  subscriptionPlan: string,
-): Promise<AuthUser | null> => {
-  await connectDB();
-  const user = await User.findByIdAndUpdate(
-    userId,
-    {
-      stripeCustomerId,
-      subscriptionStatus,
-      subscriptionPlan,
-    },
-    { new: true },
-  );
-
-  if (!user) return null;
-
-  return {
-    id: user._id.toString(),
-    email: user.email,
-    name: user.name,
-    favorites: user.favorites,
-    stripeCustomerId: user.stripeCustomerId,
-    subscriptionStatus: user.subscriptionStatus,
-    subscriptionPlan: user.subscriptionPlan,
-    createdAt: user.createdAt,
-    lastLogin: user.lastLogin,
-  };
-};
 export const logUserActivity = async (
   userId: string,
   action: "view" | "favorite" | "unfavorite" | "review" | "search",

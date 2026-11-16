@@ -3,6 +3,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import type { SubscriptionPlan } from "@/lib/payments/plans";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
@@ -26,48 +27,54 @@ export const API_ENDPOINTS = {
   },
 } as const;
 
-export const STRIPE_CONFIG = {
-  PLANS: {
-    BASIC: {
-      name: "Basic",
-      price: 0,
-      priceId: null,
-      features: ["Browse movies", "Add to favorites", "Basic search", "Mobile access"],
-    },
-    PREMIUM: {
-      name: "Premium",
-      price: 9.99,
-      priceId: process.env.STRIPE_PREMIUM_PRICE_ID,
-      paymentLink:
-        "https://buy.stripe.com/test_14AbJ0dDL6XH23MeXR3cc00?prefilled_email={USER_EMAIL}",
-      features: [
-        "Everything in Basic",
-        "Advanced filters",
-        "Unlimited watchlist",
-        "HD trailers",
-        "Priority support",
-        "No ads",
-      ],
-    },
-    PRO: {
-      name: "Pro",
-      price: 19.99,
-      priceId: process.env.STRIPE_PRO_PRICE_ID,
-      paymentLink:
-        "https://buy.stripe.com/test_8x27sK9nvbdX5fY1713cc01?prefilled_email={USER_EMAIL}",
-      features: [
-        "Everything in Premium",
-        "Movie recommendations",
-        "Advanced analytics",
-        "Early access to features",
-        "Custom movie lists",
-        "API access",
-      ],
-    },
-  },
-} as const;
+export interface PlanFeature {
+  label: string;
+  comingSoon?: boolean;
+}
 
-export type PlanType = keyof typeof STRIPE_CONFIG.PLANS;
+export interface PlanDetails {
+  id: SubscriptionPlan;
+  name: string;
+  price: number;
+  popular?: boolean;
+  features: PlanFeature[];
+}
+
+// Display data only: Stripe price IDs are resolved on the server (src/lib/payments/plans.ts).
+export const SUBSCRIPTION_PLANS: PlanDetails[] = [
+  {
+    id: "basic",
+    name: "Basic",
+    price: 0,
+    features: [
+      { label: "Browse and search movies" },
+      { label: "Filter by year, genre and rating" },
+      { label: "Watch trailers" },
+      { label: "Save favorites" },
+    ],
+  },
+  {
+    id: "premium",
+    name: "Premium",
+    price: 9.99,
+    popular: true,
+    features: [
+      { label: "Everything in Basic" },
+      { label: "Watchlist", comingSoon: true },
+      { label: "Custom movie lists", comingSoon: true },
+    ],
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    price: 19.99,
+    features: [
+      { label: "Everything in Premium" },
+      { label: "Personalized recommendations", comingSoon: true },
+      { label: "Viewing statistics", comingSoon: true },
+    ],
+  },
+];
 
 export const formatYear = (dateString: string): string => {
   if (!dateString) return "N/A";
