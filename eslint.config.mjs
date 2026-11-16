@@ -24,6 +24,30 @@ const eslintConfig = [
       ],
     },
   },
+  {
+    // Client code must not pull server-only modules (DB, Stripe, secrets) into the browser bundle
+    files: [
+      "src/features/*/components/**",
+      "src/features/*/views/**",
+      "src/features/*/AuthContext.tsx",
+      "src/features/*/api.ts",
+      "src/shared/**",
+      "src/app/providers.tsx",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/server/*", "@/features/*/server/*"],
+              message: "Server-only module: import it from route handlers or other server code.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Must stay last so it can disable stylistic rules that conflict with Prettier
   prettier,
 ];
