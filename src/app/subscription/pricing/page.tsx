@@ -11,7 +11,6 @@ import {
   Badge,
   Group,
   Stack,
-  Center,
   Loader,
   Alert,
   Indicator,
@@ -64,7 +63,7 @@ export default function PricingPage() {
       window.location.href = urlWithParams.toString();
       setLoading(plan);
       try {
-        window.location.href = (planConfig as any).paymentLink;
+        window.location.href = planConfig.paymentLink;
       } catch (error) {
         console.error("Error redirecting to payment:", error);
       } finally {
@@ -79,7 +78,7 @@ export default function PricingPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            priceId: (planConfig as any).priceId,
+            priceId: planConfig.priceId,
             planName: planConfig.name,
           }),
         });
@@ -133,9 +132,14 @@ export default function PricingPage() {
             console.log(user?.subscriptionPlan);
 
             return (
-              <Indicator disabled={!isCurrentPlan} color="green" size="lg" label={<CheckIcon />}>
+              <Indicator
+                key={key}
+                disabled={!isCurrentPlan}
+                color="green"
+                size="lg"
+                label={<CheckIcon />}
+              >
                 <Card
-                  key={key}
                   data-aos="fade-up"
                   data-aos-delay={index * 100}
                   p="xl"

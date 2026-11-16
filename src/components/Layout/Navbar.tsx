@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import NextImage from "next/image";
 import {
   Group,
   TextInput,
@@ -46,7 +47,8 @@ export const Navbar = () => {
   const [loadingFavorites, setLoadingFavorites] = useState(false);
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const favorites = user?.favorites || [];
+  // Memoized so the effect below doesn't re-run on every render because of a new `[]`
+  const favorites = useMemo(() => user?.favorites ?? [], [user?.favorites]);
   console.log(favorites);
 
   useEffect(() => {
@@ -83,7 +85,7 @@ export const Navbar = () => {
     };
 
     fetchFavoriteMovies();
-  }, [user, loading]);
+  }, [favorites]);
 
   const handleSearch = async (query: string) => {
     if (query.length > 2) {
@@ -225,7 +227,7 @@ export const Navbar = () => {
                       }}
                     >
                       <Group gap="sm">
-                        <img
+                        <NextImage
                           src={getImageUrl(movie.poster_path, "w200")}
                           alt={movie.title}
                           width={40}

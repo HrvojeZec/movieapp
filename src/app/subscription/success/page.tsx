@@ -2,7 +2,7 @@
 import { Container, Title, Text, Button, Stack, Paper, Loader, Center } from "@mantine/core";
 import { CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function SubscriptionSuccessPage() {
@@ -12,39 +12,50 @@ export default function SubscriptionSuccessPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // refreshUser() replaces the `user` object, which re-runs the effect; without this guard
+  // the same session would be confirmed again on every refresh.
+  const confirmedSessionRef = useRef<string | null>(null);
+
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
 
-    if (sessionId && user) {
-      handleSuccessfulPayment(sessionId);
-    } else if (!sessionId) {
+    if (!sessionId) {
       setError("No session ID found");
       setLoading(false);
-    } else {
-      setLoading(false);
+      return;
     }
-  }, [searchParams, user]);
 
-  const handleSuccessfulPayment = async (sessionId: string) => {
-    try {
-      const response = await fetch("/api/stripe/checkout-success", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
-      });
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
-      if (response.ok) {
-        await refreshUser();
-      } else {
-        setError("Failed to process payment");
+    if (confirmedSessionRef.current === sessionId) return;
+    confirmedSessionRef.current = sessionId;
+
+    const confirmPayment = async () => {
+      try {
+        const response = await fetch("/api/stripe/checkout-success", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId }),
+        });
+
+        if (response.ok) {
+          await refreshUser();
+        } else {
+          setError("Failed to process payment");
+        }
+      } catch (error) {
+        console.error("Error processing payment:", error);
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error processing payment:", error);
-      setError("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    confirmPayment();
+  }, [searchParams, user, refreshUser]);
 
   if (loading) {
     return (

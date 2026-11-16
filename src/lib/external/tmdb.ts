@@ -123,7 +123,7 @@ export const discoverMovies = async (params: {
   minRating?: number;
   page?: number;
 }): Promise<TMDBResponse<Movie>> => {
-  const apiParams: any = {
+  const apiParams: Record<string, string | number> = {
     page: params.page || 1,
     sort_by: "popularity.desc",
   };

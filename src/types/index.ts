@@ -121,7 +121,7 @@ export interface MovieFilters {
 export interface ValidationResult {
   isValid: boolean;
   errors: ValidationError[];
-  data: any;
+  data: unknown;
 }
 
 export interface ValidationError {
@@ -172,18 +172,24 @@ export interface IUserActivity {
     "view" | "favorite" | "unfavorite" | "watchlist_add" | "watchlist_remove" | "review" | "search";
   movieId?: string;
   searchQuery?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   createdAt: Date;
+}
+
+export interface ApiError {
+  message: string;
+  errors?: ValidationError[];
+}
+
+export interface AuthResult {
+  success: boolean;
+  error?: ApiError;
 }
 
 export interface AuthContextType {
   user: AuthUser | null;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: Error }>;
-  register: (
-    email: string,
-    password: string,
-    name: string,
-  ) => Promise<{ success: boolean; error?: Error }>;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  register: (email: string, password: string, name: string) => Promise<AuthResult>;
   logout: () => void;
   loading: boolean;
   updateFavorites: (favorites: string[], movieId?: string, action?: "add" | "remove") => void;

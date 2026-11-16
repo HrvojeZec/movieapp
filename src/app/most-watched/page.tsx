@@ -28,10 +28,13 @@ export default function MostWatchedPage() {
     searchParams.get("genre") || null,
   );
   const [minRating, setMinRating] = useState<number | string>(searchParams.get("rating") || "");
-  const isValidGenre = (genreId: number | null) => {
-    if (!genreId) return true;
-    return genres.some((genre) => genre.id === genreId);
-  };
+  const isValidGenre = useCallback(
+    (genreId: number | null) => {
+      if (!genreId) return true;
+      return genres.some((genre) => genre.id === genreId);
+    },
+    [genres],
+  );
   const updateURL = useCallback(
     (year: string | null, genre: string | null, rating: number | string) => {
       const params = new URLSearchParams();
@@ -99,7 +102,7 @@ export default function MostWatchedPage() {
         setLoading(false);
       }
     },
-    [selectedYear, selectedGenre, minRating],
+    [selectedYear, selectedGenre, minRating, isValidGenre],
   );
 
   useEffect(() => {

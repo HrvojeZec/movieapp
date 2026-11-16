@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createUser, generateToken } from "@/lib/auth/serverAuth";
 import { registerSchema } from "@/lib/validation/validation";
 import { z } from "zod";
+import mongoose from "mongoose";
 
 export async function POST(request: NextRequest) {
   let email: string;
@@ -47,15 +48,15 @@ export async function POST(request: NextRequest) {
       token,
       user,
     });
-  } catch (error: any) {
-    if (error.message === "User already exists") {
+  } catch (error) {
+    if (error instanceof Error && error.message === "User already exists") {
       return NextResponse.json({ message: "User already exists" }, { status: 409 });
     }
 
     console.error("Registration error:", error);
 
-    if (error.name === "ValidationError" && error.errors) {
-      const mongoErrors = Object.values(error.errors).map((err: any) => ({
+    if (error instanceof mongoose.Error.ValidationError) {
+      const mongoErrors = Object.values(error.errors).map((err) => ({
         field: err.path,
         message: err.message,
       }));

@@ -48,24 +48,6 @@ export async function POST(request: NextRequest) {
         break;
       }
 
-      case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice;
-        /* 
-        const subscriptionId = invoice.subscription;
-
-        if (typeof subscriptionId === "string") {
-          const subscription = await stripe.subscriptions.retrieve(
-            subscriptionId
-          );
-          await handleSubscriptionUpdated(subscription);
-        } else {
-          console.log(
-            `Received invoice.payment_succeeded for a one-time payment (Invoice ID: ${invoice.id}). No subscription action taken.`
-          );
-        } */
-        break;
-      }
-
       case "invoice.payment_failed": {
         const invoice = event.data.object as Stripe.Invoice;
         console.log("Payment failed for invoice:", invoice.id);
