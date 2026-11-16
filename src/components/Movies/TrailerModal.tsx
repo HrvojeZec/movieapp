@@ -1,7 +1,7 @@
 "use client";
 import { Modal, Title, Text, Loader, Center, Group, ActionIcon } from "@mantine/core";
 import { X, Play } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getMovieVideos, getTrailerUrl } from "@/lib/external/tmdb";
 
 interface TrailerModalProps {
@@ -16,13 +16,7 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (opened && movieId) {
-      fetchTrailer();
-    }
-  }, [opened, movieId]);
-
-  const fetchTrailer = async () => {
+  const fetchTrailer = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -41,7 +35,13 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
     } finally {
       setLoading(false);
     }
-  };
+  }, [movieId]);
+
+  useEffect(() => {
+    if (opened && movieId) {
+      fetchTrailer();
+    }
+  }, [opened, movieId, fetchTrailer]);
 
   const handleClose = () => {
     setTrailerUrl(null);
@@ -100,7 +100,7 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
                 {error}
               </Text>
               <Text size="sm" c="dimmed">
-                This movie doesn't have a trailer available
+                This movie doesn&apos;t have a trailer available
               </Text>
             </div>
           </Center>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import {
   Container,
@@ -158,7 +159,7 @@ export default function SearchPage() {
                     }}
                   >
                     <Group gap="md">
-                      <img
+                      <Image
                         src={getImageUrl(movie.poster_path, "w200")}
                         alt={movie.title}
                         width={50}
@@ -186,7 +187,7 @@ export default function SearchPage() {
 
         {initialQuery && (
           <Title size="xl" fw={700} c="white" visibleFrom="sm">
-            Search Results for "{initialQuery}"
+            Search Results for &ldquo;{initialQuery}&rdquo;
           </Title>
         )}
 
@@ -197,7 +198,7 @@ export default function SearchPage() {
             <MovieGrid movies={movies} />
           ) : (
             <Text c="dimmed" ta="center" mt="xl">
-              No movies found for "{initialQuery}".
+              No movies found for &ldquo;{initialQuery}&rdquo;.
             </Text>
           ))}
       </Stack>

@@ -1,5 +1,5 @@
 "use client";
-import { Card, Image, Text, Group, Badge, ActionIcon, Box } from "@mantine/core";
+import { Card, Image, Text, Group, ActionIcon, Box } from "@mantine/core";
 import { Heart, Star } from "lucide-react";
 import { useState } from "react";
 import { Movie, getImageUrl } from "@/lib/external/tmdb";

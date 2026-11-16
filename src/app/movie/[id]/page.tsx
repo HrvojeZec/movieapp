@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import {
   Container,
@@ -113,7 +114,7 @@ export default function MovieDetailPage() {
           style={{ display: "flex", alignItems: "center", padding: "1.5rem" }}
         >
           <Group gap="xl" align="flex-start">
-            <img
+            <Image
               src={getImageUrl(movie.poster_path, "w500")}
               alt={movie.title}
               width={300}
