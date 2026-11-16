@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { TMDB_REVALIDATE_SECONDS, TmdbError } from "./server";
+import { TMDB_REVALIDATE_SECONDS, TmdbError } from "./tmdb";
 
 // Lets the CDN (e.g. Vercel) serve repeated requests without hitting the function or TMDB.
 const CACHE_HEADERS = {

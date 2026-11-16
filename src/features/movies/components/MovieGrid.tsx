@@ -1,6 +1,6 @@
 "use client";
 import { SimpleGrid, Box } from "@mantine/core";
-import { Movie } from "@/lib/external/tmdb";
+import { Movie } from "@/features/movies/api";
 import { MovieCard } from "./MovieCard";
 
 interface MovieGridProps {

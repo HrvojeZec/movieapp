@@ -11,10 +11,10 @@ import {
   Movie,
   Genre,
   getImageUrl,
-} from "@/lib/external/tmdb";
-import { MovieGrid } from "@/components/Movies/MovieGrid";
-import { HorizontalMovieScroll } from "@/components/Movies/HorizontalMovieScroll";
-import { TrailerModal } from "@/components/Movies/TrailerModal";
+} from "@/features/movies/api";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
+import { HorizontalMovieScroll } from "@/features/movies/components/HorizontalMovieScroll";
+import { TrailerModal } from "@/features/movies/components/TrailerModal";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {

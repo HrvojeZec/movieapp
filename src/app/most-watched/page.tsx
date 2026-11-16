@@ -3,8 +3,8 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Container, Group, Select, NumberInput, Stack, Text, Loader, Center } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { discoverMovies, getGenres, Movie, Genre } from "@/lib/external/tmdb";
-import { MovieGrid } from "@/components/Movies/MovieGrid";
+import { discoverMovies, getGenres, Movie, Genre } from "@/features/movies/api";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { Flame } from "lucide-react";
 
 const currentYear = new Date().getFullYear();

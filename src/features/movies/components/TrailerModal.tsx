@@ -2,7 +2,7 @@
 import { Modal, Title, Text, Loader, Center, Group, ActionIcon } from "@mantine/core";
 import { X, Play } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { getMovieVideos, getTrailerUrl } from "@/lib/external/tmdb";
+import { getMovieVideos, getTrailerUrl } from "@/features/movies/api";
 
 interface TrailerModalProps {
   opened: boolean;

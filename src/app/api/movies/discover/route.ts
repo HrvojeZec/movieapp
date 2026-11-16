@@ -1,6 +1,10 @@
 import { NextRequest } from "next/server";
-import { tmdbFetch } from "@/lib/tmdb/server";
-import { searchParamsToObject, tmdbErrorResponse, tmdbJson } from "@/lib/tmdb/route-helpers";
+import { tmdbFetch } from "@/features/movies/server/tmdb";
+import {
+  searchParamsToObject,
+  tmdbErrorResponse,
+  tmdbJson,
+} from "@/features/movies/server/route-helpers";
 import { movieDiscoverQuerySchema } from "@/lib/validation/validation";
 
 // GET /api/movies/discover?year=2024&genre=28&minRating=7&page=1

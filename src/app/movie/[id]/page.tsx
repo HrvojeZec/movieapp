@@ -19,8 +19,8 @@ import {
   Button,
 } from "@mantine/core";
 import { Heart, Star, Clock, MapPin, Calendar, PlayCircle } from "lucide-react";
-import { getMovieDetails, MovieDetails, getImageUrl } from "@/lib/external/tmdb";
-import { TrailerModal } from "@/components/Movies/TrailerModal";
+import { getMovieDetails, MovieDetails, getImageUrl } from "@/features/movies/api";
+import { TrailerModal } from "@/features/movies/components/TrailerModal";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function MovieDetailPage() {

@@ -18,7 +18,7 @@ import {
 } from "@mantine/core";
 import { Search, Heart, User, LogOut, Film, Flame, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { searchMovies, getImageUrl, getMovieDetails } from "@/lib/external/tmdb";
+import { searchMovies, getImageUrl, getMovieDetails } from "@/features/movies/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

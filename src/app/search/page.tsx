@@ -14,9 +14,9 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { Search, ArrowLeft } from "lucide-react";
-import { searchMovies, Movie } from "@/lib/external/tmdb";
-import { MovieGrid } from "@/components/Movies/MovieGrid";
-import { getImageUrl } from "@/lib/external/tmdb";
+import { searchMovies, Movie } from "@/features/movies/api";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
+import { getImageUrl } from "@/features/movies/api";
 import { useRouter } from "next/navigation";
 import { formatYear } from "@/utils";
 

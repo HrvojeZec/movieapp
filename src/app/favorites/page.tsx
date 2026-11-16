@@ -1,9 +1,9 @@
 "use client";
 import { Container, Title, Text, Stack, Button, Group } from "@mantine/core";
 import { useAuth } from "@/contexts/AuthContext";
-import { MovieGrid } from "@/components/Movies/MovieGrid";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { useEffect, useState } from "react";
-import { getMovieDetails, MovieDetails } from "@/lib/external/tmdb";
+import { getMovieDetails, MovieDetails } from "@/features/movies/api";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 
