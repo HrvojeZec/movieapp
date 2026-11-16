@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import connectDB from "../db/mongodb";
 import User, { IUser } from "@/models/Users";
-import UserActivity from "@/models/Users";
+import UserActivity from "@/models/UserActivity";
 import { AuthUser } from "@/types";
 
 const JWT_SECRET = process.env.JWT_SECRET;
