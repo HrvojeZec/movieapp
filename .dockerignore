@@ -1,0 +1,17 @@
+# Never send secrets or local build output to the Docker build context
+.env*
+!.env.example
+
+node_modules
+.next
+out
+build
+coverage
+
+.git
+.github
+.husky
+.vscode
+*.log
+Dockerfile
+compose.yaml
