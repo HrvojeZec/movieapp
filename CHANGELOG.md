@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Field-level validation errors on the login and registration forms
 - Page title and description metadata
 - CI job that builds the Docker image, and Dependabot updates for the Docker base image
+- Per-page titles (e.g. "Pricing | MovieHub")
+- ESLint rule that forbids importing server-only modules from client code
 
 ### Changed
 
@@ -32,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace deprecated `next lint` with the ESLint CLI; lint fails on warnings (#9, #11)
 - Format the codebase with Prettier (#10)
 - Run ESLint during `next build` again (#11)
+- Dependabot updates coupled packages together (`@mantine/*`, Next.js with `eslint-config-next`, React)
+  and skips major upgrades of Mantine, Next.js and TypeScript, which are planned separately
 - PR automation workflow runs on `pull_request` instead of `pull_request_target`, which GitHub
   blocks by default in public repositories (#19)
 - Upgrade the Stripe SDK to v23 (API version `2026-10-28.endive`); the client is created lazily (#21)
@@ -42,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Package renamed from `my-app` to `movieapp` and marked as MIT licensed
 - Docker: multi-stage image on Node 26 Alpine using Next.js `standalone` output, running as a non-root
   user; `compose.yaml` runs it locally with secrets from `.env.local` at runtime
+- Feature-based folder structure: `src/features/{auth,movies,favorites,subscription,profile}` (each with
+  its components, views, validation and `server/` code), `src/server` (database, models, activity log) and
+  `src/shared` (layout, helpers, types); `src/app` only contains thin routes. No behavior changes
 
 ### Fixed
 

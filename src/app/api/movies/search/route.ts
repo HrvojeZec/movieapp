@@ -1,7 +1,11 @@
 import { NextRequest } from "next/server";
-import { tmdbFetch } from "@/lib/tmdb/server";
-import { searchParamsToObject, tmdbErrorResponse, tmdbJson } from "@/lib/tmdb/route-helpers";
-import { movieSearchQuerySchema } from "@/lib/validation/validation";
+import { tmdbFetch } from "@/features/movies/server/tmdb";
+import {
+  searchParamsToObject,
+  tmdbErrorResponse,
+  tmdbJson,
+} from "@/features/movies/server/route-helpers";
+import { movieSearchQuerySchema } from "@/features/movies/validation";
 
 // GET /api/movies/search?query=batman&page=1
 export async function GET(request: NextRequest) {
