@@ -10,11 +10,7 @@ interface HorizontalMovieScrollProps {
   loading?: boolean;
 }
 
-export const HorizontalMovieScroll = ({
-  title,
-  movies,
-  loading,
-}: HorizontalMovieScrollProps) => {
+export const HorizontalMovieScroll = ({ title, movies, loading }: HorizontalMovieScrollProps) => {
   console.log(movies);
 
   return (

@@ -74,10 +74,7 @@ export default function FavoritesPage() {
             </Text>
             {!user && (
               <Text c="dimmed" ta="center" mt="md" size="sm">
-                <Button
-                  variant="outline"
-                  onClick={() => router.push("/auth/login")}
-                >
+                <Button variant="outline" onClick={() => router.push("/auth/login")}>
                   Log In
                 </Button>
               </Text>

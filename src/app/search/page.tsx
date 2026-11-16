@@ -170,8 +170,7 @@ export default function SearchPage() {
                           {movie.title}
                         </Text>
                         <Text size="xs" c="dimmed">
-                          {formatYear(movie.release_date)} • ★{" "}
-                          {movie.vote_average.toFixed(1)}
+                          {formatYear(movie.release_date)} • ★ {movie.vote_average.toFixed(1)}
                         </Text>
                         <Text size="xs" c="gray.5" lineClamp={2} mt={4}>
                           {movie.overview}

@@ -32,12 +32,7 @@ export const STRIPE_CONFIG = {
       name: "Basic",
       price: 0,
       priceId: null,
-      features: [
-        "Browse movies",
-        "Add to favorites",
-        "Basic search",
-        "Mobile access",
-      ],
+      features: ["Browse movies", "Add to favorites", "Basic search", "Mobile access"],
     },
     PREMIUM: {
       name: "Premium",

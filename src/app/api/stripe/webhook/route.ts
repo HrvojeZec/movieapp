@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       console.error("Webhook signature verification failed:", err);
       return NextResponse.json(
         { message: "Webhook signature verification failed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -30,9 +30,7 @@ export async function POST(request: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
 
         if (session.mode === "subscription") {
-          const subscription = await stripe.subscriptions.retrieve(
-            session.subscription as string
-          );
+          const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
           await handleSubscriptionCreated(subscription, session.customer_email);
         }
         break;
@@ -87,7 +85,7 @@ export async function POST(request: NextRequest) {
 
 async function handleSubscriptionCreated(
   subscription: Stripe.Subscription,
-  customerEmail?: string | null
+  customerEmail?: string | null,
 ) {
   try {
     if (!customerEmail) {
@@ -141,12 +139,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       subscriptionPlan: plan,
     });
 
-    console.log(
-      "Subscription updated for user:",
-      user.email,
-      "Status:",
-      subscription.status
-    );
+    console.log("Subscription updated for user:", user.email, "Status:", subscription.status);
   } catch (error) {
     console.error("Error handling subscription updated:", error);
   }

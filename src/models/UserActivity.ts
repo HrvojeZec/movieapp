@@ -19,14 +19,7 @@ const UserActivitySchema = new Schema<IUserActivity>(
     action: {
       type: String,
       required: [true, "Akcija je obavezna"],
-      enum: [
-        "view",
-        "favorite",
-        "unfavorite",
-        "search",
-        "watchlist_add",
-        "watchlist_remove",
-      ],
+      enum: ["view", "favorite", "unfavorite", "search", "watchlist_add", "watchlist_remove"],
     },
     movieId: {
       type: String,
@@ -39,7 +32,7 @@ const UserActivitySchema = new Schema<IUserActivity>(
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
-  }
+  },
 );
 
 const UserActivity =

@@ -80,12 +80,7 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
             {error && (
-              <Alert
-                icon={<AlertCircle size={16} />}
-                color="red"
-                variant="light"
-                title="Error"
-              >
+              <Alert icon={<AlertCircle size={16} />} color="red" variant="light" title="Error">
                 {error}
               </Alert>
             )}
@@ -132,22 +127,14 @@ export const AuthForm = ({ type }: AuthFormProps) => {
               }}
             />
 
-            <Button
-              type="submit"
-              fullWidth
-              loading={loading}
-              size="md"
-              className="gradient-bg"
-            >
+            <Button type="submit" fullWidth loading={loading} size="md" className="gradient-bg">
               {type === "login" ? "Sign In" : "Create Account"}
             </Button>
           </Stack>
         </form>
 
         <Text ta="center" mt="md" c="dimmed">
-          {type === "login"
-            ? "Don't have an account? "
-            : "Already have an account? "}
+          {type === "login" ? "Don't have an account? " : "Already have an account? "}
           <Link
             href={type === "login" ? "/auth/register" : "/auth/login"}
             style={{ textDecoration: "none" }}

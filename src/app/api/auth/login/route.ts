@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  findUserByEmail,
-  generateToken,
-  updateLastLogin,
-} from "@/lib/auth/serverAuth";
+import { findUserByEmail, generateToken, updateLastLogin } from "@/lib/auth/serverAuth";
 import { loginSchema } from "@/lib/validation/validation";
 import { z } from "zod";
 
@@ -29,32 +25,23 @@ export async function POST(request: NextRequest) {
           message: "Validation failed",
           errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error("Login error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 
   try {
     const user = await findUserByEmail(email);
     if (!user) {
-      return NextResponse.json(
-        { message: "Invalid credentials" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
     const isValidPassword = await user.comparePassword(password);
     if (!isValidPassword) {
-      return NextResponse.json(
-        { message: "Invalid credentials" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
     await updateLastLogin(user._id.toString());
@@ -80,9 +67,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Login error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

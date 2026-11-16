@@ -23,9 +23,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Get profile error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

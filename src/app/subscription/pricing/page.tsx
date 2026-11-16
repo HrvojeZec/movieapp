@@ -48,17 +48,17 @@ export default function PricingPage() {
 
       const paymentUrl = planConfig.paymentLink.replace(
         "{USER_EMAIL}",
-        encodeURIComponent(user.email)
+        encodeURIComponent(user.email),
       );
 
       const urlWithParams = new URL(paymentUrl);
       urlWithParams.searchParams.set(
         "success_url",
-        `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`
+        `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
       );
       urlWithParams.searchParams.set(
         "cancel_url",
-        `${window.location.origin}/subscription/pricing`
+        `${window.location.origin}/subscription/pricing`,
       );
 
       window.location.href = urlWithParams.toString();
@@ -118,8 +118,8 @@ export default function PricingPage() {
             title="Stripe Not Configured"
             maw={600}
           >
-            Payment processing is currently unavailable. Please contact support
-            to set up your subscription.
+            Payment processing is currently unavailable. Please contact support to set up your
+            subscription.
           </Alert>
         )}
 
@@ -128,18 +128,12 @@ export default function PricingPage() {
             const planKey = key as keyof typeof STRIPE_CONFIG.PLANS;
             const isPopular = planKey === "PREMIUM";
             const isFree = planKey === "BASIC";
-            const isCurrentPlan =
-              user && user.subscriptionPlan === planKey.toLowerCase();
+            const isCurrentPlan = user && user.subscriptionPlan === planKey.toLowerCase();
             console.log(isCurrentPlan);
             console.log(user?.subscriptionPlan);
 
             return (
-              <Indicator
-                disabled={!isCurrentPlan}
-                color="green"
-                size="lg"
-                label={<CheckIcon />}
-              >
+              <Indicator disabled={!isCurrentPlan} color="green" size="lg" label={<CheckIcon />}>
                 <Card
                   key={key}
                   data-aos="fade-up"
@@ -154,8 +148,8 @@ export default function PricingPage() {
                     border: isCurrentPlan
                       ? "2px solid #10b981"
                       : isPopular
-                      ? "2px solid #3b82f6"
-                      : "1px solid rgba(255, 255, 255, 0.1)",
+                        ? "2px solid #3b82f6"
+                        : "1px solid rgba(255, 255, 255, 0.1)",
                     position: "relative",
                     transform: isPopular ? "scale(1.05)" : "scale(1)",
                     cursor: "pointer",
@@ -180,12 +174,8 @@ export default function PricingPage() {
 
                   <Stack gap="md" align="center" mb="xl">
                     <div style={{ textAlign: "center" }}>
-                      {planKey === "BASIC" && (
-                        <Check size={48} color="#10b981" />
-                      )}
-                      {planKey === "PREMIUM" && (
-                        <Star size={48} color="#3b82f6" />
-                      )}
+                      {planKey === "BASIC" && <Check size={48} color="#10b981" />}
+                      {planKey === "PREMIUM" && <Star size={48} color="#3b82f6" />}
                       {planKey === "PRO" && <Zap size={48} color="#f59e0b" />}
                     </div>
 
@@ -221,9 +211,7 @@ export default function PricingPage() {
                     variant={isPopular ? "filled" : "outline"}
                     color={isPopular ? "blue" : "gray"}
                     onClick={() => handleSubscribe(planKey)}
-                    disabled={
-                      isFree || loading === planKey || !isStripeConfigured
-                    }
+                    disabled={isFree || loading === planKey || !isStripeConfigured}
                     className={isPopular ? "blue" : ""}
                     styles={{
                       root: {
