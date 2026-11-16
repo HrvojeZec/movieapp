@@ -19,7 +19,7 @@ RUN HUSKY=0 npm ci
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN NEXT_OUTPUT_STANDALONE=true npm run build
 
 # --- Minimal runtime image ---
 FROM base AS runner
