@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prettier, EditorConfig, `.gitattributes`, Husky hooks with lint-staged and commitlint (#9)
 - GitHub Actions CI (lint, format check, typecheck, build, dependency audit), PR title validation,
   automatic labels and assignee, Dependabot configuration (#12)
-- Pull request template, MIT license, security policy and this changelog
+- Pull request template, MIT license, security policy and this changelog (#18)
 
 ### Changed
 
@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace deprecated `next lint` with the ESLint CLI; lint fails on warnings (#9, #11)
 - Format the codebase with Prettier (#10)
 - Run ESLint during `next build` again (#11)
+- PR automation workflow runs on `pull_request` instead of `pull_request_target`, which GitHub
+  blocks by default in public repositories
 
 ### Fixed
 
