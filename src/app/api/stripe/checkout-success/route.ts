@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findUserById, verifyToken } from "@/lib/auth/serverAuth";
+import { findUserById } from "@/lib/auth/serverAuth";
+import { getSessionUser } from "@/lib/auth/session";
 import { getStripe } from "@/lib/payments/stripe";
 import {
   getSubscriptionIdFromSession,
@@ -13,8 +14,7 @@ import { checkoutSuccessSchema } from "@/lib/validation/validation";
  * The webhook remains the source of truth; this only re-syncs the user's own subscription.
  */
 export async function POST(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
-  const decoded = token ? verifyToken(token) : null;
+  const decoded = getSessionUser(request);
   if (!decoded) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }

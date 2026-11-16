@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUser, generateToken } from "@/lib/auth/serverAuth";
+import { setAuthCookie } from "@/lib/auth/session";
 import { registerSchema } from "@/lib/validation/validation";
 import { z } from "zod";
 import mongoose from "mongoose";
@@ -38,16 +39,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const user = await createUser(email, password, name);
-    const token = generateToken({
-      userId: user.id,
-      email: user.email,
-      name: user.name,
-    });
+    const token = generateToken({ userId: user.id, email: user.email, name: user.name });
 
-    return NextResponse.json({
-      token,
-      user,
-    });
+    const response = NextResponse.json({ user });
+    setAuthCookie(response, token);
+    return response;
   } catch (error) {
     if (error instanceof Error && error.message === "User already exists") {
       return NextResponse.json({ message: "User already exists" }, { status: 409 });

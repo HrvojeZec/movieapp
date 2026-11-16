@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findUserByEmail, generateToken, updateLastLogin } from "@/lib/auth/serverAuth";
+import {
+  findUserByEmail,
+  findUserById,
+  generateToken,
+  updateLastLogin,
+} from "@/lib/auth/serverAuth";
+import { setAuthCookie } from "@/lib/auth/session";
 import { loginSchema } from "@/lib/validation/validation";
 import { z } from "zod";
 
@@ -46,25 +52,13 @@ export async function POST(request: NextRequest) {
 
     await updateLastLogin(user._id.toString());
 
-    const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
-      name: user.name,
-    });
+    const userId = user._id.toString();
+    const token = generateToken({ userId, email: user.email, name: user.name });
 
-    const userResponse = {
-      id: user._id.toString(),
-      email: user.email,
-      name: user.name,
-      favorites: user.favorites,
-      createdAt: user.createdAt,
-      lastLogin: new Date(),
-    };
-
-    return NextResponse.json({
-      token,
-      user: userResponse,
-    });
+    // Same shape as /api/user/profile, so subscription details are available right after login.
+    const response = NextResponse.json({ user: await findUserById(userId) });
+    setAuthCookie(response, token);
+    return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });

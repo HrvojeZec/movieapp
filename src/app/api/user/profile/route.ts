@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, findUserById } from "@/lib/auth/serverAuth";
+import { findUserById } from "@/lib/auth/serverAuth";
+import { getSessionUser } from "@/lib/auth/session";
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get("token")?.value;
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
+    const decoded = getSessionUser(request);
     if (!decoded) {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const user = await findUserById(decoded.userId);

@@ -16,8 +16,10 @@ export interface AuthToken {
   name: string;
 }
 
+export const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
+
 export const generateToken = (user: AuthToken): string => {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(user, JWT_SECRET, { expiresIn: TOKEN_TTL_SECONDS });
 };
 
 export const verifyToken = (token: string): AuthToken | null => {
