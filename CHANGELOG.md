@@ -36,6 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Unused `test-db` route file and commented-out webhook code (#11)
 
+### Security
+
+- Upgrade Next.js to 15.5.29 and patch vulnerable dependencies (mongoose, axios, zod, js-cookie,
+  jws, form-data, qs and others); production dependencies have no known vulnerabilities
+- Override postcss to 8.5.x for Next.js 15, which pins the vulnerable 8.4.31
+
 ## [0.1.0] - 2025-08-18
 
 ### Added
