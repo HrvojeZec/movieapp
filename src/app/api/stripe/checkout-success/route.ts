@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findUserById } from "@/lib/auth/serverAuth";
-import { getSessionUser } from "@/lib/auth/session";
-import { getStripe } from "@/lib/payments/stripe";
+import { findUserById } from "@/features/auth/server/users";
+import { getSessionUser } from "@/features/auth/server/session";
+import { getStripe } from "@/features/subscription/server/stripe";
 import {
   getSubscriptionIdFromSession,
   linkStripeCustomer,
   syncSubscription,
-} from "@/lib/payments/subscriptions";
-import { checkoutSuccessSchema } from "@/lib/validation/validation";
+} from "@/features/subscription/server/subscriptions";
+import { checkoutSuccessSchema } from "@/features/subscription/validation";
 
 /**
  * Called by the success page right after Checkout so the user sees the new plan immediately.

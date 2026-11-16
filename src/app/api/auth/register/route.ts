@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createUser, generateToken } from "@/lib/auth/serverAuth";
-import { setAuthCookie } from "@/lib/auth/session";
-import { registerSchema } from "@/lib/validation/validation";
+import { generateToken } from "@/features/auth/server/tokens";
+import { createUser } from "@/features/auth/server/users";
+import { setAuthCookie } from "@/features/auth/server/session";
+import { registerSchema } from "@/features/auth/validation";
 import { z } from "zod";
 import mongoose from "mongoose";
 

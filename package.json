@@ -41,7 +41,7 @@
     "@eslint/eslintrc": "^3",
     "@types/aos": "^3.0.8",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

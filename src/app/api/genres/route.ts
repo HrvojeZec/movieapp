@@ -1,5 +1,5 @@
-import { tmdbFetch } from "@/lib/tmdb/server";
-import { tmdbErrorResponse, tmdbJson } from "@/lib/tmdb/route-helpers";
+import { tmdbFetch } from "@/features/movies/server/tmdb";
+import { tmdbErrorResponse, tmdbJson } from "@/features/movies/server/route-helpers";
 
 // GET /api/genres
 export async function GET() {
