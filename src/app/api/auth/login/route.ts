@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateToken } from "@/features/auth/server/tokens";
 import { findUserByEmail, findUserById, updateLastLogin } from "@/features/auth/server/users";
 import { setAuthCookie } from "@/features/auth/server/session";
-import { loginSchema } from "@/lib/validation/validation";
+import { loginSchema } from "@/features/auth/validation";
 import { z } from "zod";
 
 export async function POST(request: NextRequest) {

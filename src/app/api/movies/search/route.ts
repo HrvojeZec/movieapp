@@ -5,7 +5,7 @@ import {
   tmdbErrorResponse,
   tmdbJson,
 } from "@/features/movies/server/route-helpers";
-import { movieSearchQuerySchema } from "@/lib/validation/validation";
+import { movieSearchQuerySchema } from "@/features/movies/validation";
 
 // GET /api/movies/search?query=batman&page=1
 export async function GET(request: NextRequest) {
