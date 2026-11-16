@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI job that builds the Docker image, and Dependabot updates for the Docker base image
 - Per-page titles (e.g. "Pricing | MovieHub")
 - ESLint rule that forbids importing server-only modules from client code
+- Unit tests with Vitest (122 tests): plan/price mapping, JWT tokens, validation schemas, movie API
+  helpers, TMDB route error handling, Stripe helpers and formatting; `npm test` runs in CI
 
 ### Changed
 
