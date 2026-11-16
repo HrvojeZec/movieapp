@@ -46,5 +46,10 @@
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "sharp": true,
+    "unrs-resolver": true,
+    "@parcel/watcher": true
   }
 }
