@@ -18,7 +18,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@mantine/core": "^8.2.4",
+    "@mantine/core": "^9.8.0",
     "@mantine/hooks": "^8.2.4",
     "@mantine/notifications": "^8.2.4",
     "@stripe/stripe-js": "^7.8.0",
