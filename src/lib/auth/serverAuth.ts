@@ -31,7 +31,7 @@ export const verifyToken = (token: string): AuthToken | null => {
 export const createUser = async (
   email: string,
   password: string,
-  name: string
+  name: string,
 ): Promise<AuthUser> => {
   await connectDB();
 
@@ -90,14 +90,10 @@ export const findUserById = async (id: string): Promise<AuthUser | null> => {
 
 export const updateUserFavorites = async (
   userId: string,
-  favorites: string[]
+  favorites: string[],
 ): Promise<AuthUser | null> => {
   await connectDB();
-  const user = await User.findByIdAndUpdate(
-    userId,
-    { favorites },
-    { new: true }
-  );
+  const user = await User.findByIdAndUpdate(userId, { favorites }, { new: true });
 
   if (!user) return null;
 
@@ -120,7 +116,7 @@ export const updateUserStripeInfo = async (
   userId: string,
   stripeCustomerId: string,
   subscriptionStatus: string,
-  subscriptionPlan: string
+  subscriptionPlan: string,
 ): Promise<AuthUser | null> => {
   await connectDB();
   const user = await User.findByIdAndUpdate(
@@ -130,7 +126,7 @@ export const updateUserStripeInfo = async (
       subscriptionStatus,
       subscriptionPlan,
     },
-    { new: true }
+    { new: true },
   );
 
   if (!user) return null;
@@ -152,7 +148,7 @@ export const logUserActivity = async (
   action: "view" | "favorite" | "unfavorite" | "review" | "search",
   movieId?: string,
   searchQuery?: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<void> => {
   try {
     await connectDB();

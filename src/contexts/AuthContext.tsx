@@ -1,11 +1,5 @@
 "use client";
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import Cookies from "js-cookie";
 import type { AuthUser, AuthContextType } from "@/types";
@@ -76,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (
     email: string,
-    password: string
+    password: string,
   ): Promise<{ success: boolean; error?: any }> => {
     try {
       const response = await fetch("/api/auth/login", {
@@ -120,7 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (
     email: string,
     password: string,
-    name: string
+    name: string,
   ): Promise<{ success: boolean; error?: any }> => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -174,7 +168,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateFavorites = async (
     favorites: string[],
     movieId?: string,
-    action?: "add" | "remove"
+    action?: "add" | "remove",
   ) => {
     if (!user) return;
 
@@ -192,17 +186,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(data.user);
       } else {
         if (user) {
-          setUser((prev) =>
-            prev ? { ...prev, favorites: user.favorites } : null
-          );
+          setUser((prev) => (prev ? { ...prev, favorites: user.favorites } : null));
         }
       }
     } catch (error) {
       console.error("Failed to update favorites:", error);
       if (user) {
-        setUser((prev) =>
-          prev ? { ...prev, favorites: user.favorites } : null
-        );
+        setUser((prev) => (prev ? { ...prev, favorites: user.favorites } : null));
       }
     }
   };

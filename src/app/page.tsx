@@ -1,15 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  Container,
-  Title,
-  Text,
-  Stack,
-  Box,
-  Group,
-  Badge,
-  Button,
-} from "@mantine/core";
+import { Container, Title, Text, Stack, Box, Group, Badge, Button } from "@mantine/core";
 import { Clapperboard, Drama, PlayCircle, Star, Trophy } from "lucide-react";
 import {
   getPopularMovies,
@@ -31,9 +22,7 @@ export default function HomePage() {
   const [newestMovies, setNewestMovies] = useState<Movie[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [genreMovies, setGenreMovies] = useState<{ [key: number]: Movie[] }>(
-    {}
-  );
+  const [genreMovies, setGenreMovies] = useState<{ [key: number]: Movie[] }>({});
   const [loading, setLoading] = useState(true);
   const [trailerModalOpened, setTrailerModalOpened] = useState(false);
   const router = useRouter();
@@ -41,17 +30,13 @@ export default function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [
-          popularResponse,
-          topRatedResponse,
-          nowPlayingResponse,
-          genresResponse,
-        ] = await Promise.all([
-          getPopularMovies(),
-          getTopRatedMovies(),
-          getNowPlayingMovies(),
-          getGenres(),
-        ]);
+        const [popularResponse, topRatedResponse, nowPlayingResponse, genresResponse] =
+          await Promise.all([
+            getPopularMovies(),
+            getTopRatedMovies(),
+            getNowPlayingMovies(),
+            getGenres(),
+          ]);
 
         setHeroMovie(popularResponse.results[0]);
 
@@ -60,12 +45,10 @@ export default function HomePage() {
         setGenres(genresResponse.slice(0, 10));
         console.log(genresResponse);
 
-        const genreMoviePromises = genresResponse
-          .slice(0, 10)
-          .map(async (genre) => {
-            const movies = await getMoviesByGenre(genre.id);
-            return { genreId: genre.id, movies: movies.results.slice(0, 20) };
-          });
+        const genreMoviePromises = genresResponse.slice(0, 10).map(async (genre) => {
+          const movies = await getMoviesByGenre(genre.id);
+          return { genreId: genre.id, movies: movies.results.slice(0, 20) };
+        });
 
         const genreMovieResults = await Promise.all(genreMoviePromises);
         const genreMoviesMap = genreMovieResults.reduce(
@@ -73,7 +56,7 @@ export default function HomePage() {
             acc[genreId] = movies;
             return acc;
           },
-          {} as { [key: number]: Movie[] }
+          {} as { [key: number]: Movie[] },
         );
 
         setGenreMovies(genreMoviesMap);
@@ -96,21 +79,14 @@ export default function HomePage() {
             data-aos-duration="1000"
             h={600}
             style={{
-              backgroundImage: `url(${getImageUrl(
-                heroMovie.backdrop_path,
-                "w1280"
-              )})`,
+              backgroundImage: `url(${getImageUrl(heroMovie.backdrop_path, "w1280")})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               position: "relative",
             }}
             className="hero-section"
           >
-            <Container
-              size="xl"
-              h="100%"
-              style={{ display: "flex", alignItems: "center" }}
-            >
+            <Container size="xl" h="100%" style={{ display: "flex", alignItems: "center" }}>
               <Box maw={600} data-aos="fade-right" data-aos-delay="300">
                 <Title size="3rem" fw={700} c="white" mb="md">
                   {heroMovie.title}
@@ -119,16 +95,10 @@ export default function HomePage() {
                   {heroMovie.overview}
                 </Text>
                 <Group gap="md" mb="xl">
-                  <Badge
-                    leftSection={<Star size={14} />}
-                    variant="filled"
-                    color="yellow"
-                  >
+                  <Badge leftSection={<Star size={14} />} variant="filled" color="yellow">
                     {heroMovie.vote_average.toFixed(1)} IMDb
                   </Badge>
-                  <Text c="gray.4">
-                    {heroMovie.release_date?.split("-")[0]}
-                  </Text>
+                  <Text c="gray.4">{heroMovie.release_date?.split("-")[0]}</Text>
                 </Group>
                 <Group data-aos="fade-up" data-aos-delay="600">
                   <Button
@@ -176,19 +146,12 @@ export default function HomePage() {
                     Top rated
                   </Title>
                 </Group>
-                <MovieGrid
-                  movies={topRatedMovies.slice(0, 6)}
-                  loading={loading}
-                />
+                <MovieGrid movies={topRatedMovies.slice(0, 6)} loading={loading} />
               </Box>
             </div>
 
             {genres.map((genre, index) => (
-              <div
-                key={genre.id}
-                data-aos="fade-up"
-                data-aos-delay={600 + index * 100}
-              >
+              <div key={genre.id} data-aos="fade-up" data-aos-delay={600 + index * 100}>
                 <HorizontalMovieScroll
                   title={
                     <Group gap={8} align="center">

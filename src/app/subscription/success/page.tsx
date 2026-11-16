@@ -1,14 +1,5 @@
 "use client";
-import {
-  Container,
-  Title,
-  Text,
-  Button,
-  Stack,
-  Paper,
-  Loader,
-  Center,
-} from "@mantine/core";
+import { Container, Title, Text, Button, Stack, Paper, Loader, Center } from "@mantine/core";
 import { CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -84,9 +75,7 @@ export default function SubscriptionSuccessPage() {
             <Text size="lg" c="dimmed" ta="center">
               {error}
             </Text>
-            <Button onClick={() => router.push("/subscription/pricing")}>
-              Try Again
-            </Button>
+            <Button onClick={() => router.push("/subscription/pricing")}>Try Again</Button>
           </Stack>
         </Paper>
       </Container>
@@ -109,26 +98,16 @@ export default function SubscriptionSuccessPage() {
           </Title>
 
           <Text size="lg" c="dimmed" ta="center">
-            Welcome to MovieHub {user?.subscriptionPlan || "Premium"}! Your
-            subscription is now active.
+            Welcome to MovieHub {user?.subscriptionPlan || "Premium"}! Your subscription is now
+            active.
           </Text>
 
           <Stack gap="md" w="100%">
-            <Button
-              fullWidth
-              size="lg"
-              color="blue"
-              onClick={() => router.push("/")}
-            >
+            <Button fullWidth size="lg" color="blue" onClick={() => router.push("/")}>
               Start Exploring
             </Button>
 
-            <Button
-              fullWidth
-              size="lg"
-              variant="outline"
-              onClick={() => router.push("/profile")}
-            >
+            <Button fullWidth size="lg" variant="outline" onClick={() => router.push("/profile")}>
               View Profile
             </Button>
           </Stack>

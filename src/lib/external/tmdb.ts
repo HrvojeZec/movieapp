@@ -63,55 +63,42 @@ export interface Video {
 
 export const getImageUrl = (
   path: string | null,
-  size: "w200" | "w300" | "w500" | "w780" | "w1280" | "original" = "w500"
+  size: "w200" | "w300" | "w500" | "w780" | "w1280" | "original" = "w500",
 ) => {
   if (!path) return "/placeholder-movie.jpg";
   return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
 };
 
-export const getPopularMovies = async (
-  page = 1
-): Promise<TMDBResponse<Movie>> => {
+export const getPopularMovies = async (page = 1): Promise<TMDBResponse<Movie>> => {
   const response = await tmdbApi.get("/movie/popular", { params: { page } });
   return response.data;
 };
 
-export const getTopRatedMovies = async (
-  page = 1
-): Promise<TMDBResponse<Movie>> => {
+export const getTopRatedMovies = async (page = 1): Promise<TMDBResponse<Movie>> => {
   const response = await tmdbApi.get("/movie/top_rated", { params: { page } });
   return response.data;
 };
 
-export const getNowPlayingMovies = async (
-  page = 1
-): Promise<TMDBResponse<Movie>> => {
+export const getNowPlayingMovies = async (page = 1): Promise<TMDBResponse<Movie>> => {
   const response = await tmdbApi.get("/movie/now_playing", {
     params: { page },
   });
   return response.data;
 };
 
-export const getUpcomingMovies = async (
-  page = 1
-): Promise<TMDBResponse<Movie>> => {
+export const getUpcomingMovies = async (page = 1): Promise<TMDBResponse<Movie>> => {
   const response = await tmdbApi.get("/movie/upcoming", { params: { page } });
   return response.data;
 };
 
-export const getMovieDetails = async (
-  movieId: number
-): Promise<MovieDetails> => {
+export const getMovieDetails = async (movieId: number): Promise<MovieDetails> => {
   const response = await tmdbApi.get(`/movie/${movieId}`, {
     params: { append_to_response: "credits" },
   });
   return response.data;
 };
 
-export const searchMovies = async (
-  query: string,
-  page = 1
-): Promise<TMDBResponse<Movie>> => {
+export const searchMovies = async (query: string, page = 1): Promise<TMDBResponse<Movie>> => {
   const response = await tmdbApi.get("/search/movie", {
     params: { query, page, include_adult: false },
   });
@@ -123,10 +110,7 @@ export const getGenres = async (): Promise<Genre[]> => {
   return response.data.genres;
 };
 
-export const getMoviesByGenre = async (
-  genreId: number,
-  page = 1
-): Promise<TMDBResponse<Movie>> => {
+export const getMoviesByGenre = async (genreId: number, page = 1): Promise<TMDBResponse<Movie>> => {
   const response = await tmdbApi.get("/discover/movie", {
     params: { with_genres: genreId, page, sort_by: "popularity.desc" },
   });
@@ -165,17 +149,14 @@ export const getMovieVideos = async (movieId: number): Promise<Video[]> => {
 
 export const getTrailerUrl = (videos: Video[]): string | null => {
   const officialTrailer = videos.find(
-    (video) =>
-      video.type === "Trailer" && video.official && video.site === "YouTube"
+    (video) => video.type === "Trailer" && video.official && video.site === "YouTube",
   );
 
   if (officialTrailer) {
     return `https://www.youtube.com/embed/${officialTrailer.key}?autoplay=1&rel=0`;
   }
 
-  const anyTrailer = videos.find(
-    (video) => video.type === "Trailer" && video.site === "YouTube"
-  );
+  const anyTrailer = videos.find((video) => video.type === "Trailer" && video.site === "YouTube");
 
   if (anyTrailer) {
     return `https://www.youtube.com/embed/${anyTrailer.key}?autoplay=1&rel=0`;

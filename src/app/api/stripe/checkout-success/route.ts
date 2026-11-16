@@ -16,24 +16,16 @@ export async function POST(request: NextRequest) {
 
     const { sessionId } = await request.json();
     if (!sessionId) {
-      return NextResponse.json(
-        { message: "Session ID required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Session ID required" }, { status: 400 });
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status !== "paid") {
-      return NextResponse.json(
-        { message: "Payment not completed" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Payment not completed" }, { status: 400 });
     }
 
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    );
+    const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
     const customerId = session.customer as string;
 
     let planName = "premium";
@@ -49,7 +41,7 @@ export async function POST(request: NextRequest) {
       decoded.userId,
       customerId,
       subscription.status,
-      planName
+      planName,
     );
 
     if (!updatedUser) {
@@ -62,9 +54,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Checkout success error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

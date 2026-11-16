@@ -24,7 +24,7 @@ export async function GET() {
         error: "Database connection failed",
         details: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

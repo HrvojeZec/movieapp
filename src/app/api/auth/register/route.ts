@@ -27,15 +27,12 @@ export async function POST(request: NextRequest) {
           message: "Validation failed",
           errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error("Registration error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 
   try {
@@ -52,10 +49,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     if (error.message === "User already exists") {
-      return NextResponse.json(
-        { message: "User already exists" },
-        { status: 409 }
-      );
+      return NextResponse.json({ message: "User already exists" }, { status: 409 });
     }
 
     console.error("Registration error:", error);
@@ -71,13 +65,10 @@ export async function POST(request: NextRequest) {
           message: "Database validation failed",
           errors: mongoErrors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

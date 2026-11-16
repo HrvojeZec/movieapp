@@ -1,16 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Container,
-  Group,
-  Select,
-  NumberInput,
-  Stack,
-  Text,
-  Loader,
-  Center,
-} from "@mantine/core";
+import { Container, Group, Select, NumberInput, Stack, Text, Loader, Center } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { discoverMovies, getGenres, Movie, Genre } from "@/lib/external/tmdb";
 import { MovieGrid } from "@/components/Movies/MovieGrid";
@@ -32,15 +23,11 @@ export default function MostWatchedPage() {
   const [page, setPage] = useState(1);
   const [genres, setGenres] = useState<Genre[]>([]);
 
-  const [selectedYear, setSelectedYear] = useState<string | null>(
-    searchParams.get("year") || null
-  );
+  const [selectedYear, setSelectedYear] = useState<string | null>(searchParams.get("year") || null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(
-    searchParams.get("genre") || null
+    searchParams.get("genre") || null,
   );
-  const [minRating, setMinRating] = useState<number | string>(
-    searchParams.get("rating") || ""
-  );
+  const [minRating, setMinRating] = useState<number | string>(searchParams.get("rating") || "");
   const isValidGenre = (genreId: number | null) => {
     if (!genreId) return true;
     return genres.some((genre) => genre.id === genreId);
@@ -54,13 +41,11 @@ export default function MostWatchedPage() {
       if (rating) params.set("rating", rating.toString());
 
       const queryString = params.toString();
-      const newUrl = queryString
-        ? `/most-watched?${queryString}`
-        : "/most-watched";
+      const newUrl = queryString ? `/most-watched?${queryString}` : "/most-watched";
 
       router.replace(newUrl, { scroll: false });
     },
-    [router]
+    [router],
   );
 
   useEffect(() => {
@@ -114,7 +99,7 @@ export default function MostWatchedPage() {
         setLoading(false);
       }
     },
-    [selectedYear, selectedGenre, minRating]
+    [selectedYear, selectedGenre, minRating],
   );
 
   useEffect(() => {

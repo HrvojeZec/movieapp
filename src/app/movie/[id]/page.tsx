@@ -18,11 +18,7 @@ import {
   Button,
 } from "@mantine/core";
 import { Heart, Star, Clock, MapPin, Calendar, PlayCircle } from "lucide-react";
-import {
-  getMovieDetails,
-  MovieDetails,
-  getImageUrl,
-} from "@/lib/external/tmdb";
+import { getMovieDetails, MovieDetails, getImageUrl } from "@/lib/external/tmdb";
 import { TrailerModal } from "@/components/Movies/TrailerModal";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -135,39 +131,21 @@ export default function MovieDetailPage() {
                     size="lg"
                     variant="default"
                     onClick={toggleFavorite}
-                    className={`favorite-heart ${
-                      isFavorited ? "favorited" : ""
-                    }`}
+                    className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
                   >
-                    <Heart
-                      size={20}
-                      fill={isFavorited ? "currentColor" : "none"}
-                    />
+                    <Heart size={20} fill={isFavorited ? "currentColor" : "none"} />
                   </ActionIcon>
                 )}
               </Group>
 
               <Group gap="md">
-                <Badge
-                  leftSection={<Star size={14} />}
-                  size="lg"
-                  variant="filled"
-                  color="yellow"
-                >
+                <Badge leftSection={<Star size={14} />} size="lg" variant="filled" color="yellow">
                   {movie.vote_average.toFixed(1)}
                 </Badge>
-                <Badge
-                  leftSection={<Calendar size={14} />}
-                  size="lg"
-                  variant="outline"
-                >
+                <Badge leftSection={<Calendar size={14} />} size="lg" variant="outline">
                   {movie.release_date?.split("-")[0]}
                 </Badge>
-                <Badge
-                  leftSection={<Clock size={14} />}
-                  size="lg"
-                  variant="outline"
-                >
+                <Badge leftSection={<Clock size={14} />} size="lg" variant="outline">
                   {formatRuntime(movie.runtime)}
                 </Badge>
               </Group>
@@ -196,9 +174,7 @@ export default function MovieDetailPage() {
               <Group gap="md">
                 <Group gap="xs">
                   <MapPin size={16} color="#9ca3af" />
-                  <Text c="gray.4">
-                    {movie.production_countries.map((c) => c.name).join(", ")}
-                  </Text>
+                  <Text c="gray.4">{movie.production_countries.map((c) => c.name).join(", ")}</Text>
                 </Group>
               </Group>
             </Stack>
@@ -229,22 +205,12 @@ export default function MovieDetailPage() {
               >
                 <Stack align="center" gap="sm">
                   <Avatar
-                    src={
-                      actor.profile_path
-                        ? getImageUrl(actor.profile_path, "w200")
-                        : null
-                    }
+                    src={actor.profile_path ? getImageUrl(actor.profile_path, "w200") : null}
                     size="lg"
                     radius="md"
                   />
                   <Stack gap={2} align="center">
-                    <Text
-                      size="sm"
-                      fw={500}
-                      c="white"
-                      ta="center"
-                      lineClamp={1}
-                    >
+                    <Text size="sm" fw={500} c="white" ta="center" lineClamp={1}>
                       {actor.name}
                     </Text>
                     <Text size="xs" c="dimmed" ta="center" lineClamp={1}>

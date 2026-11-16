@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  verifyToken,
-  updateUserFavorites,
-  logUserActivity,
-} from "@/lib/auth/serverAuth";
+import { verifyToken, updateUserFavorites, logUserActivity } from "@/lib/auth/serverAuth";
 
 export async function PUT(request: NextRequest) {
   try {
@@ -20,10 +16,7 @@ export async function PUT(request: NextRequest) {
     const { favorites, movieId, action } = await request.json();
 
     if (!Array.isArray(favorites)) {
-      return NextResponse.json(
-        { message: "Favorites must be an array" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Favorites must be an array" }, { status: 400 });
     }
 
     const updatedUser = await updateUserFavorites(decoded.userId, favorites);
@@ -32,11 +25,7 @@ export async function PUT(request: NextRequest) {
     }
 
     if (movieId && action) {
-      await logUserActivity(
-        decoded.userId,
-        action === "add" ? "favorite" : "unfavorite",
-        movieId
-      );
+      await logUserActivity(decoded.userId, action === "add" ? "favorite" : "unfavorite", movieId);
     }
 
     return NextResponse.json({
@@ -44,9 +33,6 @@ export async function PUT(request: NextRequest) {
     });
   } catch (error) {
     console.error("Update favorites error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

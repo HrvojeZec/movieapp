@@ -1,13 +1,5 @@
 "use client";
-import {
-  Modal,
-  Title,
-  Text,
-  Loader,
-  Center,
-  Group,
-  ActionIcon,
-} from "@mantine/core";
+import { Modal, Title, Text, Loader, Center, Group, ActionIcon } from "@mantine/core";
 import { X, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getMovieVideos, getTrailerUrl } from "@/lib/external/tmdb";
@@ -19,12 +11,7 @@ interface TrailerModalProps {
   movieTitle: string;
 }
 
-export const TrailerModal = ({
-  opened,
-  onClose,
-  movieId,
-  movieTitle,
-}: TrailerModalProps) => {
+export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerModalProps) => {
   const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -108,11 +95,7 @@ export const TrailerModal = ({
         {error && (
           <Center h={400}>
             <div style={{ textAlign: "center" }}>
-              <Play
-                size={48}
-                color="#6b7280"
-                style={{ margin: "0 auto 16px" }}
-              />
+              <Play size={48} color="#6b7280" style={{ margin: "0 auto 16px" }} />
               <Text size="lg" c="white" mb="xs">
                 {error}
               </Text>
@@ -124,9 +107,7 @@ export const TrailerModal = ({
         )}
 
         {trailerUrl && !loading && (
-          <div
-            style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}
-          >
+          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
             <iframe
               src={trailerUrl}
               title={`${movieTitle} Trailer`}

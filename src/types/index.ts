@@ -169,13 +169,7 @@ export interface IUserActivity {
   _id: string;
   userId: string;
   action:
-    | "view"
-    | "favorite"
-    | "unfavorite"
-    | "watchlist_add"
-    | "watchlist_remove"
-    | "review"
-    | "search";
+    "view" | "favorite" | "unfavorite" | "watchlist_add" | "watchlist_remove" | "review" | "search";
   movieId?: string;
   searchQuery?: string;
   metadata?: Record<string, any>;
@@ -184,22 +178,15 @@ export interface IUserActivity {
 
 export interface AuthContextType {
   user: AuthUser | null;
-  login: (
-    email: string,
-    password: string
-  ) => Promise<{ success: boolean; error?: Error }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: Error }>;
   register: (
     email: string,
     password: string,
-    name: string
+    name: string,
   ) => Promise<{ success: boolean; error?: Error }>;
   logout: () => void;
   loading: boolean;
-  updateFavorites: (
-    favorites: string[],
-    movieId?: string,
-    action?: "add" | "remove"
-  ) => void;
+  updateFavorites: (favorites: string[], movieId?: string, action?: "add" | "remove") => void;
 
   refreshUser: () => Promise<void>;
 }

@@ -15,21 +15,9 @@ import {
   Loader,
   Indicator,
 } from "@mantine/core";
-import {
-  Search,
-  Heart,
-  User,
-  LogOut,
-  Film,
-  Flame,
-  CreditCard,
-} from "lucide-react";
+import { Search, Heart, User, LogOut, Film, Flame, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  searchMovies,
-  getImageUrl,
-  getMovieDetails,
-} from "@/lib/external/tmdb";
+import { searchMovies, getImageUrl, getMovieDetails } from "@/lib/external/tmdb";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -227,9 +215,7 @@ export const Navbar = () => {
                       p="sm"
                       style={{
                         backgroundColor:
-                          index === selectedIndex
-                            ? "rgba(59, 130, 246, 0.2)"
-                            : "transparent",
+                          index === selectedIndex ? "rgba(59, 130, 246, 0.2)" : "transparent",
                         borderRadius: 4,
                       }}
                       onClick={() => {
@@ -251,8 +237,7 @@ export const Navbar = () => {
                             {movie.title}
                           </Text>
                           <Text size="xs" c="dimmed">
-                            {movie.release_date?.split("-")[0]} • ★{" "}
-                            {movie.vote_average.toFixed(1)}
+                            {movie.release_date?.split("-")[0]} • ★ {movie.vote_average.toFixed(1)}
                           </Text>
                         </Box>
                       </Group>
@@ -295,10 +280,7 @@ export const Navbar = () => {
                     </Group>
                   </ActionIcon>
                 </Menu.Target>
-                <Menu.Dropdown
-                  bg="dark.7"
-                  style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}
-                >
+                <Menu.Dropdown bg="dark.7" style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}>
                   <Menu.Label>Favorites</Menu.Label>
                   {loadingFavorites ? (
                     <Box p="sm" ta="center">
@@ -364,10 +346,7 @@ export const Navbar = () => {
                     </Avatar>
                   </ActionIcon>
                 </Menu.Target>
-                <Menu.Dropdown
-                  bg="dark.7"
-                  style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}
-                >
+                <Menu.Dropdown bg="dark.7" style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}>
                   <Menu.Label>Signed in as {user.email}</Menu.Label>
                   <Menu.Item
                     leftSection={<User size={16} />}
@@ -381,10 +360,7 @@ export const Navbar = () => {
                   >
                     Subscription
                   </Menu.Item>
-                  <Menu.Item
-                    leftSection={<LogOut size={16} />}
-                    onClick={logout}
-                  >
+                  <Menu.Item leftSection={<LogOut size={16} />} onClick={logout}>
                     Logout
                   </Menu.Item>
                 </Menu.Dropdown>
@@ -392,15 +368,10 @@ export const Navbar = () => {
             </Group>
           ) : (
             <Group gap="sm">
-              <Button
-                variant="subtle"
-                onClick={() => router.push("/auth/login")}
-              >
+              <Button variant="subtle" onClick={() => router.push("/auth/login")}>
                 Login
               </Button>
-              <Button onClick={() => router.push("/auth/register")}>
-                Sign Up
-              </Button>
+              <Button onClick={() => router.push("/auth/register")}>Sign Up</Button>
             </Group>
           )}
         </Group>

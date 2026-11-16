@@ -1,15 +1,5 @@
 "use client";
-import {
-  Container,
-  Title,
-  Paper,
-  Text,
-  Group,
-  Avatar,
-  Badge,
-  Stack,
-  Button,
-} from "@mantine/core";
+import { Container, Title, Paper, Text, Group, Avatar, Badge, Stack, Button } from "@mantine/core";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/Auth/ProtectedRoute";
 import { Calendar, Heart, Mail, CreditCard, Crown } from "lucide-react";
@@ -78,9 +68,7 @@ function ProfileContent() {
                 </Group>
                 <Group gap="xs">
                   <Calendar size={16} color="#9ca3af" />
-                  <Text c="gray.4">
-                    Member since {formatDateDisplay.long(user.createdAt)}
-                  </Text>
+                  <Text c="gray.4">Member since {formatDateDisplay.long(user.createdAt)}</Text>
                 </Group>
               </Group>
 
@@ -133,22 +121,17 @@ function ProfileContent() {
               {user.subscriptionPlan === "premium"
                 ? "🎬 Premium features: Advanced filters, HD trailers, unlimited watchlist, priority support"
                 : user.subscriptionPlan === "pro"
-                ? "🚀 Pro features: Everything in Premium + movie recommendations, analytics, API access"
-                : "📱 Basic features: Browse movies, add favorites, basic search"}
+                  ? "🚀 Pro features: Everything in Premium + movie recommendations, analytics, API access"
+                  : "📱 Basic features: Browse movies, add favorites, basic search"}
             </Text>
 
-            {user.subscriptionStatus !== "active" &&
-              user.subscriptionPlan === "basic" && (
-                <Group gap="sm" mt="sm">
-                  <Button
-                    size="sm"
-                    color="blue"
-                    onClick={() => router.push("/subscription/pricing")}
-                  >
-                    Upgrade to Premium
-                  </Button>
-                </Group>
-              )}
+            {user.subscriptionStatus !== "active" && user.subscriptionPlan === "basic" && (
+              <Group gap="sm" mt="sm">
+                <Button size="sm" color="blue" onClick={() => router.push("/subscription/pricing")}>
+                  Upgrade to Premium
+                </Button>
+              </Group>
+            )}
           </Stack>
         </Paper>
         <Paper
@@ -164,12 +147,8 @@ function ProfileContent() {
           </Title>
 
           <Stack gap="md">
-            <Text c="gray.4">
-              Favorited {user.favorites?.length || 0} movies
-            </Text>
-            <Text c="gray.4">
-              Member since {formatDateDisplay.long(user.createdAt)}
-            </Text>
+            <Text c="gray.4">Favorited {user.favorites?.length || 0} movies</Text>
+            <Text c="gray.4">Member since {formatDateDisplay.long(user.createdAt)}</Text>
           </Stack>
         </Paper>
       </Stack>
