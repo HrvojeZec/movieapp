@@ -1,10 +1,23 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export const ACTIVITY_ACTIONS = [
+  "register",
+  "view",
+  "favorite",
+  "unfavorite",
+  "search",
+  "watchlist_add",
+  "watchlist_remove",
+] as const;
+
+export type ActivityAction = (typeof ACTIVITY_ACTIONS)[number];
+
 export interface IUserActivity extends Document {
   userId: mongoose.Types.ObjectId;
-  action: string;
+  action: ActivityAction;
   movieId?: string;
   searchQuery?: string;
+  metadata?: Record<string, unknown>;
   createdAt: Date;
 }
 
@@ -13,12 +26,13 @@ const UserActivitySchema = new Schema<IUserActivity>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "Korisnik je obavezan"],
+      required: [true, "User is required"],
+      index: true,
     },
     action: {
       type: String,
-      required: [true, "Akcija je obavezna"],
-      enum: ["view", "favorite", "unfavorite", "search", "watchlist_add", "watchlist_remove"],
+      required: [true, "Action is required"],
+      enum: ACTIVITY_ACTIONS,
     },
     movieId: {
       type: String,
@@ -27,6 +41,9 @@ const UserActivitySchema = new Schema<IUserActivity>(
     searchQuery: {
       type: String,
       trim: true,
+    },
+    metadata: {
+      type: Schema.Types.Mixed,
     },
   },
   {

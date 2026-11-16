@@ -49,13 +49,12 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         router.push("/");
       } else if (result.error) {
         setError(result.error.message);
-        /*   if (result.error.errors) {
-          const errors: { [key: string]: string } = {};
-          result.error.errors.forEach((err: any) => {
-            errors[err.field] = err.message;
-          });
-          setFieldErrors(errors);
-        } */
+        const errors: Record<string, string> = {};
+        // Show the first error per field; later ones are usually follow-ups of the same problem.
+        for (const err of result.error.errors ?? []) {
+          errors[err.field] ??= err.message;
+        }
+        setFieldErrors(errors);
       }
     } finally {
       setLoading(false);

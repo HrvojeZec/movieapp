@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import connectDB from "../db/mongodb";
 import User, { IUser } from "@/models/Users";
-import UserActivity from "@/models/UserActivity";
+import UserActivity, { type ActivityAction } from "@/models/UserActivity";
 import { AuthUser } from "@/types";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -47,16 +47,12 @@ export const createUser = async (
     password,
     name,
     favorites: [],
-    watchlist: [],
   });
 
   await user.save();
 
-  await UserActivity.create({
-    userId: user._id,
-    action: "view",
-    metadata: { type: "registration" },
-  });
+  // Activity logging must never fail the registration itself.
+  await logUserActivity(user._id.toString(), "register");
 
   return {
     id: user._id.toString(),
@@ -90,23 +86,26 @@ export const findUserById = async (id: string): Promise<AuthUser | null> => {
   };
 };
 
-export const updateUserFavorites = async (
-  userId: string,
-  favorites: string[],
-): Promise<AuthUser | null> => {
+// Atomic $addToSet/$pull instead of overwriting the whole array, so concurrent changes
+// (e.g. two tabs) can't drop each other's favorites. Returns null if the user doesn't exist.
+export const addFavorite = async (userId: string, movieId: string): Promise<string[] | null> => {
   await connectDB();
-  const user = await User.findByIdAndUpdate(userId, { favorites }, { new: true });
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $addToSet: { favorites: movieId } },
+    { new: true, projection: { favorites: 1 } },
+  );
+  return user ? user.favorites : null;
+};
 
-  if (!user) return null;
-
-  return {
-    id: user._id.toString(),
-    email: user.email,
-    name: user.name,
-    favorites: user.favorites,
-    createdAt: user.createdAt,
-    lastLogin: user.lastLogin,
-  };
+export const removeFavorite = async (userId: string, movieId: string): Promise<string[] | null> => {
+  await connectDB();
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $pull: { favorites: movieId } },
+    { new: true, projection: { favorites: 1 } },
+  );
+  return user ? user.favorites : null;
 };
 
 export const updateLastLogin = async (userId: string): Promise<void> => {
@@ -116,7 +115,7 @@ export const updateLastLogin = async (userId: string): Promise<void> => {
 
 export const logUserActivity = async (
   userId: string,
-  action: "view" | "favorite" | "unfavorite" | "review" | "search",
+  action: ActivityAction,
   movieId?: string,
   searchQuery?: string,
   metadata?: Record<string, unknown>,

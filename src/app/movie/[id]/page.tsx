@@ -25,16 +25,13 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function MovieDetailPage() {
   const params = useParams();
-  const { user, updateFavorites } = useAuth();
+  const { user, toggleFavorite } = useAuth();
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [trailerModalOpened, setTrailerModalOpened] = useState(false);
 
   const movieId = params.id as string;
   const isFavorited = user?.favorites?.includes(movieId) || false;
-  console.log("params: ", params);
-  console.log("movieId: ", movieId);
-  console.log("isFavorited: ", isFavorited);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -52,21 +49,6 @@ export default function MovieDetailPage() {
       fetchMovie();
     }
   }, [movieId]);
-
-  const toggleFavorite = () => {
-    if (!user) return;
-
-    const currentFavorites = user.favorites || [];
-    let newFavorites;
-
-    if (isFavorited) {
-      newFavorites = currentFavorites.filter((id) => id !== movieId);
-    } else {
-      newFavorites = [...currentFavorites, movieId];
-    }
-
-    updateFavorites(newFavorites);
-  };
 
   if (loading) {
     return (
@@ -131,7 +113,7 @@ export default function MovieDetailPage() {
                   <ActionIcon
                     size="lg"
                     variant="default"
-                    onClick={toggleFavorite}
+                    onClick={() => toggleFavorite(movieId)}
                     className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
                   >
                     <Heart size={20} fill={isFavorited ? "currentColor" : "none"} />

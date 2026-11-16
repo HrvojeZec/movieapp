@@ -1,34 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateUserFavorites, logUserActivity } from "@/lib/auth/serverAuth";
+import { z } from "zod";
+import { addFavorite, logUserActivity } from "@/lib/auth/serverAuth";
 import { getSessionUser } from "@/lib/auth/session";
+import { favoriteMovieIdSchema } from "@/lib/validation/validation";
 
-export async function PUT(request: NextRequest) {
+const addFavoriteSchema = z.object({ movieId: favoriteMovieIdSchema });
+
+// POST /api/user/favorites { movieId } adds a movie; removal is DELETE /api/user/favorites/[movieId]
+export async function POST(request: NextRequest) {
+  const session = getSessionUser(request);
+  if (!session) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const parsed = addFavoriteSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ message: "Invalid movie ID" }, { status: 400 });
+  }
+
   try {
-    const decoded = getSessionUser(request);
-    if (!decoded) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const { favorites, movieId, action } = await request.json();
-
-    if (!Array.isArray(favorites)) {
-      return NextResponse.json({ message: "Favorites must be an array" }, { status: 400 });
-    }
-
-    const updatedUser = await updateUserFavorites(decoded.userId, favorites);
-    if (!updatedUser) {
+    const favorites = await addFavorite(session.userId, parsed.data.movieId);
+    if (!favorites) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    if (movieId && action) {
-      await logUserActivity(decoded.userId, action === "add" ? "favorite" : "unfavorite", movieId);
-    }
-
-    return NextResponse.json({
-      user: updatedUser,
-    });
+    await logUserActivity(session.userId, "favorite", parsed.data.movieId);
+    return NextResponse.json({ favorites });
   } catch (error) {
-    console.error("Update favorites error:", error);
+    console.error("Add favorite error:", error);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

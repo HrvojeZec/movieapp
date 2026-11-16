@@ -34,15 +34,8 @@ export const checkoutSuccessSchema = z.object({
   sessionId: z.string().startsWith("cs_", "Invalid checkout session ID"),
 });
 
-export const favoritesSchema = z.object({
-  favorites: z
-    .array(z.string().regex(/^\d+$/, "Each favorite must be a valid movie ID"))
-    .default([]),
-
-  movieId: z.string().regex(/^\d+$/, "Movie ID must be a valid number").optional(),
-
-  action: z.enum(["add", "remove"]).optional(),
-});
+// TMDB movie IDs are positive integers; favorites store them as strings.
+export const favoriteMovieIdSchema = z.string().regex(/^[1-9]\d{0,9}$/, "Invalid movie ID");
 
 // TMDB only serves pages 1-500
 const pageSchema = z.coerce.number().int().min(1).max(500).default(1);

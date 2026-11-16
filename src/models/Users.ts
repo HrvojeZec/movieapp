@@ -29,7 +29,9 @@ const UserSchema = new Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email"],
+      // Basic shape check only; the API validates emails with zod before they reach the model.
+      // The previous regex rejected valid addresses with longer TLDs such as .info or .studio.
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "Please enter a valid email"],
     },
     password: {
       type: String,

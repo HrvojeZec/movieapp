@@ -311,7 +311,7 @@ export const Navbar = () => {
                               flexShrink: 0,
                             }}
                             radius="sm"
-                            fallbackSrc="/placeholder-movie.jpg"
+                            fallbackSrc="/placeholder-movie.svg"
                           />
                           <Box>
                             <Text size="sm" c="white" lineClamp={1} fw={500}>
