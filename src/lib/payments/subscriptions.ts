@@ -1,7 +1,7 @@
 import type Stripe from "stripe";
 import { isValidObjectId } from "mongoose";
-import connectDB from "@/lib/db/mongodb";
-import User, { type IUser } from "@/models/Users";
+import connectDB from "@/server/db/mongodb";
+import User, { type IUser } from "@/server/models/User";
 import { getStripe } from "./stripe";
 import { getPlanForSubscription } from "./plans";
 

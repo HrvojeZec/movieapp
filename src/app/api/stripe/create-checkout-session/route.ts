@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth/session";
-import connectDB from "@/lib/db/mongodb";
+import connectDB from "@/server/db/mongodb";
 import { getStripe } from "@/lib/payments/stripe";
 import { getPriceIdForPlan, hasActiveSubscription } from "@/lib/payments/plans";
 import { checkoutSessionSchema } from "@/lib/validation/validation";
-import User from "@/models/Users";
+import User from "@/server/models/User";
 
 export async function POST(request: NextRequest) {
   const decoded = getSessionUser(request);

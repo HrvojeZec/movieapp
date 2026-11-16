@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import connectDB from "../db/mongodb";
-import User, { IUser } from "@/models/Users";
-import UserActivity, { type ActivityAction } from "@/models/UserActivity";
+import connectDB from "@/server/db/mongodb";
+import User, { IUser } from "@/server/models/User";
+import UserActivity, { type ActivityAction } from "@/server/models/UserActivity";
 import { AuthUser } from "@/types";
 
 // Read at call time, not import time, so building the app doesn't require the secret.
