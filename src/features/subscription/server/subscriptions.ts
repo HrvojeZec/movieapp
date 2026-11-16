@@ -3,7 +3,7 @@ import { isValidObjectId } from "mongoose";
 import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { getStripe } from "./stripe";
-import { getPlanForSubscription } from "./plans";
+import { getPlanForSubscription } from "../plans";
 
 function getId(value: string | { id: string } | null): string | null {
   if (!value) return null;

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/features/auth/server/session";
 import connectDB from "@/server/db/mongodb";
-import { getStripe } from "@/lib/payments/stripe";
-import { getPriceIdForPlan, hasActiveSubscription } from "@/lib/payments/plans";
+import { getStripe } from "@/features/subscription/server/stripe";
+import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/plans";
 import { checkoutSessionSchema } from "@/lib/validation/validation";
 import User from "@/server/models/User";
 
