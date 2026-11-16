@@ -22,7 +22,6 @@
     "@mantine/hooks": "^8.2.4",
     "@mantine/notifications": "^8.2.4",
     "aos": "^2.3.4",
-    "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
