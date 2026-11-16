@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { logUserActivity, removeFavorite } from "@/lib/auth/serverAuth";
-import { getSessionUser } from "@/lib/auth/session";
+import { removeFavorite } from "@/features/favorites/server/favorites";
+import { logUserActivity } from "@/server/activity";
+import { getSessionUser } from "@/features/auth/server/session";
 import { favoriteMovieIdSchema } from "@/lib/validation/validation";
 
 // DELETE /api/user/favorites/550

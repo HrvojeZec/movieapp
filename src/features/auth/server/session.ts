@@ -1,5 +1,5 @@
 import type { NextRequest, NextResponse } from "next/server";
-import { TOKEN_TTL_SECONDS, verifyToken, type AuthToken } from "./serverAuth";
+import { TOKEN_TTL_SECONDS, verifyToken, type AuthToken } from "./tokens";
 
 export const AUTH_COOKIE_NAME = "token";
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionUser } from "@/lib/auth/session";
+import { getSessionUser } from "@/features/auth/server/session";
 import connectDB from "@/server/db/mongodb";
 import { getStripe } from "@/lib/payments/stripe";
 import { getPriceIdForPlan, hasActiveSubscription } from "@/lib/payments/plans";

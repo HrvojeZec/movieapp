@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findUserById } from "@/lib/auth/serverAuth";
-import { getSessionUser } from "@/lib/auth/session";
+import { findUserById } from "@/features/auth/server/users";
+import { getSessionUser } from "@/features/auth/server/session";
 import { getStripe } from "@/lib/payments/stripe";
 import {
   getSubscriptionIdFromSession,

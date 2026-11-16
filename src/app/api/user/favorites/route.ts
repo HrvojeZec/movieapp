@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { addFavorite, logUserActivity } from "@/lib/auth/serverAuth";
-import { getSessionUser } from "@/lib/auth/session";
+import { addFavorite } from "@/features/favorites/server/favorites";
+import { logUserActivity } from "@/server/activity";
+import { getSessionUser } from "@/features/auth/server/session";
 import { favoriteMovieIdSchema } from "@/lib/validation/validation";
 
 const addFavoriteSchema = z.object({ movieId: favoriteMovieIdSchema });

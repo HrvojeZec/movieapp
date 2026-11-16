@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  findUserByEmail,
-  findUserById,
-  generateToken,
-  updateLastLogin,
-} from "@/lib/auth/serverAuth";
-import { setAuthCookie } from "@/lib/auth/session";
+import { generateToken } from "@/features/auth/server/tokens";
+import { findUserByEmail, findUserById, updateLastLogin } from "@/features/auth/server/users";
+import { setAuthCookie } from "@/features/auth/server/session";
 import { loginSchema } from "@/lib/validation/validation";
 import { z } from "zod";
 
