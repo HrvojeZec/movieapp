@@ -15,6 +15,15 @@ const eslintConfig = [
     ignores: [".next/**", "out/**", "build/**", "coverage/**", "next-env.d.ts"],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      // Allow omitting fields via rest destructuring, e.g. `const { password, ...safe } = user`
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { ignoreRestSiblings: true, argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+    },
+  },
   // Must stay last so it can disable stylistic rules that conflict with Prettier
   prettier,
 ];
