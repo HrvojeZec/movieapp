@@ -183,6 +183,7 @@ export const Navbar = () => {
           <Box pos="relative" w={300} visibleFrom="sm">
             <TextInput
               placeholder="Search movies..."
+              aria-label="Search movies"
               leftSection={<Search size={16} />}
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
@@ -341,7 +342,7 @@ export const Navbar = () => {
 
               <Menu shadow="md" width={200}>
                 <Menu.Target>
-                  <ActionIcon variant="subtle" size="lg">
+                  <ActionIcon variant="subtle" size="lg" aria-label="Account menu">
                     <Avatar size="sm" color="blue">
                       {user.name.charAt(0).toUpperCase()}
                     </Avatar>

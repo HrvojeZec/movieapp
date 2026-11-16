@@ -74,6 +74,8 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
           color={isFavorited ? "red" : "dark"}
           size="md"
           onClick={handleFavoriteClick}
+          aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+          aria-pressed={isFavorited}
           className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
           style={{
             backgroundColor: "rgba(0, 0, 0, 0.7)",
