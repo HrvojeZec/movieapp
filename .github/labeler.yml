@@ -1,0 +1,24 @@
+# Labels applied by .github/workflows/pull-request.yml based on the branch name
+bug:
+  - head-branch: ["^fix/", "^hotfix/"]
+
+enhancement:
+  - head-branch: ["^feat/"]
+
+documentation:
+  - head-branch: ["^docs/"]
+
+chore:
+  - head-branch: ["^chore/", "^style/", "^build/"]
+
+ci:
+  - head-branch: ["^ci/"]
+
+refactor:
+  - head-branch: ["^refactor/"]
+
+test:
+  - head-branch: ["^test/"]
+
+dependencies:
+  - head-branch: ["^dependabot/"]
