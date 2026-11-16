@@ -1,0 +1,10 @@
+# Runs the production image locally: `docker compose up --build`, then open http://localhost:3000
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    # Secrets are read at runtime, never baked into the image
+    env_file:
+      - .env.local
+    restart: unless-stopped
