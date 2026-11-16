@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Placeholder image for movies without a poster
 - Field-level validation errors on the login and registration forms
 - Page title and description metadata
+- CI job that builds the Docker image, and Dependabot updates for the Docker base image
 
 ### Changed
 
@@ -39,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `MONGODB_URI` and `JWT_SECRET` are read when first used, so the app builds without secrets and CI
   no longer needs placeholder values
 - Package renamed from `my-app` to `movieapp` and marked as MIT licensed
+- Docker: multi-stage image on Node 26 Alpine using Next.js `standalone` output, running as a non-root
+  user; `compose.yaml` runs it locally with secrets from `.env.local` at runtime
 
 ### Fixed
 
@@ -54,6 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Activity metadata was silently discarded because the field was missing from the schema
 - A failure while logging registration activity no longer fails the registration
 - Remaining Croatian validation messages and comments translated to English
+- The Docker image could not be built (Node 18, production-only install without TypeScript), and the
+  compose file name was not picked up by `docker compose` on case-sensitive systems
 - Subscribing did not work: the pricing page used hard-coded Payment Links and called a missing
   `create-checkout-session` route; checkout now starts from a server-created Checkout Session (#21)
 - The Pro plan was never activated because its price ID was compared with the webhook secret (#21)
@@ -84,6 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The TMDB API key is no longer exposed in the browser bundle: `NEXT_PUBLIC_TMDB_API_KEY` is replaced
   by the server-only `TMDB_API_KEY`
 - JWTs are signed and verified with an explicit `HS256` algorithm
+- `.dockerignore` keeps `.env*` files and other local files out of the Docker build context
 
 ## [0.1.0] - 2025-08-18
 
