@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { MovieGrid } from "@/components/Movies/MovieGrid";
 import { useEffect, useState } from "react";
 import { getMovieDetails, MovieDetails } from "@/lib/external/tmdb";
-import { useRouter } from "next/navigation"; // Ispravan uvoz
+import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 
 export default function FavoritesPage() {
