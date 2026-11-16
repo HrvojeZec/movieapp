@@ -1,10 +1,19 @@
 import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("STRIPE_SECRET_KEY is not set in environment variables");
-}
+// Must match the API version of the webhook endpoint in the Stripe Dashboard, otherwise
+// event payloads won't have the shape the SDK types describe.
+export const STRIPE_API_VERSION = "2026-10-28.endive";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-07-30.basil",
-  typescript: true,
-});
+let client: Stripe | null = null;
+
+// Created lazily so importing this module (e.g. during `next build`) doesn't require the secret.
+export function getStripe(): Stripe {
+  if (!client) {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error("STRIPE_SECRET_KEY is not set in environment variables");
+    }
+    client = new Stripe(secretKey, { apiVersion: STRIPE_API_VERSION });
+  }
+  return client;
+}
