@@ -18,7 +18,7 @@ import { searchMovies, Movie } from "@/features/movies/api";
 import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { getImageUrl } from "@/features/movies/api";
 import { useRouter } from "next/navigation";
-import { formatYear } from "@/utils";
+import { formatYear } from "@/shared/lib/format";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();

@@ -9,8 +9,6 @@ dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
-
 export const formatYear = (dateString: string): string => {
   if (!dateString) return "N/A";
   return dayjs(dateString).format("YYYY");

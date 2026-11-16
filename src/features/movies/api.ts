@@ -1,4 +1,5 @@
-import { TMDB_IMAGE_BASE_URL } from "@/utils";
+// TMDB's public image CDN; serving posters needs no API key
+const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
 // Client-side access to movie data. All requests go through our own API routes
 // (src/app/api/movies, src/app/api/genres), which call TMDB on the server with the secret key.

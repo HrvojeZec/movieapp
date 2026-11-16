@@ -3,7 +3,7 @@ import { Container, Title, Paper, Text, Group, Avatar, Badge, Stack, Button } fr
 import { useAuth } from "@/features/auth/AuthContext";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { Calendar, Heart, Mail, CreditCard, Crown } from "lucide-react";
-import { formatDateDisplay } from "@/utils";
+import { formatDateDisplay } from "@/shared/lib/format";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
