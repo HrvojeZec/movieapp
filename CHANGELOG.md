@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI (lint, format check, typecheck, build, dependency audit), PR title validation,
   automatic labels and assignee, Dependabot configuration (#12)
 - Pull request template, MIT license, security policy and this changelog (#18)
+- `POST /api/auth/logout`, which clears the auth cookie on the server
 
 ### Changed
 
@@ -37,11 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `create-checkout-session` route; checkout now starts from a server-created Checkout Session (#21)
 - The Pro plan was never activated because its price ID was compared with the webhook secret (#21)
 - Webhook errors were swallowed with a 200 response, so Stripe never retried failed deliveries (#21)
+- Subscription plan and status were missing from the login response until the page was reloaded
 
 ### Removed
 
 - Unused `test-db` route file and commented-out webhook code (#11)
 - `@stripe/stripe-js` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, no longer needed with hosted Checkout (#21)
+- `js-cookie` and the client-side `verifyTokenClient`, which decoded the JWT without verifying it
 
 ### Security
 
@@ -53,6 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Any logged-in user could activate a subscription with another user's paid Checkout Session ID;
   sessions are now bound to the user via `client_reference_id` (#21)
 - Price IDs are resolved on the server, so clients cannot choose an arbitrary price (#21)
+- The JWT is stored in an `httpOnly`, `sameSite=lax` (and `secure` in production) cookie set by the
+  server instead of a cookie written by client-side JavaScript, and is no longer returned in API responses
 
 ## [0.1.0] - 2025-08-18
 
