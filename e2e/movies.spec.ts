@@ -1,0 +1,45 @@
+import { expect, test } from "@playwright/test";
+
+const FIGHT_CLUB_ID = 550;
+
+test("the home page shows movie posters", async ({ page }) => {
+  await page.goto("/");
+  // Posters have the movie title as alt text
+  await expect(page.locator('img[alt]:not([alt=""])').nth(5)).toBeVisible();
+});
+
+test("searching from the navbar finds a movie and opens its page", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("textbox", { name: "Search movies" }).fill("fight club");
+
+  await page.getByText("Fight Club", { exact: true }).first().click();
+
+  await expect(page).toHaveURL(`/movie/${FIGHT_CLUB_ID}`);
+  await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
+});
+
+test("the search page lists results for a query", async ({ page }) => {
+  await page.goto("/search?q=batman");
+  await expect(page.getByText(/Batman/).first()).toBeVisible();
+});
+
+test("a movie page shows details and plays the trailer", async ({ page }) => {
+  await page.goto(`/movie/${FIGHT_CLUB_ID}`);
+  await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
+  await expect(page.getByText("Cast")).toBeVisible();
+
+  await page.getByRole("button", { name: "Watch Trailer" }).click();
+  await expect(page.locator('iframe[src*="youtube.com/embed/"]')).toBeVisible();
+});
+
+test("movie data is fetched through our API, never directly from TMDB", async ({ page }) => {
+  const tmdbApiRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("api.themoviedb.org")) tmdbApiRequests.push(request.url());
+  });
+
+  await page.goto(`/movie/${FIGHT_CLUB_ID}`);
+  await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
+
+  expect(tmdbApiRequests).toEqual([]);
+});
