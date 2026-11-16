@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth/serverAuth";
+import { getSessionUser } from "@/lib/auth/session";
 import connectDB from "@/lib/db/mongodb";
 import { getStripe } from "@/lib/payments/stripe";
 import { getPriceIdForPlan, hasActiveSubscription } from "@/lib/payments/plans";
@@ -7,8 +7,7 @@ import { checkoutSessionSchema } from "@/lib/validation/validation";
 import User from "@/models/Users";
 
 export async function POST(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
-  const decoded = token ? verifyToken(token) : null;
+  const decoded = getSessionUser(request);
   if (!decoded) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }

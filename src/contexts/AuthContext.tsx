@@ -1,10 +1,21 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useCallback, useContext, useState, useEffect, ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
-import Cookies from "js-cookie";
 import type { AuthUser, AuthContextType, AuthResult } from "@/types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+async function fetchCurrentUser(): Promise<AuthUser | null> {
+  try {
+    const response = await fetch("/api/user/profile");
+    if (!response.ok) return null;
+    const data: { user: AuthUser } = await response.json();
+    return data.user;
+  } catch (error) {
+    console.error("Failed to fetch user data:", error);
+    return null;
+  }
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -18,55 +29,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // The auth cookie is httpOnly, so the client can't inspect it; the server decides who is logged in.
   useEffect(() => {
-    let mounted = true;
+    let cancelled = false;
 
-    const token = Cookies.get("token");
-    if (token) {
-      fetchUserData(mounted);
-    } else {
-      if (mounted) {
+    fetchCurrentUser().then((currentUser) => {
+      if (!cancelled) {
+        setUser(currentUser);
         setLoading(false);
       }
-    }
+    });
 
     return () => {
-      mounted = false;
+      cancelled = true;
     };
   }, []);
 
-  const fetchUserData = async (mounted = true) => {
-    try {
-      const response = await fetch("/api/user/profile");
-      if (response.ok) {
-        const userData = await response.json();
-        if (mounted) {
-          setUser(userData.user);
-        }
-      } else {
-        Cookies.remove("token");
-        if (mounted) {
-          setUser(null);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-      Cookies.remove("token");
-      if (mounted) {
-        setUser(null);
-      }
-    } finally {
-      if (mounted) {
-        setLoading(false);
-      }
-    }
-  };
-
-  const refreshUser = async () => {
-    if (user) {
-      await fetchUserData();
-    }
-  };
+  const refreshUser = useCallback(async () => {
+    setUser(await fetchCurrentUser());
+  }, []);
 
   const login = async (email: string, password: string): Promise<AuthResult> => {
     try {
@@ -78,7 +59,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.ok) {
         const data = await response.json();
-        Cookies.set("token", data.token, { expires: 7 });
         setUser(data.user);
         notifications.show({
           title: "Welcome back!",
@@ -118,7 +98,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.ok) {
         const data = await response.json();
-        Cookies.set("token", data.token, { expires: 7 });
         setUser(data.user);
         notifications.show({
           title: "Welcome!",
@@ -148,8 +127,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    Cookies.remove("token");
+  const logout = async () => {
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error(`Logout failed with status ${response.status}`);
+    } catch (error) {
+      console.error("Logout error:", error);
+      notifications.show({
+        title: "Logout failed",
+        message: "Please try again",
+        color: "red",
+      });
+      return;
+    }
+
     setUser(null);
     notifications.show({
       title: "Goodbye!",

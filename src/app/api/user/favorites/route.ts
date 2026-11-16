@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, updateUserFavorites, logUserActivity } from "@/lib/auth/serverAuth";
+import { updateUserFavorites, logUserActivity } from "@/lib/auth/serverAuth";
+import { getSessionUser } from "@/lib/auth/session";
 
 export async function PUT(request: NextRequest) {
   try {
-    const token = request.cookies.get("token")?.value;
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
+    const decoded = getSessionUser(request);
     if (!decoded) {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const { favorites, movieId, action } = await request.json();

@@ -190,7 +190,7 @@ export interface AuthContextType {
   user: AuthUser | null;
   login: (email: string, password: string) => Promise<AuthResult>;
   register: (email: string, password: string, name: string) => Promise<AuthResult>;
-  logout: () => void;
+  logout: () => Promise<void>;
   loading: boolean;
   updateFavorites: (favorites: string[], movieId?: string, action?: "add" | "remove") => void;
 
