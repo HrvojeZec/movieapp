@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import Cookies from "js-cookie";
-import type { AuthUser, AuthContextType } from "@/types";
+import type { AuthUser, AuthContextType, AuthResult } from "@/types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -68,10 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const login = async (
-    email: string,
-    password: string,
-  ): Promise<{ success: boolean; error?: any }> => {
+  const login = async (email: string, password: string): Promise<AuthResult> => {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -98,7 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
         return { success: false, error };
       }
-    } catch (error) {
+    } catch {
       notifications.show({
         title: "Login failed",
         message: "An unexpected error occurred",
@@ -111,11 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (
-    email: string,
-    password: string,
-    name: string,
-  ): Promise<{ success: boolean; error?: any }> => {
+  const register = async (email: string, password: string, name: string): Promise<AuthResult> => {
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -142,7 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
         return { success: false, error };
       }
-    } catch (error) {
+    } catch {
       notifications.show({
         title: "Registration failed",
         message: "An unexpected error occurred",

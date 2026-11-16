@@ -148,7 +148,7 @@ export const logUserActivity = async (
   action: "view" | "favorite" | "unfavorite" | "review" | "search",
   movieId?: string,
   searchQuery?: string,
-  metadata?: Record<string, any>,
+  metadata?: Record<string, unknown>,
 ): Promise<void> => {
   try {
     await connectDB();
