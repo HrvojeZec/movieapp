@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { AuthForm } from "@/features/auth/components/AuthForm";
 
-export default function RegisterPage() {
+export const metadata: Metadata = { title: "Create account" };
+
+export default function Page() {
   return <AuthForm type="register" />;
 }
