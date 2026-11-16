@@ -30,7 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.539.0",
     "mongoose": "^8.17.1",
-    "next": "15.4.6",
+    "next": "15.5.29",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-i18next": "^15.6.1",
@@ -51,7 +51,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.4.6",
+    "eslint-config-next": "15.5.29",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
@@ -62,5 +62,10 @@
     "sharp": true,
     "unrs-resolver": true,
     "@parcel/watcher": true
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.10"
+    }
   }
 }

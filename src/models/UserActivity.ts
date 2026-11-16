@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUserActivity extends Document {
-  _id: string;
   userId: mongoose.Types.ObjectId;
   action: string;
   movieId?: string;
