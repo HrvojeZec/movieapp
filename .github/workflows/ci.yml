@@ -21,12 +21,6 @@ jobs:
     timeout-minutes: 15
     env:
       NEXT_TELEMETRY_DISABLED: 1
-      # Placeholders, not secrets: some server modules validate these at import time,
-      # and `next build` imports every route while collecting page data.
-      MONGODB_URI: mongodb://localhost:27017/ci
-      JWT_SECRET: ci-placeholder
-      STRIPE_SECRET_KEY: sk_test_ci_placeholder
-      STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
