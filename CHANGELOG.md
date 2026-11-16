@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   automatic labels and assignee, Dependabot configuration (#12)
 - Pull request template, MIT license, security policy and this changelog (#18)
 - `POST /api/auth/logout`, which clears the auth cookie on the server
+- Movie API routes (`/api/movies`, `/api/movies/search`, `/api/movies/discover`, `/api/movies/[id]`,
+  `/api/movies/[id]/videos`, `/api/genres`) that call TMDB on the server with validated parameters
+  and cache responses for an hour
 
 ### Changed
 
@@ -45,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused `test-db` route file and commented-out webhook code (#11)
 - `@stripe/stripe-js` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, no longer needed with hosted Checkout (#21)
 - `js-cookie` and the client-side `verifyTokenClient`, which decoded the JWT without verifying it
+- `axios`; the client calls the movie API with `fetch`
 
 ### Security
 
@@ -58,6 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Price IDs are resolved on the server, so clients cannot choose an arbitrary price (#21)
 - The JWT is stored in an `httpOnly`, `sameSite=lax` (and `secure` in production) cookie set by the
   server instead of a cookie written by client-side JavaScript, and is no longer returned in API responses
+- The TMDB API key is no longer exposed in the browser bundle: `NEXT_PUBLIC_TMDB_API_KEY` is replaced
+  by the server-only `TMDB_API_KEY`
 
 ## [0.1.0] - 2025-08-18
 
