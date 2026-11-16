@@ -35,7 +35,10 @@ test("a movie page shows details and plays the trailer", async ({ page }) => {
 test("movie data is fetched through our API, never directly from TMDB", async ({ page }) => {
   const tmdbApiRequests: string[] = [];
   page.on("request", (request) => {
-    if (request.url().includes("api.themoviedb.org")) tmdbApiRequests.push(request.url());
+    // Compare the parsed hostname, not a substring of the whole URL
+    if (new URL(request.url()).hostname === "api.themoviedb.org") {
+      tmdbApiRequests.push(request.url());
+    }
   });
 
   await page.goto(`/movie/${FIGHT_CLUB_ID}`);
