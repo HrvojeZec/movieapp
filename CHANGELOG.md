@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Movie API routes (`/api/movies`, `/api/movies/search`, `/api/movies/discover`, `/api/movies/[id]`,
   `/api/movies/[id]/videos`, `/api/genres`) that call TMDB on the server with validated parameters
   and cache responses for an hour
+- `POST /api/user/favorites` and `DELETE /api/user/favorites/[movieId]` replace the endpoint that
+  overwrote the whole favorites array
+- Placeholder image for movies without a poster
+- Field-level validation errors on the login and registration forms
 
 ### Changed
 
@@ -37,6 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Genre filter from the URL was ignored on the Most Watched page (#11)
 - Subscription success page could confirm the same Stripe session repeatedly (#11)
 - Navbar re-fetched favorite movies on unrelated state changes (#11)
+- Favorites are updated atomically (`$addToSet`/`$pull`), so concurrent changes no longer overwrite
+  each other, and movie IDs are validated
+- Toggling a favorite dropped the subscription plan from the client state until a reload
+- Favorite/unfavorite activity was never logged because the client didn't send the movie ID
+- Valid emails with longer TLDs (e.g. `.info`, `.studio`) were rejected at registration
+- Activity metadata was silently discarded because the field was missing from the schema
+- A failure while logging registration activity no longer fails the registration
+- Remaining Croatian validation messages and comments translated to English
 - Subscribing did not work: the pricing page used hard-coded Payment Links and called a missing
   `create-checkout-session` route; checkout now starts from a server-created Checkout Session (#21)
 - The Pro plan was never activated because its price ID was compared with the webhook secret (#21)
