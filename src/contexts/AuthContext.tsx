@@ -149,35 +149,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const updateFavorites = async (
-    favorites: string[],
-    movieId?: string,
-    action?: "add" | "remove",
-  ) => {
+  const toggleFavorite = async (movieId: string) => {
     if (!user) return;
 
-    setUser((prev) => (prev ? { ...prev, favorites } : null));
+    const previousFavorites = user.favorites;
+    const isFavorite = previousFavorites.includes(movieId);
+    // Only the favorites change, so the rest of the user (e.g. subscription) stays intact.
+    const setFavorites = (favorites: string[]) =>
+      setUser((prev) => (prev ? { ...prev, favorites } : prev));
+
+    // Optimistic update; rolled back below if the request fails.
+    setFavorites(
+      isFavorite
+        ? previousFavorites.filter((id) => id !== movieId)
+        : [...previousFavorites, movieId],
+    );
 
     try {
-      const response = await fetch("/api/user/favorites", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ favorites, movieId, action }),
-      });
+      const response = isFavorite
+        ? await fetch(`/api/user/favorites/${movieId}`, { method: "DELETE" })
+        : await fetch("/api/user/favorites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ movieId }),
+          });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-      } else {
-        if (user) {
-          setUser((prev) => (prev ? { ...prev, favorites: user.favorites } : null));
-        }
+      if (!response.ok) {
+        throw new Error(`Favorites request failed with status ${response.status}`);
       }
+
+      const data: { favorites: string[] } = await response.json();
+      setFavorites(data.favorites);
     } catch (error) {
       console.error("Failed to update favorites:", error);
-      if (user) {
-        setUser((prev) => (prev ? { ...prev, favorites: user.favorites } : null));
-      }
+      setFavorites(previousFavorites);
+      notifications.show({
+        title: "Could not update favorites",
+        message: "Please try again",
+        color: "red",
+      });
     }
   };
 
@@ -189,7 +199,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         logout,
         loading,
-        updateFavorites,
+        toggleFavorite,
         refreshUser,
       }}
     >

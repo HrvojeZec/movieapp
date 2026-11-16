@@ -12,30 +12,19 @@ interface MovieCardProps {
 }
 
 export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
-  const { user, updateFavorites } = useAuth();
+  const { user, toggleFavorite } = useAuth();
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
 
   const isFavorited = user?.favorites?.includes(movie.id.toString()) || false;
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+  const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) {
       router.push("/auth/login");
       return;
     }
-
-    const currentFavorites = user.favorites || [];
-    const movieIdStr = movie.id.toString();
-
-    let newFavorites;
-    if (isFavorited) {
-      newFavorites = currentFavorites.filter((id) => id !== movieIdStr);
-    } else {
-      newFavorites = [...currentFavorites, movieIdStr];
-    }
-
-    updateFavorites(newFavorites);
+    toggleFavorite(movie.id.toString());
   };
 
   const handleCardClick = () => {
@@ -73,7 +62,7 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
           src={getImageUrl(movie.poster_path)}
           height={imageHeight}
           alt={movie.title}
-          fallbackSrc="/placeholder-movie.jpg"
+          fallbackSrc="/placeholder-movie.svg"
         />
       </Card.Section>
 
@@ -88,7 +77,7 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
           radius="xl"
           color={isFavorited ? "red" : "dark"}
           size="md"
-          onClick={toggleFavorite}
+          onClick={handleFavoriteClick}
           className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
           style={{
             backgroundColor: "rgba(0, 0, 0, 0.7)",
