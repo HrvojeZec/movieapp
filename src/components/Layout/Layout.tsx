@@ -1,7 +1,7 @@
 "use client";
 import { AppShell, Center, Loader } from "@mantine/core";
 import { Navbar } from "./Navbar";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 interface LayoutProps {
   children: React.ReactNode;
 }

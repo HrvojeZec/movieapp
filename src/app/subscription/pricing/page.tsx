@@ -17,7 +17,7 @@ import {
 import { notifications } from "@mantine/notifications";
 import { Check, Star, Zap, CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import { SUBSCRIPTION_PLANS, type PlanDetails } from "@/features/subscription/catalog";
 import {
   hasActiveSubscription,

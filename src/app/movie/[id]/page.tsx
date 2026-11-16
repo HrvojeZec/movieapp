@@ -21,7 +21,7 @@ import {
 import { Heart, Star, Clock, MapPin, Calendar, PlayCircle } from "lucide-react";
 import { getMovieDetails, MovieDetails, getImageUrl } from "@/features/movies/api";
 import { TrailerModal } from "@/features/movies/components/TrailerModal";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 
 export default function MovieDetailPage() {
   const params = useParams();

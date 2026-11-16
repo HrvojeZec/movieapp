@@ -3,7 +3,7 @@ import { Card, Image, Text, Group, ActionIcon, Box } from "@mantine/core";
 import { Heart, Star } from "lucide-react";
 import { useState } from "react";
 import { Movie, getImageUrl } from "@/features/movies/api";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import { useRouter } from "next/navigation";
 
 interface MovieCardProps {

@@ -3,7 +3,7 @@ import { Container, Title, Text, Button, Stack, Paper, Loader, Center } from "@m
 import { CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 
 export default function SubscriptionSuccessPage() {
   const router = useRouter();

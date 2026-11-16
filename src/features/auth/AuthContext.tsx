@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useCallback, useContext, useState, useEffect, ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
-import type { AuthUser, AuthContextType, AuthResult } from "@/types";
+import type { AuthUser, AuthContextType, AuthResult } from "@/features/auth/types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

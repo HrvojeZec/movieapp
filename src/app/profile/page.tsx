@@ -1,7 +1,7 @@
 "use client";
 import { Container, Title, Paper, Text, Group, Avatar, Badge, Stack, Button } from "@mantine/core";
-import { useAuth } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/Auth/ProtectedRoute";
+import { useAuth } from "@/features/auth/AuthContext";
+import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { Calendar, Heart, Mail, CreditCard, Crown } from "lucide-react";
 import { formatDateDisplay } from "@/utils";
 import { useRouter } from "next/navigation";

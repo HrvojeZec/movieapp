@@ -13,7 +13,7 @@ import {
   Alert,
 } from "@mantine/core";
 import { AlertCircle } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

@@ -1,6 +1,6 @@
 "use client";
 import { Container, Title, Text, Stack, Button, Group } from "@mantine/core";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { useEffect, useState } from "react";
 import { getMovieDetails, MovieDetails } from "@/features/movies/api";

@@ -1,4 +1,4 @@
-// Types shared between the API and the client. Movie data types live in src/lib/external/tmdb.ts.
+import type { ApiError } from "@/shared/types/api";
 
 export interface AuthUser {
   id: string;
@@ -10,16 +10,6 @@ export interface AuthUser {
   subscriptionPlan?: string;
   createdAt: Date;
   lastLogin?: Date;
-}
-
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
-export interface ApiError {
-  message: string;
-  errors?: ValidationError[];
 }
 
 export interface AuthResult {

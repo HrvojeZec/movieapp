@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/features/auth/AuthContext";
 import { Layout } from "@/components/Layout/Layout";
 import { AOSProvider } from "@/components/Layout/AOSProvider";
 

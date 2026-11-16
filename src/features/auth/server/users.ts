@@ -1,7 +1,7 @@
 import connectDB from "@/server/db/mongodb";
 import User, { IUser } from "@/server/models/User";
 import { logUserActivity } from "@/server/activity";
-import type { AuthUser } from "@/types";
+import type { AuthUser } from "@/features/auth/types";
 
 export const createUser = async (
   email: string,
