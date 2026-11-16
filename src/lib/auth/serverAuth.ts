@@ -4,10 +4,13 @@ import User, { IUser } from "@/models/Users";
 import UserActivity, { type ActivityAction } from "@/models/UserActivity";
 import { AuthUser } from "@/types";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET environment variable is required");
+// Read at call time, not import time, so building the app doesn't require the secret.
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET environment variable is required");
+  }
+  return secret;
 }
 
 export interface AuthToken {
@@ -19,12 +22,15 @@ export interface AuthToken {
 export const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 
 export const generateToken = (user: AuthToken): string => {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: TOKEN_TTL_SECONDS });
+  return jwt.sign(user, getJwtSecret(), { algorithm: "HS256", expiresIn: TOKEN_TTL_SECONDS });
 };
 
 export const verifyToken = (token: string): AuthToken | null => {
+  // Outside the try block: a missing secret is a server misconfiguration, not an invalid token.
+  const secret = getJwtSecret();
   try {
-    return jwt.verify(token, JWT_SECRET) as AuthToken;
+    // Pinning the algorithm rejects tokens signed with anything else (e.g. "none").
+    return jwt.verify(token, secret, { algorithms: ["HS256"] }) as AuthToken;
   } catch {
     return null;
   }
