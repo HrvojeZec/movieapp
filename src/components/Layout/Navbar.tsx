@@ -49,7 +49,6 @@ export const Navbar = () => {
 
   // Memoized so the effect below doesn't re-run on every render because of a new `[]`
   const favorites = useMemo(() => user?.favorites ?? [], [user?.favorites]);
-  console.log(favorites);
 
   useEffect(() => {
     const fetchFavoriteMovies = async () => {

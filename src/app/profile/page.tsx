@@ -34,7 +34,6 @@ function ProfileContent() {
   const getSubscriptionIcon = (plan?: string) => {
     return plan === "pro" || plan === "premium" ? <Crown size={14} /> : null;
   };
-  console.log(user);
 
   return (
     <Container size="md" py="xl">

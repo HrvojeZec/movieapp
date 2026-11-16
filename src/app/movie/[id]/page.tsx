@@ -57,7 +57,6 @@ export default function MovieDetailPage() {
       </Center>
     );
   }
-  console.log(movie);
 
   if (!movie) {
     return (

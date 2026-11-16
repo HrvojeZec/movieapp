@@ -28,11 +28,7 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
   };
 
   const handleCardClick = () => {
-    try {
-      router.push(`/movie/${movie.id}`);
-    } catch (error) {
-      console.log(error);
-    }
+    router.push(`/movie/${movie.id}`);
   };
   const cardHeight = size === "sm" ? 280 : size === "lg" ? 400 : 340;
   const imageHeight = size === "sm" ? 180 : size === "lg" ? 300 : 240;
