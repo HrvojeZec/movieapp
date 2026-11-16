@@ -1,6 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  // Posters come from TMDB's CDN in fixed sizes, so Next.js image optimization adds cost without benefit.
   images: { unoptimized: true },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

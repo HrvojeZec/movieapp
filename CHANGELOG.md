@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   overwrote the whole favorites array
 - Placeholder image for movies without a poster
 - Field-level validation errors on the login and registration forms
+- Page title and description metadata
 
 ### Changed
 
@@ -34,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   blocks by default in public repositories (#19)
 - Upgrade the Stripe SDK to v23 (API version `2026-10-28.endive`); the client is created lazily (#21)
 - Pricing page shows only features that exist and marks planned ones as coming soon (#21)
+- The root layout is a Server Component; client providers moved to `src/app/providers.tsx`
+- `MONGODB_URI` and `JWT_SECRET` are read when first used, so the app builds without secrets and CI
+  no longer needs placeholder values
+- Package renamed from `my-app` to `movieapp` and marked as MIT licensed
 
 ### Fixed
 
@@ -61,6 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@stripe/stripe-js` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, no longer needed with hosted Checkout (#21)
 - `js-cookie` and the client-side `verifyTokenClient`, which decoded the JWT without verifying it
 - `axios`; the client calls the movie API with `fetch`
+- Unused `react-i18next` and `@types/bcryptjs`, debug `console.log` calls, unused shared types and
+  the unused `API_ENDPOINTS` constant
 
 ### Security
 
@@ -76,6 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   server instead of a cookie written by client-side JavaScript, and is no longer returned in API responses
 - The TMDB API key is no longer exposed in the browser bundle: `NEXT_PUBLIC_TMDB_API_KEY` is replaced
   by the server-only `TMDB_API_KEY`
+- JWTs are signed and verified with an explicit `HS256` algorithm
 
 ## [0.1.0] - 2025-08-18
 

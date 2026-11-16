@@ -43,7 +43,6 @@ export default function HomePage() {
         setNewestMovies(nowPlayingResponse.results.slice(0, 20));
         setTopRatedMovies(topRatedResponse.results.slice(0, 20));
         setGenres(genresResponse.slice(0, 10));
-        console.log(genresResponse);
 
         const genreMoviePromises = genresResponse.slice(0, 10).map(async (genre) => {
           const movies = await getMoviesByGenre(genre.id);

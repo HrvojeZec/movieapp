@@ -12,19 +12,6 @@ dayjs.extend(timezone);
 
 export const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
-export const API_ENDPOINTS = {
-  AUTH: {
-    LOGIN: "/api/auth/login",
-    REGISTER: "/api/auth/register",
-  },
-  USER: {
-    PROFILE: "/api/user/profile",
-    FAVORITES: "/api/user/favorites",
-    WATCHLIST: "/api/user/watchlist",
-    ACTIVITY: "/api/user/activity",
-  },
-} as const;
-
 export interface PlanFeature {
   label: string;
   comingSoon?: boolean;

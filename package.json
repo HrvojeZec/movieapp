@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "movieapp",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -30,7 +30,6 @@
     "next": "15.5.29",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-i18next": "^15.6.1",
     "react-infinite-scroll-component": "^6.1.0",
     "sass": "^1.90.0",
     "stripe": "^23.1.0",
@@ -41,7 +40,6 @@
     "@commitlint/config-conventional": "^21.2.4",
     "@eslint/eslintrc": "^3",
     "@types/aos": "^3.0.7",
-    "@types/bcryptjs": "^3.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -66,5 +64,6 @@
     "@typescript-eslint/typescript-estree": {
       "minimatch": "^11.0.1"
     }
-  }
+  },
+  "license": "MIT"
 }
