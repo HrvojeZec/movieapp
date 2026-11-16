@@ -7,6 +7,9 @@ node_modules
 out
 build
 coverage
+e2e
+playwright-report
+test-results
 
 .git
 .github

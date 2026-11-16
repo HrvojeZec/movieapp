@@ -113,6 +113,8 @@ export function MovieDetailsView() {
                     size="lg"
                     variant="default"
                     onClick={() => toggleFavorite(movieId)}
+                    aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                    aria-pressed={isFavorited}
                     className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
                   >
                     <Heart size={20} fill={isFavorited ? "currentColor" : "none"} />

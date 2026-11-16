@@ -28,7 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-page titles (e.g. "Pricing | MovieHub")
 - ESLint rule that forbids importing server-only modules from client code
 - Unit tests with Vitest (122 tests): plan/price mapping, JWT tokens, validation schemas, movie API
-  helpers, TMDB route error handling, Stripe helpers and formatting; `npm test` runs in CI
+  helpers, TMDB route error handling, Stripe helpers and formatting; `npm test` runs in CI (#36)
+- End-to-end tests with Playwright (14 tests) against a production build: registration/login/logout,
+  httpOnly session cookie, field errors, search, movie details and trailer, favorites, redirect to
+  Stripe Checkout; they use a separate `E2E_MONGODB_URI` database and clean up their users. The CI job
+  runs once the E2E secrets are configured
+- Accessible names for icon-only buttons (favorite heart, account menu) and the search field
 
 ### Changed
 
@@ -48,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Package renamed from `my-app` to `movieapp` and marked as MIT licensed
 - Docker: multi-stage image on Node 26 Alpine using Next.js `standalone` output, running as a non-root
   user; `compose.yaml` runs it locally with secrets from `.env.local` at runtime
+- `output: "standalone"` is only enabled for the Docker build, so `next start` keeps working
 - Feature-based folder structure: `src/features/{auth,movies,favorites,subscription,profile}` (each with
   its components, views, validation and `server/` code), `src/server` (database, models, activity log) and
   `src/shared` (layout, helpers, types); `src/app` only contains thin routes. No behavior changes
