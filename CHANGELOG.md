@@ -43,6 +43,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   retrying a failed request
 - Arrow-key navigation in the search page suggestions, like in the navbar
 - Accessible names for the mobile search, favorites menu, trailer close and back buttons
+- Server rendering for the movie page and the home page: data is fetched on the server and
+  hydrated into TanStack Query, so the content is in the HTML (no loading skeletons on first load,
+  visible to search engines)
+- Movie page metadata: the title with the release year, the overview as description, and the poster
+  as the Open Graph and Twitter preview image
+- Unknown or malformed movie IDs respond with HTTP 404
+- End-to-end tests for the server-rendered HTML, the metadata and the 404
 
 ### Changed
 
@@ -94,6 +101,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`MINUTE_MS`, `DAY_IN_SECONDS`, ...) and CSS colors and shadows are named in one place; query keys live in
   their own `query-keys.ts` per feature; `postJson`/`deleteJson`, `notifySuccess`/`notifyError` and
   `requireEnv` replace repeated request, notification and environment variable code
+- All TMDB requests live in one server module shared by the API routes and the server-rendered
+  pages; the home and movie pages render per request (TMDB responses stay cached for an hour), so
+  the build still needs no secrets
 
 ### Fixed
 
