@@ -11,6 +11,15 @@ declare global {
 
 // Cached on globalThis so hot reloads in development and warm serverless invocations
 // reuse one connection instead of opening a new pool on every request.
+// Small pool for serverless; fail fast if the cluster is unreachable instead of hanging the request.
+const CONNECTION_OPTIONS = {
+  bufferCommands: false,
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5_000,
+  socketTimeoutMS: 45_000,
+  family: 4,
+} satisfies mongoose.ConnectOptions;
+
 const cached: MongooseCache = (global.mongoose ??= { conn: null, promise: null });
 
 async function connectDB(): Promise<typeof mongoose> {
@@ -25,13 +34,7 @@ async function connectDB(): Promise<typeof mongoose> {
       throw new Error("MONGODB_URI environment variable is required");
     }
 
-    cached.promise = mongoose.connect(uri, {
-      bufferCommands: false,
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      family: 4,
-    });
+    cached.promise = mongoose.connect(uri, CONNECTION_OPTIONS);
   }
 
   try {
