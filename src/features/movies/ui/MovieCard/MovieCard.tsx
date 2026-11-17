@@ -1,7 +1,7 @@
 "use client";
+import Link from "next/link";
 import { Box, Card, Group, Image, Text } from "@mantine/core";
 import { Star } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
 import { MOVIE_CARD_SIZES, PLACEHOLDER_POSTER } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
@@ -18,50 +18,40 @@ interface MovieCardProps {
   size?: keyof typeof MOVIE_CARD_SIZES;
 }
 
-export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
-  const router = useRouter();
-  const dimensions = MOVIE_CARD_SIZES[size];
+export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => (
+  <Card shadow="md" padding={0} radius="md" className={classes.card}>
+    <Link href={ROUTES.movie(movie.id)} className={classes.link}>
+      {/* A light sweep across the poster on hover */}
+      <GlareHover width="100%" borderRadius="0" glareOpacity={0.25} rimGlint={false}>
+        <Image
+          src={getImageUrl(movie.poster_path)}
+          h={MOVIE_CARD_SIZES[size].image}
+          alt={movie.title}
+          fallbackSrc={PLACEHOLDER_POSTER}
+        />
+      </GlareHover>
 
-  return (
-    <Card
-      shadow="md"
-      padding="md"
-      radius="md"
-      h={dimensions.card}
-      className={classes.card}
-      onClick={() => router.push(ROUTES.movie(movie.id))}
-    >
-      <Card.Section>
-        {/* A light sweep across the poster on hover */}
-        <GlareHover width="100%" borderRadius="0" glareOpacity={0.25} rimGlint={false}>
-          <Image
-            src={getImageUrl(movie.poster_path)}
-            height={dimensions.image}
-            alt={movie.title}
-            fallbackSrc={PLACEHOLDER_POSTER}
-          />
-        </GlareHover>
-      </Card.Section>
+      <Box p="md">
+        <Text fw={600} size="sm" lineClamp={2} c="white" className={classes.title}>
+          {movie.title}
+        </Text>
 
-      <Box className={classes.favorite}>
-        <FavoriteButton movieId={movie.id} />
-      </Box>
-
-      <Text fw={600} size="sm" lineClamp={2} mt="xs" c="white">
-        {movie.title}
-      </Text>
-
-      <Group justify="space-between" mt="xs">
-        <Group gap={4}>
-          <Star size={12} fill={COLORS.rating} color={COLORS.rating} />
+        <Group justify="space-between" mt="xs">
+          <Group gap={4}>
+            <Star size={12} fill={COLORS.rating} color={COLORS.rating} />
+            <Text size="xs" c="dimmed">
+              {formatRating(movie.vote_average)}
+            </Text>
+          </Group>
           <Text size="xs" c="dimmed">
-            {formatRating(movie.vote_average)}
+            {formatYear(movie.release_date)}
           </Text>
         </Group>
-        <Text size="xs" c="dimmed">
-          {formatYear(movie.release_date)}
-        </Text>
-      </Group>
-    </Card>
-  );
-};
+      </Box>
+    </Link>
+
+    <Box className={classes.favorite}>
+      <FavoriteButton movieId={movie.id} />
+    </Box>
+  </Card>
+);

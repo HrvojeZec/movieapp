@@ -35,7 +35,7 @@ export const META_DESCRIPTION_MAX_LENGTH = 160;
 // TMDB posters are 2:3, so the w500 size is 500 x 750
 export const OG_POSTER = { size: "w500", width: 500, height: 750 } as const;
 
-// Most Watched
+// Most Watched: years from next year (upcoming releases) back
 export const YEAR_OPTIONS_COUNT = 30;
 export const INFINITE_SCROLL_MARGIN = "600px";
 export const FILTER_WIDTHS = { year: 150, genre: 200, rating: 150 } as const;
@@ -45,9 +45,11 @@ export const GRID_COLUMNS = { base: 2, sm: 3, md: 4, lg: 6 };
 export const GRID_SKELETON_COUNT = 12;
 export const ROW_SKELETON_COUNT = 8;
 export const ROW_CARD_WIDTH = 200;
-export const CARD_SKELETON_HEIGHT = 340;
+// Poster height per card size; the card grows with its text below
 export const MOVIE_CARD_SIZES = {
-  sm: { card: 280, image: 180 },
-  md: { card: 340, image: 240 },
-  lg: { card: 400, image: 300 },
+  sm: { image: 180 },
+  md: { image: 240 },
 } as const;
+// Height of the text block under a poster (padding, two title lines, rating row), so skeletons
+// match the cards they stand in for
+export const CARD_BODY_HEIGHT = 102;
