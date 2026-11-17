@@ -3,8 +3,8 @@
 }
 
 .input {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: var(--input-bg-strong);
+  border: 1px solid var(--input-border);
   color: white;
 
   &::placeholder {
@@ -21,7 +21,7 @@
   z-index: 1000;
   background: rgba(31, 41, 55, 0.95);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid var(--primary-glow);
   border-radius: 8px;
 }
 
@@ -31,7 +31,7 @@
 
   &:hover,
   &.active {
-    background-color: rgba(59, 130, 246, 0.2);
+    background-color: var(--primary-glow-soft);
   }
 }
 
