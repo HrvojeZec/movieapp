@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import type { ValidationError } from "@/shared/types/api";
 
 /**
@@ -14,3 +15,7 @@ export class RouteError extends Error {
     this.name = "RouteError";
   }
 }
+
+/** e.g. notFound("User") → 404 "User not found" */
+export const notFound = (resource: string) =>
+  new RouteError(HTTP_STATUS.NOT_FOUND, `${resource} not found`);

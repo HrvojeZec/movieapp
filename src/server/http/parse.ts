@@ -1,7 +1,8 @@
 import type { z } from "zod";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { RouteError } from "./route-error";
 
-export const VALIDATION_FAILED = "Validation failed";
+const VALIDATION_FAILED = "Validation failed";
 
 /** Validates any input (route params, query values) and throws a 400 with field errors. */
 export function parseWith<T extends z.ZodType>(
@@ -15,7 +16,7 @@ export function parseWith<T extends z.ZodType>(
       field: issue.path.join("."),
       message: issue.message,
     }));
-    throw new RouteError(400, message, errors);
+    throw new RouteError(HTTP_STATUS.BAD_REQUEST, message, errors);
   }
   return result.data;
 }

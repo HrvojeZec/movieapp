@@ -1,10 +1,13 @@
 // Server-side TMDB client. Only import this from route handlers or other server code:
 // TMDB_API_KEY is intentionally not NEXT_PUBLIC_, so it never reaches the browser.
 
+import { requireEnv } from "@/server/env";
+import { HOUR_IN_SECONDS } from "@/shared/lib/time";
+
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 // TMDB data changes slowly; caching for an hour keeps us well within TMDB rate limits.
-export const TMDB_REVALIDATE_SECONDS = 60 * 60;
+export const TMDB_REVALIDATE_SECONDS = HOUR_IN_SECONDS;
 
 export class TmdbError extends Error {
   constructor(
@@ -19,13 +22,8 @@ export class TmdbError extends Error {
 type QueryParams = Record<string, string | number | boolean | undefined>;
 
 export async function tmdbFetch<T>(path: string, params: QueryParams = {}): Promise<T> {
-  const apiKey = process.env.TMDB_API_KEY;
-  if (!apiKey) {
-    throw new Error("TMDB_API_KEY is not set in environment variables");
-  }
-
   const url = new URL(`${TMDB_BASE_URL}${path}`);
-  url.searchParams.set("api_key", apiKey);
+  url.searchParams.set("api_key", requireEnv("TMDB_API_KEY"));
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined) url.searchParams.set(key, String(value));
   }
