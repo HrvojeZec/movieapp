@@ -39,7 +39,6 @@ export function PricingView() {
     isSubscribed && isPaidPlan(user?.subscriptionPlan) ? user.subscriptionPlan : "basic";
 
   const handleSubscribe = async (plan: PaidPlan) => {
-    if (authLoading) return;
     if (!user) {
       router.push("/auth/login");
       return;
@@ -178,7 +177,8 @@ export function PricingView() {
                     variant={plan.popular ? "filled" : "outline"}
                     color={plan.popular ? "blue" : "gray"}
                     onClick={() => paidPlan && handleSubscribe(paidPlan)}
-                    disabled={!canSubscribe || loadingPlan !== null}
+                    // The session decides between checkout and login, so wait for it
+                    disabled={!canSubscribe || loadingPlan !== null || authLoading}
                     className={plan.popular ? "blue" : ""}
                     styles={{
                       root: {
