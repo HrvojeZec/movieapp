@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { APP_NAME } from "@/shared/constants";
 import { META_DESCRIPTION_MAX_LENGTH, OG_POSTER } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
 import type { MovieDetails } from "@/features/movies/types";
@@ -23,7 +24,7 @@ export function buildMovieMetadata(movie: MovieDetails): Metadata {
   return {
     title,
     description,
-    openGraph: { type: "video.movie", title, description, images },
+    openGraph: { siteName: APP_NAME, type: "video.movie", title, description, images },
     twitter: { card: "summary_large_image", title, description, images },
   };
 }

@@ -8,4 +8,7 @@ export const COLORS = {
   rating: "#fbbf24",
   muted: "#9ca3af",
   mutedDark: "#6b7280",
+  // Page background and text, for generated images (icons, share previews) that can't read CSS
+  background: "#111827",
+  text: "#f9fafb",
 } as const;
