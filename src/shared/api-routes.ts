@@ -24,6 +24,7 @@ export const API_ROUTES = {
     videos: (movieId: number) => `${MOVIES}/${movieId}/videos`,
   },
   genres: `${API}/genres`,
+  health: `${API}/health`,
   stripe: {
     createCheckoutSession: `${STRIPE}/create-checkout-session`,
     checkoutSuccess: `${STRIPE}/checkout-success`,
