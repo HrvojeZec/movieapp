@@ -1,57 +1,26 @@
 "use client";
-import { Container, Title, Text, Button, Stack, Paper, Loader, Center } from "@mantine/core";
+import { Button, Center, Container, Loader, Paper, Stack, Text, Title } from "@mantine/core";
 import { CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/queries";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { fetchJson } from "@/shared/lib/http";
+import { useConfirmCheckout } from "@/features/subscription/hooks/useConfirmCheckout";
+import { ROUTES } from "@/shared/routes";
+import { COLORS } from "@/shared/theme/colors";
+
+const LOADING_HEIGHT = 400;
 
 export function SubscriptionSuccessView() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
-  const { user, loading: authLoading } = useAuth();
-  const queryClient = useQueryClient();
-
-  const confirmation = useMutation({
-    mutationFn: (id: string) =>
-      fetchJson<unknown>("/api/stripe/checkout-success", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: id }),
-      }),
-    // Refetch the session so the navbar and profile show the new plan right away
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.me }),
-  });
-  const { mutate: confirm } = confirmation;
-
-  // The user object changes when the session is refetched; confirm each checkout only once
-  const confirmedSessionRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!sessionId || !user || confirmedSessionRef.current === sessionId) return;
-    confirmedSessionRef.current = sessionId;
-    confirm(sessionId);
-  }, [sessionId, user, confirm]);
-
-  const error = !sessionId
-    ? "No session ID found"
-    : !authLoading && !user
-      ? "Log in to finish activating your subscription"
-      : confirmation.isError
-        ? "Failed to process payment"
-        : null;
-  const loading = !error && !confirmation.isSuccess;
+  const sessionId = useSearchParams().get("session_id");
+  const { user, error, loading } = useConfirmCheckout(sessionId);
 
   if (loading) {
     return (
       <Container size="sm" py="xl">
-        <Center h={400}>
-          <div style={{ textAlign: "center" }}>
-            <Loader size="lg" mb="md" />
+        <Center h={LOADING_HEIGHT}>
+          <Stack align="center" gap="md">
+            <Loader size="lg" />
             <Text c="white">Processing your payment...</Text>
-          </div>
+          </Stack>
         </Center>
       </Container>
     );
@@ -60,12 +29,7 @@ export function SubscriptionSuccessView() {
   if (error) {
     return (
       <Container size="sm" py="xl">
-        <Paper
-          p="xl"
-          bg="dark.7"
-          radius="md"
-          style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}
-        >
+        <Paper p="xl" radius="md">
           <Stack gap="xl" align="center">
             <Title size="2rem" fw={700} c="red" ta="center">
               Payment Error
@@ -73,7 +37,7 @@ export function SubscriptionSuccessView() {
             <Text size="lg" c="dimmed" ta="center">
               {error}
             </Text>
-            <Button onClick={() => router.push("/subscription/pricing")}>Try Again</Button>
+            <Button onClick={() => router.push(ROUTES.pricing)}>Try Again</Button>
           </Stack>
         </Paper>
       </Container>
@@ -82,14 +46,9 @@ export function SubscriptionSuccessView() {
 
   return (
     <Container size="sm" py="xl">
-      <Paper
-        p="xl"
-        bg="dark.7"
-        radius="md"
-        style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}
-      >
+      <Paper p="xl" radius="md">
         <Stack gap="xl" align="center">
-          <CheckCircle size={64} color="#10b981" />
+          <CheckCircle size={64} color={COLORS.success} />
 
           <Title size="2rem" fw={700} c="white" ta="center">
             Subscription Successful!
@@ -101,11 +60,16 @@ export function SubscriptionSuccessView() {
           </Text>
 
           <Stack gap="md" w="100%">
-            <Button fullWidth size="lg" color="blue" onClick={() => router.push("/")}>
+            <Button fullWidth size="lg" color="blue" onClick={() => router.push(ROUTES.home)}>
               Start Exploring
             </Button>
 
-            <Button fullWidth size="lg" variant="outline" onClick={() => router.push("/profile")}>
+            <Button
+              fullWidth
+              size="lg"
+              variant="outline"
+              onClick={() => router.push(ROUTES.profile)}
+            >
               View Profile
             </Button>
           </Stack>
