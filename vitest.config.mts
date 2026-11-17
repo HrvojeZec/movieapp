@@ -15,7 +15,12 @@ export default defineConfig({
     restoreMocks: true,
     coverage: {
       provider: "v8",
-      include: ["src/features/**/*.ts", "src/shared/lib/**/*.ts", "src/server/**/*.ts"],
+      include: [
+        "src/features/**/*.ts",
+        "src/shared/*.ts",
+        "src/shared/lib/**/*.ts",
+        "src/server/**/*.ts",
+      ],
       exclude: ["**/__tests__/**"],
       reporter: ["text", "html"],
     },

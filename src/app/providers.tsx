@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Layout } from "@/shared/ui/Layout/Layout";
 import { AOSProvider } from "@/shared/providers/AOSProvider";
 import { createQueryClient } from "@/shared/lib/query-client";
+import { theme } from "@/shared/theme/theme";
 
 // Client-side providers live here so the root layout can stay a Server Component.
 export function Providers({ children }: { children: ReactNode }) {
@@ -16,7 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider defaultColorScheme="dark">
+      <MantineProvider theme={theme} defaultColorScheme="dark">
         <Notifications position="top-right" />
         <AOSProvider>
           <Layout>{children}</Layout>
