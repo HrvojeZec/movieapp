@@ -5,6 +5,7 @@ import { ROW_CARD_WIDTH, ROW_SKELETON_COUNT } from "@/features/movies/constants"
 import type { Movie } from "@/features/movies/types";
 import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
 import { MovieCardSkeleton } from "@/features/movies/ui/MovieCardSkeleton/MovieCardSkeleton";
+import { Reveal } from "@/shared/ui/motion/Reveal";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
 import classes from "./HorizontalMovieScroll.module.scss";
 
@@ -29,10 +30,12 @@ export const HorizontalMovieScroll = ({
           ? Array.from({ length: ROW_SKELETON_COUNT }, (_, index) => (
               <MovieCardSkeleton key={index} width={ROW_CARD_WIDTH} />
             ))
-          : movies.map((movie) => (
-              <Box key={movie.id} w={ROW_CARD_WIDTH} className={classes.item}>
-                <MovieCard movie={movie} size="sm" />
-              </Box>
+          : movies.map((movie, index) => (
+              <Reveal key={movie.id} index={index} className={classes.item}>
+                <Box w={ROW_CARD_WIDTH}>
+                  <MovieCard movie={movie} size="sm" />
+                </Box>
+              </Reveal>
             ))}
       </Group>
     </ScrollArea>
