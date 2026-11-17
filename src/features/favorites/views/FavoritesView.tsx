@@ -1,51 +1,19 @@
 "use client";
 import { Container, Title, Text, Stack, Button, Group } from "@mantine/core";
-import { useAuth } from "@/features/auth/AuthContext";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
-import { useEffect, useState } from "react";
-import { getMovieDetails, MovieDetails } from "@/features/movies/api";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
+import { useAuth } from "@/features/auth/queries";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
+import { useMoviesByIds } from "@/features/movies/queries";
+import { QueryError } from "@/shared/components/QueryError";
 
 export function FavoritesView() {
-  const { user } = useAuth();
-  const [favoriteMovies, setFavoriteMovies] = useState<MovieDetails[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  useEffect(() => {
-    const fetchFavoriteMovies = async () => {
-      setLoading(true);
-
-      try {
-        const movieIds = user?.favorites || [];
-
-        if (movieIds.length === 0) {
-          setFavoriteMovies([]);
-          setLoading(false);
-          return;
-        }
-
-        const moviePromises = movieIds.map(async (movieId) => {
-          try {
-            return await getMovieDetails(parseInt(movieId));
-          } catch (error) {
-            console.error(`Failed to fetch movie ${movieId}:`, error);
-            return null;
-          }
-        });
-
-        const movies = await Promise.all(moviePromises);
-        setFavoriteMovies(movies.filter(Boolean) as MovieDetails[]);
-      } catch (error) {
-        console.error("Failed to fetch favorite movies:", error);
-        setFavoriteMovies([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFavoriteMovies();
-  }, [user]);
+  const favoriteIds = (user?.favorites ?? []).map(Number);
+  const { movies: favoriteMovies, isPending, isError, refetch } = useMoviesByIds(favoriteIds);
+  // Removing a favorite keeps the remaining cards visible instead of flashing a skeleton
+  const loading = authLoading || (isPending && favoriteMovies.length === 0);
 
   const totalFavorites = user?.favorites?.length || 0;
 
@@ -58,6 +26,8 @@ export function FavoritesView() {
             My Favorites ({totalFavorites})
           </Title>
         </Group>
+
+        {isError && <QueryError message="Some favorites couldn't be loaded." onRetry={refetch} />}
 
         {loading ? (
           <MovieGrid movies={[]} loading={true} />

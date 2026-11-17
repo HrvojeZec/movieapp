@@ -17,7 +17,7 @@ import {
 import { notifications } from "@mantine/notifications";
 import { Check, Star, Zap, CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth } from "@/features/auth/queries";
 import { SUBSCRIPTION_PLANS, type PlanDetails } from "@/features/subscription/catalog";
 import {
   hasActiveSubscription,
@@ -33,7 +33,7 @@ const PLAN_ICONS: Record<SubscriptionPlan, ReactNode> = {
 };
 
 export function PricingView() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [loadingPlan, setLoadingPlan] = useState<PaidPlan | null>(null);
 
@@ -42,6 +42,7 @@ export function PricingView() {
     isSubscribed && isPaidPlan(user?.subscriptionPlan) ? user.subscriptionPlan : "basic";
 
   const handleSubscribe = async (plan: PaidPlan) => {
+    if (authLoading) return;
     if (!user) {
       router.push("/auth/login");
       return;

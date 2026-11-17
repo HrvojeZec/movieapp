@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState } from "react";
+import { useDebouncedValue } from "@mantine/hooks";
 import NextImage from "next/image";
 import {
   Group,
@@ -15,109 +16,39 @@ import {
   Image,
   Loader,
   Indicator,
+  Skeleton,
 } from "@mantine/core";
 import { Search, Heart, User, LogOut, Film, Flame, CreditCard } from "lucide-react";
-import { useAuth } from "@/features/auth/AuthContext";
-import { searchMovies, getImageUrl, getMovieDetails } from "@/features/movies/api";
+import { useAuth, useLogout } from "@/features/auth/queries";
+import { getImageUrl } from "@/features/movies/api";
+import { useMovieSearch, useMoviesByIds } from "@/features/movies/queries";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-interface SearchResult {
-  id: number;
-  title: string;
-  release_date: string;
-  poster_path: string | null;
-  vote_average: number;
-}
+const SUGGESTION_LIMIT = 8;
+const FAVORITES_PREVIEW_LIMIT = 5;
 
-interface FavoriteMovie {
-  id: number;
-  title: string;
-  poster_path: string | null;
-  release_date: string;
-}
 export const Navbar = () => {
-  const { user, logout, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const logout = useLogout();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [favoriteMovies, setFavoriteMovies] = useState<FavoriteMovie[]>([]);
-  const [loadingFavorites, setLoadingFavorites] = useState(false);
-  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [debouncedQuery] = useDebouncedValue(searchQuery, 400);
 
-  // Memoized so the effect below doesn't re-run on every render because of a new `[]`
-  const favorites = useMemo(() => user?.favorites ?? [], [user?.favorites]);
+  const { data: searchData } = useMovieSearch(debouncedQuery);
+  const searchResults = searchData?.results.slice(0, SUGGESTION_LIMIT) ?? [];
 
-  useEffect(() => {
-    const fetchFavoriteMovies = async () => {
-      if (favorites.length === 0) {
-        setFavoriteMovies([]);
-        return;
-      }
-
-      setLoadingFavorites(true);
-      try {
-        const moviePromises = favorites.slice(0, 5).map(async (movieId) => {
-          try {
-            const movie = await getMovieDetails(parseInt(movieId));
-            return {
-              id: movie.id,
-              title: movie.title,
-              poster_path: movie.poster_path,
-              release_date: movie.release_date,
-            };
-          } catch (error) {
-            console.error(`Failed to fetch movie ${movieId}:`, error);
-            return null;
-          }
-        });
-
-        const movies = await Promise.all(moviePromises);
-        setFavoriteMovies(movies.filter(Boolean) as FavoriteMovie[]);
-      } catch (error) {
-        console.error("Failed to fetch favorite movies:", error);
-      } finally {
-        setLoadingFavorites(false);
-      }
-    };
-
-    fetchFavoriteMovies();
-  }, [favorites]);
-
-  const handleSearch = async (query: string) => {
-    if (query.length > 2) {
-      try {
-        const results = await searchMovies(query);
-        setSearchResults(results.results.slice(0, 8));
-        setShowResults(true);
-        setSelectedIndex(-1);
-      } catch (error) {
-        console.error("Search failed:", error);
-      }
-    } else {
-      setSearchResults([]);
-      setShowResults(false);
-    }
-  };
-
-  const debouncedSearch = (query: string) => {
-    if (searchTimeout.current) {
-      clearTimeout(searchTimeout.current);
-    }
-    searchTimeout.current = setTimeout(() => handleSearch(query), 500);
-  };
+  // Shares the cache with movie pages, so opening a favorited movie is instant
+  const favorites = user?.favorites ?? [];
+  const favoriteIds = favorites.slice(0, FAVORITES_PREVIEW_LIMIT).map(Number);
+  const { movies: favoriteMovies, isPending: loadingFavorites } = useMoviesByIds(favoriteIds);
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
-    debouncedSearch(value);
-
-    if (value.length > 2) {
-      if (!loading && user) {
-        // logActivity('search', undefined, value);
-      }
-    }
+    setSelectedIndex(-1);
+    setShowResults(value.trim().length > 2);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -259,7 +190,9 @@ export const Navbar = () => {
           >
             <Search size={20} />
           </ActionIcon>
-          {user ? (
+          {authLoading ? (
+            <Skeleton height={36} width={160} radius="sm" aria-label="Loading account" />
+          ) : user ? (
             <Group gap="sm">
               <Menu shadow="md" width={250}>
                 <Menu.Target>
@@ -362,7 +295,7 @@ export const Navbar = () => {
                   >
                     Subscription
                   </Menu.Item>
-                  <Menu.Item leftSection={<LogOut size={16} />} onClick={logout}>
+                  <Menu.Item leftSection={<LogOut size={16} />} onClick={() => logout.mutate()}>
                     Logout
                   </Menu.Item>
                 </Menu.Dropdown>

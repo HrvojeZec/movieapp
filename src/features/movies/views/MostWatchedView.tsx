@@ -1,11 +1,13 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Container, Group, Select, NumberInput, Stack, Text, Loader, Center } from "@mantine/core";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { discoverMovies, getGenres, Movie, Genre } from "@/features/movies/api";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
+import { useIntersection } from "@mantine/hooks";
 import { Flame } from "lucide-react";
+import type { DiscoverFilters, Movie } from "@/features/movies/api";
+import { useGenres, useInfiniteDiscoverMovies } from "@/features/movies/queries";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
+import { QueryError } from "@/shared/components/QueryError";
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 30 }, (_, i) => ({
@@ -13,128 +15,55 @@ const yearOptions = Array.from({ length: 30 }, (_, i) => ({
   label: (currentYear - i).toString(),
 }));
 
+function toNumber(value: string | null): number | undefined {
+  const parsed = value === null ? NaN : Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+type FilterKey = "year" | "genre" | "rating";
+
 export function MostWatchedView() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [genres, setGenres] = useState<Genre[]>([]);
-
-  const [selectedYear, setSelectedYear] = useState<string | null>(searchParams.get("year") || null);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(
-    searchParams.get("genre") || null,
-  );
-  const [minRating, setMinRating] = useState<number | string>(searchParams.get("rating") || "");
-  const isValidGenre = useCallback(
-    (genreId: number | null) => {
-      if (!genreId) return true;
-      return genres.some((genre) => genre.id === genreId);
-    },
-    [genres],
-  );
-  const updateURL = useCallback(
-    (year: string | null, genre: string | null, rating: number | string) => {
-      const params = new URLSearchParams();
-
-      if (year) params.set("year", year);
-      if (genre) params.set("genre", genre);
-      if (rating) params.set("rating", rating.toString());
-
-      const queryString = params.toString();
-      const newUrl = queryString ? `/most-watched?${queryString}` : "/most-watched";
-
-      router.replace(newUrl, { scroll: false });
-    },
-    [router],
+  // The URL is the single source of truth for filters, so they survive reloads and can be shared
+  const year = searchParams.get("year");
+  const genre = searchParams.get("genre");
+  const rating = searchParams.get("rating");
+  const filters = useMemo<DiscoverFilters>(
+    () => ({ year: toNumber(year), genre: toNumber(genre), minRating: toNumber(rating) }),
+    [year, genre, rating],
   );
 
+  const genres = useGenres();
+  const { data, isPending, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteDiscoverMovies(filters);
+
+  // TMDB can return the same movie on two pages when popularity shifts between requests
+  const movies = useMemo(() => {
+    const unique = new Map<number, Movie>();
+    data?.pages.forEach((page) => page.results.forEach((movie) => unique.set(movie.id, movie)));
+    return [...unique.values()];
+  }, [data]);
+
+  const { ref: sentinelRef, entry } = useIntersection<HTMLDivElement>({ rootMargin: "600px" });
   useEffect(() => {
-    const fetchGenres = async () => {
-      try {
-        const genresData = await getGenres();
-        setGenres(genresData);
-      } catch (error) {
-        console.error("Failed to fetch genres:", error);
-      }
-    };
-    fetchGenres();
-  }, []);
+    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  useEffect(() => {
-    updateURL(selectedYear, selectedGenre, minRating);
-  }, [selectedYear, selectedGenre, minRating, updateURL]);
-
-  const fetchMovies = useCallback(
-    async (pageNum: number, reset = false) => {
-      try {
-        let genreParam = undefined;
-        if (selectedGenre) {
-          const genreId = parseInt(selectedGenre);
-
-          if (isValidGenre(genreId)) {
-            genreParam = genreId;
-          }
-        }
-
-        const params = {
-          page: pageNum,
-          year: selectedYear ? parseInt(selectedYear) : undefined,
-
-          genre: genreParam,
-          minRating: typeof minRating === "number" ? minRating : undefined,
-        };
-
-        const response = await discoverMovies(params);
-
-        if (reset) {
-          setMovies(response.results);
-        } else {
-          setMovies((prev) => [...prev, ...response.results]);
-        }
-
-        setHasMore(pageNum < response.total_pages);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch movies:", error);
-        setLoading(false);
-      }
-    },
-    [selectedYear, selectedGenre, minRating, isValidGenre],
-  );
-
-  useEffect(() => {
-    setLoading(true);
-    setPage(1);
-    fetchMovies(1, true);
-  }, [fetchMovies]);
-
-  const loadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchMovies(nextPage);
+  const setFilter = (key: FilterKey, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set(key, value);
+    else params.delete(key);
+    const query = params.toString();
+    router.replace(query ? `/most-watched?${query}` : "/most-watched", { scroll: false });
   };
 
-  const handleYearChange = (value: string | null) => {
-    setSelectedYear(value);
-    setPage(1);
-  };
-
-  const handleGenreChange = (value: string | null) => {
-    setSelectedGenre(value);
-    setPage(1);
-  };
-
-  const handleRatingChange = (value: number | string) => {
-    setMinRating(value);
-    setPage(1);
-  };
-
-  const genreOptions = genres.map((genre) => ({
-    value: genre.id.toString(),
-    label: genre.name,
+  const genreOptions = (genres.data ?? []).map((item) => ({
+    value: item.id.toString(),
+    label: item.name,
   }));
 
   return (
@@ -151,8 +80,8 @@ export function MostWatchedView() {
           <Select
             placeholder="Release Year"
             data={yearOptions}
-            value={selectedYear}
-            onChange={handleYearChange}
+            value={year}
+            onChange={(value) => setFilter("year", value)}
             clearable
             w={150}
             styles={{
@@ -164,8 +93,8 @@ export function MostWatchedView() {
           <Select
             placeholder="Genre"
             data={genreOptions}
-            value={selectedGenre}
-            onChange={handleGenreChange}
+            value={genre}
+            onChange={(value) => setFilter("genre", value)}
             clearable
             w={200}
             styles={{
@@ -179,8 +108,8 @@ export function MostWatchedView() {
             min={0}
             max={10}
             step={0.1}
-            value={minRating}
-            onChange={handleRatingChange}
+            value={rating ?? ""}
+            onChange={(value) => setFilter("rating", value === "" ? null : String(value))}
             w={150}
             styles={{
               input: { backgroundColor: "rgba(255, 255, 255, 0.05)" },
@@ -188,31 +117,30 @@ export function MostWatchedView() {
           />
         </Group>
 
-        {loading && movies.length === 0 ? (
-          <Center h={400}>
-            <Loader size="lg" />
+        {isError ? (
+          <QueryError onRetry={() => refetch()} />
+        ) : isPending ? (
+          <MovieGrid movies={[]} loading />
+        ) : movies.length === 0 ? (
+          <Center h={200}>
+            <Text c="dimmed">No movies match these filters.</Text>
           </Center>
         ) : (
-          <InfiniteScroll
-            dataLength={movies.length}
-            next={loadMore}
-            hasMore={hasMore}
-            style={{ overflow: "hidden" }}
-            loader={
-              <Center mt="xl">
-                <Loader size="md" />
-              </Center>
-            }
-            endMessage={
-              <Center mt="xl">
-                <Text c="dimmed">No more movies to load</Text>
-              </Center>
-            }
-          >
-            <div data-aos="fade-up" data-aos-delay="400">
-              <MovieGrid movies={movies} />
-            </div>
-          </InfiniteScroll>
+          <div data-aos="fade-up" data-aos-delay="400">
+            <MovieGrid movies={movies} />
+          </div>
+        )}
+
+        <div ref={sentinelRef} aria-hidden />
+        {isFetchingNextPage && (
+          <Center>
+            <Loader size="md" />
+          </Center>
+        )}
+        {!isPending && !hasNextPage && movies.length > 0 && (
+          <Center>
+            <Text c="dimmed">No more movies to load</Text>
+          </Center>
         )}
       </Stack>
     </Container>

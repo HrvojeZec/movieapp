@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import {
@@ -19,42 +19,36 @@ import {
   Button,
 } from "@mantine/core";
 import { Heart, Star, Clock, MapPin, Calendar, PlayCircle } from "lucide-react";
-import { getMovieDetails, MovieDetails, getImageUrl } from "@/features/movies/api";
+import { getImageUrl } from "@/features/movies/api";
+import { useMovieDetails } from "@/features/movies/queries";
+import { QueryError } from "@/shared/components/QueryError";
+import { HttpError } from "@/shared/lib/http";
 import { TrailerModal } from "@/features/movies/components/TrailerModal";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth, useToggleFavorite } from "@/features/auth/queries";
 
 export function MovieDetailsView() {
   const params = useParams();
-  const { user, toggleFavorite } = useAuth();
-  const [movie, setMovie] = useState<MovieDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const toggleFavorite = useToggleFavorite();
   const [trailerModalOpened, setTrailerModalOpened] = useState(false);
 
   const movieId = params.id as string;
   const isFavorited = user?.favorites?.includes(movieId) || false;
+  const { data: movie, isPending, error, refetch } = useMovieDetails(Number(movieId));
 
-  useEffect(() => {
-    const fetchMovie = async () => {
-      try {
-        const movieData = await getMovieDetails(parseInt(movieId));
-        setMovie(movieData);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch movie:", error);
-        setLoading(false);
-      }
-    };
-
-    if (movieId) {
-      fetchMovie();
-    }
-  }, [movieId]);
-
-  if (loading) {
+  if (isPending) {
     return (
       <Center h="100vh">
         <Loader size="lg" />
       </Center>
+    );
+  }
+
+  if (error && !(error instanceof HttpError && error.status === 404)) {
+    return (
+      <Container size="xl" py="xl">
+        <QueryError message="We couldn't load this movie." onRetry={() => refetch()} />
+      </Container>
     );
   }
 

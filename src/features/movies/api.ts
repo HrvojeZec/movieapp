@@ -1,23 +1,11 @@
+import { fetchJson, withQuery } from "@/shared/lib/http";
+import type { MovieList } from "./validation";
+
 // TMDB's public image CDN; serving posters needs no API key
 const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
 // Client-side access to movie data. All requests go through our own API routes
 // (src/app/api/movies, src/app/api/genres), which call TMDB on the server with the secret key.
-async function getJson<T>(
-  path: string,
-  params: Record<string, string | number | undefined> = {},
-): Promise<T> {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined) query.set(key, String(value));
-  }
-  const queryString = query.toString();
-  const response = await fetch(queryString ? `${path}?${queryString}` : path);
-  if (!response.ok) {
-    throw new Error(`Request to ${path} failed with status ${response.status}`);
-  }
-  return response.json() as Promise<T>;
-}
 
 export interface Movie {
   id: number;
@@ -80,40 +68,31 @@ export const getImageUrl = (
   return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
 };
 
-export const getPopularMovies = (page = 1) =>
-  getJson<TMDBResponse<Movie>>("/api/movies", { list: "popular", page });
-
-export const getTopRatedMovies = (page = 1) =>
-  getJson<TMDBResponse<Movie>>("/api/movies", { list: "top_rated", page });
-
-export const getNowPlayingMovies = (page = 1) =>
-  getJson<TMDBResponse<Movie>>("/api/movies", { list: "now_playing", page });
-
-export const getUpcomingMovies = (page = 1) =>
-  getJson<TMDBResponse<Movie>>("/api/movies", { list: "upcoming", page });
-
-export const getMovieDetails = (movieId: number) => getJson<MovieDetails>(`/api/movies/${movieId}`);
-
-export const searchMovies = (query: string, page = 1) =>
-  getJson<TMDBResponse<Movie>>("/api/movies/search", { query, page });
-
-export const getGenres = async (): Promise<Genre[]> => {
-  const data = await getJson<{ genres: Genre[] }>("/api/genres");
-  return data.genres;
-};
-
-export const getMoviesByGenre = (genreId: number, page = 1) =>
-  discoverMovies({ genre: genreId, page });
-
-export const discoverMovies = (params: {
+export interface DiscoverFilters {
   year?: number;
   genre?: number;
   minRating?: number;
-  page?: number;
-}) => getJson<TMDBResponse<Movie>>("/api/movies/discover", params);
+}
+
+export const getMovieList = (list: MovieList, page = 1) =>
+  fetchJson<TMDBResponse<Movie>>(withQuery("/api/movies", { list, page }));
+
+export const getMovieDetails = (movieId: number) =>
+  fetchJson<MovieDetails>(`/api/movies/${movieId}`);
+
+export const searchMovies = (query: string, page = 1) =>
+  fetchJson<TMDBResponse<Movie>>(withQuery("/api/movies/search", { query, page }));
+
+export const getGenres = async (): Promise<Genre[]> => {
+  const data = await fetchJson<{ genres: Genre[] }>("/api/genres");
+  return data.genres;
+};
+
+export const discoverMovies = ({ page = 1, ...filters }: DiscoverFilters & { page?: number }) =>
+  fetchJson<TMDBResponse<Movie>>(withQuery("/api/movies/discover", { ...filters, page }));
 
 export const getMovieVideos = async (movieId: number): Promise<Video[]> => {
-  const data = await getJson<{ results: Video[] }>(`/api/movies/${movieId}/videos`);
+  const data = await fetchJson<{ results: Video[] }>(`/api/movies/${movieId}/videos`);
   return data.results;
 };
 
