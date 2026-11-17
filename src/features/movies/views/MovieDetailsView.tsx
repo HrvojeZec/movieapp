@@ -116,7 +116,7 @@ export function MovieDetailsView() {
               </Text>
               <Group gap="md" mt="md">
                 <Button leftSection={<PlayCircle size={18} />} size="md" onClick={trailer.open}>
-                  Watch Trailer
+                  Play trailer
                 </Button>
               </Group>
               <Group gap="xs">
