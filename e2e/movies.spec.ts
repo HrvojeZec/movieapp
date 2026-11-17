@@ -84,11 +84,19 @@ test("an unknown movie responds with 404", async ({ request }) => {
 
 test("the movie API limits how often one client can call it", async ({ request }) => {
   // 60 requests per minute per address protect the shared TMDB quota
+  const LIMIT = 60;
   const statuses = [];
-  for (let i = 0; i < 61; i++) {
+  for (let i = 0; i < LIMIT; i++) {
     statuses.push((await request.get("/api/genres")).status());
   }
+  expect(statuses.every((status) => status === 200)).toBe(true);
 
-  expect(statuses.slice(0, 60).every((status) => status === 200)).toBe(true);
-  expect(statuses[60]).toBe(429);
+  // Upstash approximates the sliding window from the previous and current minute, so when the
+  // requests straddle a minute boundary a few more can get through before the limit applies
+  const EXTRA_ATTEMPTS = 10;
+  let limited = false;
+  for (let i = 0; i < EXTRA_ATTEMPTS && !limited; i++) {
+    limited = (await request.get("/api/genres")).status() === 429;
+  }
+  expect(limited).toBe(true);
 });

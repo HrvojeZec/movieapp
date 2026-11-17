@@ -1,8 +1,11 @@
+import { randomUUID } from "node:crypto";
 import { test as base, expect } from "@playwright/test";
 
 /**
  * Every test gets its own client address. The API rate-limits per IP, and all tests run from
  * localhost, so without this, parallel tests would share one quota and block each other.
+ * The address is new on every run too: with Upstash the counts outlive the server, so a fixed
+ * address would inherit the previous run's quota (registration allows 5 per hour).
  * (`next start` passes the header through; on Vercel the platform sets it and clients can't.)
  */
 export const test = base.extend({
@@ -10,7 +13,7 @@ export const test = base.extend({
   extraHTTPHeaders: async ({ extraHTTPHeaders }, provide, testInfo) => {
     await provide({
       ...extraHTTPHeaders,
-      "x-forwarded-for": `e2e-${testInfo.testId}-${testInfo.retry}`,
+      "x-forwarded-for": `e2e-${testInfo.testId}-${testInfo.retry}-${randomUUID()}`,
     });
   },
 });
