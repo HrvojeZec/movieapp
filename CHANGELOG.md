@@ -90,6 +90,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   smaller components; magic numbers are named constants and paths come from one `ROUTES` map
 - Styles moved from inline objects and global classes into a Mantine theme and CSS modules; Mantine
   styles load in a cascade layer, so the app styles reliably override them
+- No more magic values: HTTP statuses (`HTTP_STATUS`), API endpoints (`API_ROUTES`), durations
+  (`MINUTE_MS`, `DAY_IN_SECONDS`, ...) and CSS colors and shadows are named in one place; query keys live in
+  their own `query-keys.ts` per feature; `postJson`/`deleteJson`, `notifySuccess`/`notifyError` and
+  `requireEnv` replace repeated request, notification and environment variable code
 
 ### Fixed
 
@@ -136,6 +140,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `getUpcomingMovies`, `getMoviesByGenre`), replaced by `getMovieList` and `discoverMovies`
 - The `minlength` check on the stored password, which only ever saw the 60-character hash
 - Unused global CSS classes and the leftover `globals.css` from the project template
+- Unused date formats and dayjs plugins, and exports that nothing outside their module used
 
 ### Security
 
