@@ -1,0 +1,27 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+// The favorite button fades in on hover, and for keyboard users when it has focus
+.favorite {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  .card:hover &,
+  &:focus-within {
+    opacity: 1;
+  }
+}

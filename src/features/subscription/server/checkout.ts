@@ -1,6 +1,7 @@
 import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
-import { RouteError } from "@/server/http/route-error";
+import { RouteError, notFound } from "@/server/http/route-error";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { findUserById } from "@/features/auth/server/users";
 import type { AuthUser } from "@/features/auth/types";
 import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/lib/plans";
@@ -40,16 +41,16 @@ export async function createSubscriptionCheckout(
   // The price is resolved on the server so clients can't choose an arbitrary price ID.
   const priceId = getPriceIdForPlan(plan);
   if (!priceId) {
-    throw new RouteError(503, "Payments are not configured");
+    throw new RouteError(HTTP_STATUS.SERVICE_UNAVAILABLE, "Payments are not configured");
   }
 
   await connectDB();
   const user = await User.findById(userId);
   if (!user) {
-    throw new RouteError(404, "User not found");
+    throw notFound("User");
   }
   if (hasActiveSubscription(user.subscriptionStatus)) {
-    throw new RouteError(409, "You already have an active subscription");
+    throw new RouteError(HTTP_STATUS.CONFLICT, "You already have an active subscription");
   }
 
   const session = await getStripe().checkout.sessions.create({
@@ -81,16 +82,16 @@ export async function confirmCheckoutSession(
   // Without this check any logged-in user could submit someone else's paid session.
   // Respond with 404 so session IDs of other users can't be probed.
   if (session.client_reference_id !== userId) {
-    throw new RouteError(404, "Checkout session not found");
+    throw notFound("Checkout session");
   }
 
   const subscriptionId = getSubscriptionIdFromSession(session);
   if (session.mode !== "subscription" || !subscriptionId) {
-    throw new RouteError(400, "Not a subscription checkout");
+    throw new RouteError(HTTP_STATUS.BAD_REQUEST, "Not a subscription checkout");
   }
 
   if (session.payment_status === "unpaid") {
-    throw new RouteError(409, "Payment is still processing");
+    throw new RouteError(HTTP_STATUS.CONFLICT, "Payment is still processing");
   }
 
   if (typeof session.customer === "string") {

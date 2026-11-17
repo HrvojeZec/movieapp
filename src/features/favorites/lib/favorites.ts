@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/queries";
+import { authKeys } from "@/features/auth/api/query-keys";
 import type { AuthUser } from "@/features/auth/types";
 
 export function applyFavoriteChange(favorites: string[], movieId: string, add: boolean): string[] {

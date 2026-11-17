@@ -2,6 +2,7 @@ import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { logUserActivity } from "@/server/activity";
 import { RouteError } from "@/server/http/route-error";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import type { AuthUser } from "@/features/auth/types";
 
 // Emails reach these functions already normalized (trimmed, lowercase) by the zod schemas.
@@ -29,7 +30,7 @@ export const createUser = async (
   await connectDB();
 
   if (await User.exists({ email })) {
-    throw new RouteError(409, "User already exists");
+    throw new RouteError(HTTP_STATUS.CONFLICT, "User already exists");
   }
 
   const user = await User.create({ email, password, name, favorites: [] });

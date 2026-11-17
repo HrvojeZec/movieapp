@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatRuntime, formatYear } from "@/shared/lib/format";
+import { formatDate, formatRuntime, formatYear } from "@/shared/lib/format";
 
 describe("formatRuntime", () => {
   it.each([
@@ -20,5 +20,11 @@ describe("formatYear", () => {
 
   it("returns N/A for a missing date", () => {
     expect(formatYear("")).toBe("N/A");
+  });
+});
+
+describe("formatDate", () => {
+  it("formats a date with the full month name", () => {
+    expect(formatDate("2026-11-17T12:00:00")).toBe("November 17, 2026");
   });
 });

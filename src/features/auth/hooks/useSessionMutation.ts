@@ -1,34 +1,28 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { notifications } from "@mantine/notifications";
-import { authKeys } from "@/features/auth/api/queries";
+import { authKeys } from "@/features/auth/api/query-keys";
 import type { AuthUser } from "@/features/auth/types";
 import { toApiError } from "@/shared/lib/api-error";
-import { fetchJson } from "@/shared/lib/http";
+import { notifyError, notifySuccess } from "@/shared/lib/notify";
+
+interface SessionMessages {
+  successTitle: string;
+  successMessage: string;
+  failureTitle: string;
+}
 
 /** Shared by login and registration: both start a session and return the user. */
 export function useSessionMutation<TVariables>(
-  path: string,
-  messages: { successTitle: string; successMessage: string; failureTitle: string },
+  request: (variables: TVariables) => Promise<{ user: AuthUser }>,
+  messages: SessionMessages,
 ) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: TVariables) =>
-      fetchJson<{ user: AuthUser }>(path, { method: "POST", body: JSON.stringify(variables) }),
+    mutationFn: request,
     onSuccess: ({ user }) => {
       queryClient.setQueryData(authKeys.me, user);
-      notifications.show({
-        title: messages.successTitle,
-        message: messages.successMessage,
-        color: "green",
-      });
+      notifySuccess(messages.successTitle, messages.successMessage);
     },
-    onError: (error) => {
-      notifications.show({
-        title: messages.failureTitle,
-        message: toApiError(error).message,
-        color: "red",
-      });
-    },
+    onError: (error) => notifyError(messages.failureTitle, toApiError(error).message),
   });
 }

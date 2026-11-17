@@ -1,25 +1,18 @@
 "use client";
-import { Group, Text } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { Drama } from "lucide-react";
-import { QueryError } from "@/shared/ui/QueryError/QueryError";
-import type { Genre } from "@/features/movies/types";
+import { GENRE_ROW_PRELOAD_MARGIN } from "@/features/movies/constants";
 import { useDiscoverMovies } from "@/features/movies/hooks/useDiscoverMovies";
+import type { Genre } from "@/features/movies/types";
 import { HorizontalMovieScroll } from "@/features/movies/ui/HorizontalMovieScroll/HorizontalMovieScroll";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
 
 /** A genre row that only fetches its movies once it scrolls near the viewport. */
 export function GenreRow({ genre }: { genre: Genre }) {
-  const { ref, entry } = useIntersection<HTMLDivElement>({ rootMargin: "400px" });
+  const { ref, entry } = useIntersection<HTMLDivElement>({ rootMargin: GENRE_ROW_PRELOAD_MARGIN });
   const { data, isPending, isError, refetch } = useDiscoverMovies(
     { genre: genre.id },
     { enabled: Boolean(entry?.isIntersecting) },
-  );
-
-  const title = (
-    <Group gap={8} align="center">
-      <Drama size={18} />
-      <Text>{genre.name}</Text>
-    </Group>
   );
 
   return (
@@ -27,7 +20,12 @@ export function GenreRow({ genre }: { genre: Genre }) {
       {isError ? (
         <QueryError message={`Couldn't load ${genre.name} movies.`} onRetry={() => refetch()} />
       ) : (
-        <HorizontalMovieScroll title={title} movies={data?.results ?? []} loading={isPending} />
+        <HorizontalMovieScroll
+          title={genre.name}
+          icon={<Drama size={18} />}
+          movies={data?.results ?? []}
+          loading={isPending}
+        />
       )}
     </div>
   );

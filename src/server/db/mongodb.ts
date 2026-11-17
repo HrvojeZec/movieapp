@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { requireEnv } from "@/server/env";
+import { SECOND_MS } from "@/shared/lib/time";
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -15,8 +17,8 @@ declare global {
 const CONNECTION_OPTIONS = {
   bufferCommands: false,
   maxPoolSize: 10,
-  serverSelectionTimeoutMS: 5_000,
-  socketTimeoutMS: 45_000,
+  serverSelectionTimeoutMS: 5 * SECOND_MS,
+  socketTimeoutMS: 45 * SECOND_MS,
   family: 4,
 } satisfies mongoose.ConnectOptions;
 
@@ -28,13 +30,7 @@ async function connectDB(): Promise<typeof mongoose> {
   }
 
   if (!cached.promise) {
-    // Read at call time, not import time, so building the app doesn't require the secret.
-    const uri = process.env.MONGODB_URI;
-    if (!uri) {
-      throw new Error("MONGODB_URI environment variable is required");
-    }
-
-    cached.promise = mongoose.connect(uri, CONNECTION_OPTIONS);
+    cached.promise = mongoose.connect(requireEnv("MONGODB_URI"), CONNECTION_OPTIONS);
   }
 
   try {

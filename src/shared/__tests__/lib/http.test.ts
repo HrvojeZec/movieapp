@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { HttpError, fetchJson, withQuery } from "@/shared/lib/http";
+import { HttpError, deleteJson, fetchJson, postJson, withQuery } from "@/shared/lib/http";
 
 describe("withQuery", () => {
   it("appends defined params and skips undefined ones", () => {
@@ -49,5 +49,35 @@ describe("fetchJson", () => {
   it("falls back to a generic message when the error body isn't JSON", async () => {
     mockFetch(new Response("Bad gateway", { status: 502 }));
     await expect(fetchJson("/api/x")).rejects.toThrow("Request to /api/x failed with status 502");
+  });
+});
+
+describe("postJson and deleteJson", () => {
+  const mockFetch = () => {
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ ok: true }));
+    vi.stubGlobal("fetch", fetchMock);
+    return fetchMock;
+  };
+
+  it("posts a JSON body", async () => {
+    const fetchMock = mockFetch();
+    await postJson("/api/x", { movieId: "550" });
+
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe("/api/x");
+    expect(init).toMatchObject({ method: "POST", body: '{"movieId":"550"}' });
+    expect(init.headers).toMatchObject({ "Content-Type": "application/json" });
+  });
+
+  it("posts without a body", async () => {
+    const fetchMock = mockFetch();
+    await postJson("/api/auth/logout");
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: "POST", body: undefined });
+  });
+
+  it("sends a DELETE", async () => {
+    const fetchMock = mockFetch();
+    await deleteJson("/api/x/1");
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: "DELETE" });
   });
 });

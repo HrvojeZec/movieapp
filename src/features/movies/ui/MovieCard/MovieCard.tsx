@@ -1,40 +1,25 @@
 "use client";
-import { Card, Image, Text, Group, ActionIcon, Box } from "@mantine/core";
-import { Heart, Star } from "lucide-react";
-import { useState } from "react";
-import { Movie } from "@/features/movies/types";
-import { getImageUrl } from "@/features/movies/lib/images";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
+import { Box, Card, Group, Image, Text } from "@mantine/core";
+import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
+import { MOVIE_CARD_SIZES, PLACEHOLDER_POSTER } from "@/features/movies/constants";
+import { getImageUrl } from "@/features/movies/lib/images";
+import { formatRating } from "@/features/movies/lib/movies";
+import type { Movie } from "@/features/movies/types";
+import { formatYear } from "@/shared/lib/format";
+import { ROUTES } from "@/shared/routes";
+import { COLORS } from "@/shared/theme/colors";
+import classes from "./MovieCard.module.scss";
 
 interface MovieCardProps {
   movie: Movie;
-  size?: "sm" | "md" | "lg";
+  size?: keyof typeof MOVIE_CARD_SIZES;
 }
 
 export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
-  const { user } = useAuth();
-  const toggleFavorite = useToggleFavorite();
   const router = useRouter();
-  const [isHovered, setIsHovered] = useState(false);
-
-  const isFavorited = user?.favorites?.includes(movie.id.toString()) || false;
-
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!user) {
-      router.push("/auth/login");
-      return;
-    }
-    toggleFavorite(movie.id.toString());
-  };
-
-  const handleCardClick = () => {
-    router.push(`/movie/${movie.id}`);
-  };
-  const cardHeight = size === "sm" ? 280 : size === "lg" ? 400 : 340;
-  const imageHeight = size === "sm" ? 180 : size === "lg" ? 300 : 240;
+  const dimensions = MOVIE_CARD_SIZES[size];
 
   return (
     <Card
@@ -43,50 +28,21 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
       shadow="md"
       padding="md"
       radius="md"
-      h={cardHeight}
-      className="movie-card"
-      bg="dark.7"
-      style={{
-        cursor: "pointer",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        position: "relative",
-        overflow: "hidden",
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={handleCardClick}
+      h={dimensions.card}
+      className={classes.card}
+      onClick={() => router.push(ROUTES.movie(movie.id))}
     >
       <Card.Section>
         <Image
           src={getImageUrl(movie.poster_path)}
-          height={imageHeight}
+          height={dimensions.image}
           alt={movie.title}
-          fallbackSrc="/placeholder-movie.svg"
+          fallbackSrc={PLACEHOLDER_POSTER}
         />
       </Card.Section>
 
-      <Box
-        pos="absolute"
-        top={8}
-        right={8}
-        style={{ opacity: isHovered ? 1 : 0, transition: "opacity 0.2s" }}
-      >
-        <ActionIcon
-          variant="filled"
-          radius="xl"
-          color={isFavorited ? "red" : "dark"}
-          size="md"
-          onClick={handleFavoriteClick}
-          aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
-          aria-pressed={isFavorited}
-          className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <Heart size={16} fill={isFavorited ? "currentColor" : "none"} />
-        </ActionIcon>
+      <Box className={classes.favorite}>
+        <FavoriteButton movieId={movie.id} />
       </Box>
 
       <Text fw={600} size="sm" lineClamp={2} mt="xs" c="white">
@@ -95,13 +51,13 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
 
       <Group justify="space-between" mt="xs">
         <Group gap={4}>
-          <Star size={12} fill="#fbbf24" color="#fbbf24" />
+          <Star size={12} fill={COLORS.rating} color={COLORS.rating} />
           <Text size="xs" c="dimmed">
-            {movie.vote_average.toFixed(1)}
+            {formatRating(movie.vote_average)}
           </Text>
         </Group>
         <Text size="xs" c="dimmed">
-          {movie.release_date?.split("-")[0]}
+          {formatYear(movie.release_date)}
         </Text>
       </Group>
     </Card>

@@ -1,0 +1,15 @@
+.backdrop {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.poster {
+  border-radius: 12px;
+}

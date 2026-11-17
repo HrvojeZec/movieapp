@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import type { NextRequest } from "next/server";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { jsonError } from "./responses";
 import { RouteError } from "./route-error";
 
@@ -19,7 +20,7 @@ export function withRouteHandler<TContext>(name: string, handler: Handler<TConte
   };
 }
 
-export function toErrorResponse(error: unknown, name: string): Response {
+function toErrorResponse(error: unknown, name: string): Response {
   if (error instanceof RouteError) {
     return jsonError(error.status, error.message, error.errors);
   }
@@ -30,9 +31,9 @@ export function toErrorResponse(error: unknown, name: string): Response {
       field: err.path,
       message: err.message,
     }));
-    return jsonError(400, "Database validation failed", errors);
+    return jsonError(HTTP_STATUS.BAD_REQUEST, "Database validation failed", errors);
   }
 
   console.error(`${name} error:`, error);
-  return jsonError(500, "Internal server error");
+  return jsonError(HTTP_STATUS.INTERNAL_SERVER_ERROR, "Internal server error");
 }

@@ -1,75 +1,57 @@
 "use client";
-import { useState } from "react";
+import Link from "next/link";
 import {
-  Paper,
-  TextInput,
-  PasswordInput,
-  Button,
-  Title,
-  Text,
-  Anchor,
-  Stack,
-  Container,
   Alert,
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
 } from "@mantine/core";
 import { AlertCircle } from "lucide-react";
-import { useLogin } from "@/features/auth/hooks/useLogin";
-import { useRegister } from "@/features/auth/hooks/useRegister";
-import { toApiError } from "@/shared/lib/api-error";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useAuthForm, type AuthFormType } from "@/features/auth/hooks/useAuthForm";
+import { ROUTES } from "@/shared/routes";
+import classes from "./AuthForm.module.scss";
 
-interface AuthFormProps {
-  type: "login" | "register";
-}
+const inputClassNames = { input: classes.input, label: classes.label };
 
-export const AuthForm = ({ type }: AuthFormProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const login = useLogin();
-  const register = useRegister();
-  const router = useRouter();
+const COPY = {
+  login: {
+    title: "Welcome Back",
+    submit: "Sign In",
+    switchPrompt: "Don't have an account? ",
+    switchLabel: "Sign up",
+    switchHref: ROUTES.register,
+  },
+  register: {
+    title: "Create Account",
+    submit: "Create Account",
+    switchPrompt: "Already have an account? ",
+    switchLabel: "Sign in",
+    switchHref: ROUTES.login,
+  },
+} as const;
 
-  const mutation = type === "login" ? login : register;
-  const apiError = mutation.error ? toApiError(mutation.error) : null;
-  const fieldErrors: Record<string, string> = {};
-  // Show the first error per field; later ones are usually follow-ups of the same problem.
-  for (const err of apiError?.errors ?? []) {
-    fieldErrors[err.field] ??= err.message;
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const onSuccess = () => router.push("/");
-
-    if (type === "login") {
-      login.mutate({ email, password }, { onSuccess });
-    } else {
-      register.mutate({ email, password, name }, { onSuccess });
-    }
-  };
+export const AuthForm = ({ type }: { type: AuthFormType }) => {
+  const { values, setField, handleSubmit, submitting, error, fieldErrors } = useAuthForm(type);
+  const copy = COPY[type];
 
   return (
     <Container size="xs" py="xl">
       <Title ta="center" c="white" mb="xl" data-aos="fade-down">
-        {type === "login" ? "Welcome Back" : "Create Account"}
+        {copy.title}
       </Title>
 
-      <Paper
-        data-aos="fade-up"
-        data-aos-delay="300"
-        shadow="md"
-        p="xl"
-        radius="md"
-        bg="dark.7"
-        style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}
-      >
+      <Paper data-aos="fade-up" data-aos-delay="300" shadow="md" p="xl" radius="md">
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
-            {apiError && (
+            {error && (
               <Alert icon={<AlertCircle size={16} />} color="red" variant="light" title="Error">
-                {apiError.message}
+                {error.message}
               </Alert>
             )}
 
@@ -77,14 +59,11 @@ export const AuthForm = ({ type }: AuthFormProps) => {
               <TextInput
                 label="Full Name"
                 placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={values.name}
+                onChange={(e) => setField("name")(e.target.value)}
                 required
                 error={fieldErrors.name}
-                styles={{
-                  input: { backgroundColor: "rgba(255, 255, 255, 0.05)" },
-                  label: { color: "white" },
-                }}
+                classNames={inputClassNames}
               />
             )}
 
@@ -92,51 +71,34 @@ export const AuthForm = ({ type }: AuthFormProps) => {
               label="Email"
               type="email"
               placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={values.email}
+              onChange={(e) => setField("email")(e.target.value)}
               required
               error={fieldErrors.email}
-              styles={{
-                input: { backgroundColor: "rgba(255, 255, 255, 0.05)" },
-                label: { color: "white" },
-              }}
+              classNames={inputClassNames}
             />
 
             <PasswordInput
               label="Password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={values.password}
+              onChange={(e) => setField("password")(e.target.value)}
               required
               error={fieldErrors.password}
-              styles={{
-                input: { backgroundColor: "rgba(255, 255, 255, 0.05)" },
-                label: { color: "white" },
-              }}
+              classNames={inputClassNames}
             />
 
-            <Button
-              type="submit"
-              fullWidth
-              loading={mutation.isPending}
-              size="md"
-              className="gradient-bg"
-            >
-              {type === "login" ? "Sign In" : "Create Account"}
+            <Button type="submit" fullWidth loading={submitting} size="md">
+              {copy.submit}
             </Button>
           </Stack>
         </form>
 
         <Text ta="center" mt="md" c="dimmed">
-          {type === "login" ? "Don't have an account? " : "Already have an account? "}
-          <Link
-            href={type === "login" ? "/auth/register" : "/auth/login"}
-            style={{ textDecoration: "none" }}
-          >
-            <Anchor component="span" c="blue">
-              {type === "login" ? "Sign up" : "Sign in"}
-            </Anchor>
-          </Link>
+          {copy.switchPrompt}
+          <Anchor component={Link} href={copy.switchHref} c="blue">
+            {copy.switchLabel}
+          </Anchor>
         </Text>
       </Paper>
     </Container>

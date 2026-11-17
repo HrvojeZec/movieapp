@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Debounced search suggestions (400 ms) that keep the previous results visible while typing
 - Unit tests for the HTTP helpers, retry rule, query keys and auth helpers, and an end-to-end test for
   retrying a failed request
+- Arrow-key navigation in the search page suggestions, like in the navbar
+- Accessible names for the mobile search, favorites menu, trailer close and back buttons
 
 ### Changed
 
@@ -82,6 +84,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Password and name limits are defined once for the zod schemas and the User model; emails are
   trimmed and lowercased by the schemas; magic numbers in TMDB validation, cache headers and the
   database connection are named constants
+- Reusable hooks and components replace duplicated UI code: one search box for the navbar and the
+  search page, `FavoriteButton` with `useFavorite`, `useCheckout`, `useDiscoverFilters`,
+  `useInfiniteScroll` and `useAuthForm`; the navbar and the pricing and profile pages are split into
+  smaller components; magic numbers are named constants and paths come from one `ROUTES` map
+- Styles moved from inline objects and global classes into a Mantine theme and CSS modules; Mantine
+  styles load in a cascade layer, so the app styles reliably override them
+- No more magic values: HTTP statuses (`HTTP_STATUS`), API endpoints (`API_ROUTES`), durations
+  (`MINUTE_MS`, `DAY_IN_SECONDS`, ...) and CSS colors and shadows are named in one place; query keys live in
+  their own `query-keys.ts` per feature; `postJson`/`deleteJson`, `notifySuccess`/`notifyError` and
+  `requireEnv` replace repeated request, notification and environment variable code
 
 ### Fixed
 
@@ -109,6 +121,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Subscribe buttons ignored clicks while the session was still loading
 - A malformed JSON body on login or registration returned 500 instead of 400
 - The registration response was missing the subscription plan and status that login returns
+- Hover effects on the pricing buttons and search suggestions and the search placeholder color never
+  applied, because inline styles can't express pseudo-classes
+- Favorite hearts clicked before the session loaded sent logged-in users to the login page
+- An empty filter in the Most Watched URL (e.g. `?year=`) filtered by year 0 and showed an error
+- The profile showed "Inactive" for trialing and past-due subscriptions, which still have access
 
 ### Removed
 
@@ -122,6 +139,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused movie fetchers (`getPopularMovies`, `getTopRatedMovies`, `getNowPlayingMovies`,
   `getUpcomingMovies`, `getMoviesByGenre`), replaced by `getMovieList` and `discoverMovies`
 - The `minlength` check on the stored password, which only ever saw the 60-character hash
+- Unused global CSS classes and the leftover `globals.css` from the project template
+- Unused date formats and dayjs plugins, and exports that nothing outside their module used
 
 ### Security
 

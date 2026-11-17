@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { authKeys, currentUserQuery } from "@/features/auth/api/queries";
+import { currentUserQuery } from "@/features/auth/api/queries";
+import { authKeys } from "@/features/auth/api/query-keys";
 
 export function useAuth() {
   const queryClient = useQueryClient();

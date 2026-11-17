@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { searchMovies } from "@/features/movies/api/movies.api";
-import { movieKeys } from "@/features/movies/api/queries";
+import { movieKeys } from "@/features/movies/api/query-keys";
 
 /**
  * Pass a debounced query for search-as-you-type. Suggestions start at 3 characters to avoid noisy

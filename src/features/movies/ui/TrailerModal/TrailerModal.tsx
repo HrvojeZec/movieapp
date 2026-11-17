@@ -1,8 +1,14 @@
 "use client";
-import { Modal, Title, Text, Loader, Center, Group, ActionIcon, Button } from "@mantine/core";
-import { X, Play } from "lucide-react";
-import { getTrailerUrl } from "@/features/movies/lib/trailers";
+import { ActionIcon, Button, Center, Group, Loader, Modal, Text, Title } from "@mantine/core";
+import { Play, X } from "lucide-react";
 import { useMovieVideos } from "@/features/movies/hooks/useMovieVideos";
+import { getTrailerUrl } from "@/features/movies/lib/trailers";
+import { COLORS } from "@/shared/theme/colors";
+import classes from "./TrailerModal.module.scss";
+
+const STAGE_HEIGHT = 400;
+const YOUTUBE_PERMISSIONS =
+  "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
 
 interface TrailerModalProps {
   opened: boolean;
@@ -30,36 +36,24 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
       size="xl"
       centered
       withCloseButton={false}
-      styles={{
-        content: {
-          backgroundColor: "#1a1b23",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-        },
-        body: {
-          padding: 0,
-        },
-      }}
+      classNames={{ content: classes.content, body: classes.body }}
     >
-      <Group
-        justify="space-between"
-        p="md"
-        style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}
-      >
+      <Group justify="space-between" p="md" className={classes.header}>
         <Group gap="sm">
-          <Play size={20} color="#3b82f6" />
+          <Play size={20} color={COLORS.primary} />
           <Title size="lg" c="white">
             {movieTitle}
           </Title>
         </Group>
-        <ActionIcon variant="subtle" size="lg" onClick={onClose} c="white">
+        <ActionIcon variant="subtle" size="lg" onClick={onClose} c="white" aria-label="Close">
           <X size={20} />
         </ActionIcon>
       </Group>
 
-      <div style={{ minHeight: 400 }}>
+      <div className={classes.stage}>
         {loading && (
-          <Center h={400}>
-            <div style={{ textAlign: "center" }}>
+          <Center h={STAGE_HEIGHT}>
+            <div className={classes.message}>
               <Loader size="lg" mb="md" />
               <Text c="white">Loading trailer...</Text>
             </div>
@@ -67,9 +61,9 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
         )}
 
         {(isError || noTrailer) && (
-          <Center h={400}>
-            <div style={{ textAlign: "center" }}>
-              <Play size={48} color="#6b7280" style={{ margin: "0 auto 16px" }} />
+          <Center h={STAGE_HEIGHT}>
+            <div className={classes.message}>
+              <Play size={48} color={COLORS.mutedDark} className={classes.messageIcon} />
               <Text size="lg" c="white" mb="xs">
                 {isError ? "Failed to load trailer" : "No trailer available for this movie"}
               </Text>
@@ -87,19 +81,11 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
         )}
 
         {trailerUrl && !loading && (
-          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+          <div className={classes.player}>
             <iframe
               src={trailerUrl}
               title={`${movieTitle} Trailer`}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                border: "none",
-              }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow={YOUTUBE_PERMISSIONS}
               allowFullScreen
             />
           </div>

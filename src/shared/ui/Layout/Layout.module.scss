@@ -1,0 +1,6 @@
+// The page background comes from body; AppShell would otherwise paint over it
+.root,
+.main,
+.header {
+  background-color: transparent;
+}

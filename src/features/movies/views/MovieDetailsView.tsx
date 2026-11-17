@@ -1,41 +1,41 @@
 "use client";
-import { useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import {
-  Container,
-  Title,
-  Text,
-  Group,
   Badge,
-  Stack,
   Box,
-  ActionIcon,
-  Avatar,
-  SimpleGrid,
-  Loader,
-  Center,
-  Paper,
   Button,
+  Center,
+  Container,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  Title,
 } from "@mantine/core";
-import { Heart, Star, Clock, MapPin, Calendar, PlayCircle } from "lucide-react";
-import { getImageUrl } from "@/features/movies/lib/images";
+import { useDisclosure } from "@mantine/hooks";
+import { Calendar, Clock, MapPin, PlayCircle, Star } from "lucide-react";
+import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
 import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
-import { QueryError } from "@/shared/ui/QueryError/QueryError";
-import { HttpError } from "@/shared/lib/http";
+import { getImageUrl } from "@/features/movies/lib/images";
+import { formatRating } from "@/features/movies/lib/movies";
+import { CastGrid } from "@/features/movies/ui/CastGrid/CastGrid";
 import { TrailerModal } from "@/features/movies/ui/TrailerModal/TrailerModal";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
+import { formatRuntime, formatYear } from "@/shared/lib/format";
+import { HttpError } from "@/shared/lib/http";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
+import { COLORS } from "@/shared/theme/colors";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
+import classes from "./MovieDetailsView.module.scss";
+
+const POSTER = { width: 300, height: 450 };
+const NOT_FOUND_HEIGHT = 400;
 
 export function MovieDetailsView() {
-  const params = useParams();
-  const { user } = useAuth();
-  const toggleFavorite = useToggleFavorite();
-  const [trailerModalOpened, setTrailerModalOpened] = useState(false);
-
-  const movieId = params.id as string;
-  const isFavorited = user?.favorites?.includes(movieId) || false;
-  const { data: movie, isPending, error, refetch } = useMovieDetails(Number(movieId));
+  const params = useParams<{ id: string }>();
+  const movieId = Number(params.id);
+  const [trailerOpened, trailer] = useDisclosure(false);
+  const { data: movie, isPending, error, refetch } = useMovieDetails(movieId);
 
   if (isPending) {
     return (
@@ -45,7 +45,7 @@ export function MovieDetailsView() {
     );
   }
 
-  if (error && !(error instanceof HttpError && error.status === 404)) {
+  if (error && !(error instanceof HttpError && error.status === HTTP_STATUS.NOT_FOUND)) {
     return (
       <Container size="xl" py="xl">
         <QueryError message="We couldn't load this movie." onRetry={() => refetch()} />
@@ -56,7 +56,7 @@ export function MovieDetailsView() {
   if (!movie) {
     return (
       <Container size="xl" py="xl">
-        <Center h={400}>
+        <Center h={NOT_FOUND_HEIGHT}>
           <Text size="xl" c="dimmed">
             Movie not found
           </Text>
@@ -65,37 +65,22 @@ export function MovieDetailsView() {
     );
   }
 
-  const formatRuntime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
-
   return (
     <div>
       <Box
         data-aos="fade-in"
         data-aos-duration="1000"
-        /*  h={500} */
-        style={{
-          backgroundImage: `url(${getImageUrl(movie.backdrop_path, "w1280")})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
-        }}
+        className={classes.backdrop}
+        style={{ backgroundImage: `url(${getImageUrl(movie.backdrop_path, "w1280")})` }}
       >
-        <Container
-          size="xl"
-          h="100%"
-          style={{ display: "flex", alignItems: "center", padding: "1.5rem" }}
-        >
+        <Container size="xl" h="100%" className={classes.header}>
           <Group gap="xl" align="flex-start">
             <Image
               src={getImageUrl(movie.poster_path, "w500")}
               alt={movie.title}
-              width={300}
-              height={450}
-              style={{ borderRadius: 12 }}
+              width={POSTER.width}
+              height={POSTER.height}
+              className={classes.poster}
             />
 
             <Stack gap="md" maw={700}>
@@ -103,26 +88,15 @@ export function MovieDetailsView() {
                 <Title size="2.5rem" fw={700} c="white">
                   {movie.title}
                 </Title>
-                {user && (
-                  <ActionIcon
-                    size="lg"
-                    variant="default"
-                    onClick={() => toggleFavorite(movieId)}
-                    aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
-                    aria-pressed={isFavorited}
-                    className={`favorite-heart ${isFavorited ? "favorited" : ""}`}
-                  >
-                    <Heart size={20} fill={isFavorited ? "currentColor" : "none"} />
-                  </ActionIcon>
-                )}
+                <FavoriteButton movieId={movie.id} variant="inline" hideWhenLoggedOut />
               </Group>
 
               <Group gap="md">
                 <Badge leftSection={<Star size={14} />} size="lg" variant="filled" color="yellow">
-                  {movie.vote_average.toFixed(1)}
+                  {formatRating(movie.vote_average)}
                 </Badge>
                 <Badge leftSection={<Calendar size={14} />} size="lg" variant="outline">
-                  {movie.release_date?.split("-")[0]}
+                  {formatYear(movie.release_date)}
                 </Badge>
                 <Badge leftSection={<Clock size={14} />} size="lg" variant="outline">
                   {formatRuntime(movie.runtime)}
@@ -141,66 +115,28 @@ export function MovieDetailsView() {
                 {movie.overview}
               </Text>
               <Group gap="md" mt="md">
-                <Button
-                  leftSection={<PlayCircle size={18} />}
-                  size="md"
-                  className="blue"
-                  onClick={() => setTrailerModalOpened(true)}
-                >
+                <Button leftSection={<PlayCircle size={18} />} size="md" onClick={trailer.open}>
                   Watch Trailer
                 </Button>
               </Group>
-              <Group gap="md">
-                <Group gap="xs">
-                  <MapPin size={16} color="#9ca3af" />
-                  <Text c="gray.4">{movie.production_countries.map((c) => c.name).join(", ")}</Text>
-                </Group>
+              <Group gap="xs">
+                <MapPin size={16} color={COLORS.muted} />
+                <Text c="gray.4">{movie.production_countries.map((c) => c.name).join(", ")}</Text>
               </Group>
             </Stack>
           </Group>
         </Container>
       </Box>
+
       <TrailerModal
-        opened={trailerModalOpened}
-        onClose={() => setTrailerModalOpened(false)}
-        movieId={parseInt(movieId)}
+        opened={trailerOpened}
+        onClose={trailer.close}
+        movieId={movie.id}
         movieTitle={movie.title}
       />
 
       <Container size="xl" py="xl">
-        <Stack gap="xl">
-          <Title size="xl" fw={600} c="white">
-            Cast
-          </Title>
-
-          <SimpleGrid cols={{ base: 2, sm: 3, md: 4, lg: 6 }} spacing="md">
-            {movie.credits?.cast.slice(0, 12).map((actor) => (
-              <Paper
-                key={actor.id}
-                p="md"
-                bg="dark.7"
-                radius="md"
-                style={{ border: "1px solid rgba(255, 255, 255, 0.1)" }}
-              >
-                <Stack align="center" gap="sm">
-                  <Avatar
-                    src={actor.profile_path ? getImageUrl(actor.profile_path, "w200") : null}
-                    size="lg"
-                    radius="md"
-                  />
-                  <Stack gap={2} align="center">
-                    <Text size="sm" fw={500} c="white" ta="center" lineClamp={1}>
-                      {actor.name}
-                    </Text>
-                    <Text size="xs" c="dimmed" ta="center" lineClamp={1}>
-                      {actor.character}
-                    </Text>
-                  </Stack>
-                </Stack>
-              </Paper>
-            ))}
-          </SimpleGrid>
-        </Stack>
+        <CastGrid cast={movie.credits?.cast ?? []} />
       </Container>
     </div>
   );

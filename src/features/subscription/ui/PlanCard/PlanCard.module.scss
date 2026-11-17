@@ -1,0 +1,64 @@
+.card {
+  position: relative;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  &.premium:hover {
+    border-color: var(--primary-500);
+    box-shadow: 0 20px 40px var(--primary-glow-soft);
+  }
+
+  &.pro:hover {
+    border-color: var(--warning-500);
+    box-shadow: 0 20px 40px rgba(245, 158, 11, 0.2);
+  }
+}
+
+.popular {
+  border: 2px solid var(--primary-500);
+  transform: scale(1.05);
+
+  &:hover {
+    transform: scale(1.05) translateY(-5px);
+    border-color: var(--primary-400);
+    box-shadow: 0 20px 40px var(--primary-glow);
+  }
+}
+
+// After .popular, so the current plan's green border wins
+.current {
+  border: 2px solid var(--success-500);
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.icon {
+  text-align: center;
+}
+
+.subscribe {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  }
+
+  &.highlighted:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  }
+}

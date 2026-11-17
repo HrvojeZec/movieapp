@@ -1,0 +1,41 @@
+.root {
+  position: relative;
+}
+
+.input {
+  background-color: var(--input-bg-strong);
+  border: 1px solid var(--input-border);
+  color: white;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  z-index: 1000;
+  background: rgba(31, 41, 55, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--primary-glow);
+  border-radius: 8px;
+}
+
+.option {
+  width: 100%;
+  border-radius: 4px;
+
+  &:hover,
+  &.active {
+    background-color: var(--primary-glow-soft);
+  }
+}
+
+.poster {
+  border-radius: 4px;
+  flex-shrink: 0;
+}

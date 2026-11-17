@@ -1,22 +1,19 @@
 import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { notifications } from "@mantine/notifications";
-import { authKeys } from "@/features/auth/api/queries";
+import { authKeys } from "@/features/auth/api/query-keys";
 import type { AuthUser } from "@/features/auth/types";
-import {
-  deleteFavorite,
-  favoritesMutationKey,
-  postFavorite,
-} from "@/features/favorites/api/favorites.api";
+import { deleteFavorite, postFavorite } from "@/features/favorites/api/favorites.api";
+import { favoriteKeys } from "@/features/favorites/api/query-keys";
 import { applyFavoriteChange, updateFavorites } from "@/features/favorites/lib/favorites";
 import type { FavoriteChange } from "@/features/favorites/types";
+import { notifyError } from "@/shared/lib/notify";
 
 /** Optimistically adds or removes a favorite; returns a no-op for logged-out users. */
 export function useToggleFavorite() {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationKey: favoritesMutationKey,
+    mutationKey: favoriteKeys.toggle,
     mutationFn: ({ movieId, add }: FavoriteChange) =>
       add ? postFavorite(movieId) : deleteFavorite(movieId),
     onMutate: async ({ movieId, add }) => {
@@ -26,18 +23,14 @@ export function useToggleFavorite() {
     },
     onSuccess: ({ favorites }) => {
       // With other toggles still in flight the server list is already outdated; the last one syncs
-      if (queryClient.isMutating({ mutationKey: favoritesMutationKey }) === 1) {
+      if (queryClient.isMutating({ mutationKey: favoriteKeys.toggle }) === 1) {
         updateFavorites(queryClient, () => favorites);
       }
     },
     // Undo only this movie instead of restoring a snapshot, so concurrent toggles are kept
     onError: (_error, { movieId, add }) => {
       updateFavorites(queryClient, (favorites) => applyFavoriteChange(favorites, movieId, !add));
-      notifications.show({
-        title: "Could not update favorites",
-        message: "Please try again",
-        color: "red",
-      });
+      notifyError("Could not update favorites", "Please try again");
     },
   });
 
