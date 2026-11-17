@@ -7,7 +7,7 @@ test("a user can register, log out and log back in", async ({ page }) => {
   await page.goto("/auth/register");
   await page.getByLabel("Full Name").fill(user.name);
   await page.getByLabel("Email").fill(user.email);
-  await page.getByLabel("Password").fill(user.password);
+  await page.getByRole("textbox", { name: "Password" }).fill(user.password);
   await page.getByRole("button", { name: "Create Account" }).click();
 
   await expect(page).toHaveURL("/");
@@ -19,7 +19,7 @@ test("a user can register, log out and log back in", async ({ page }) => {
 
   await page.goto("/auth/login");
   await page.getByLabel("Email").fill(user.email);
-  await page.getByLabel("Password").fill(user.password);
+  await page.getByRole("textbox", { name: "Password" }).fill(user.password);
   await page.getByRole("button", { name: "Sign In" }).click();
 
   await expect(page).toHaveURL("/");
@@ -46,7 +46,7 @@ test("registration shows field-level validation errors", async ({ page }) => {
   // Passes the browser's built-in type="email" check but not the server's validation,
   // so the request actually reaches the API and its field errors are rendered
   await page.getByLabel("Email").fill("test@example");
-  await page.getByLabel("Password").fill("weak");
+  await page.getByRole("textbox", { name: "Password" }).fill("weak");
   await page.getByRole("button", { name: "Create Account" }).click();
 
   await expect(page.getByText("Please enter a valid email address")).toBeVisible();
@@ -60,7 +60,7 @@ test("login with a wrong password is rejected", async ({ page }) => {
 
   await page.goto("/auth/login");
   await page.getByLabel("Email").fill(user.email);
-  await page.getByLabel("Password").fill("WrongPass123");
+  await page.getByRole("textbox", { name: "Password" }).fill("WrongPass123");
   await page.getByRole("button", { name: "Sign In" }).click();
 
   await expect(page.getByText("Invalid credentials").first()).toBeVisible();
@@ -84,7 +84,7 @@ test("repeated logins to one account are blocked with a retry time", async ({ pa
   // The form explains why instead of failing silently
   await page.goto("/auth/login");
   await page.getByLabel("Email").fill(user.email);
-  await page.getByLabel("Password").fill(user.password);
+  await page.getByRole("textbox", { name: "Password" }).fill(user.password);
   await page.getByRole("button", { name: "Sign In" }).click();
   await expect(
     page.getByText(/Too many login attempts\. Try again in \d+ minutes?\./).first(),
