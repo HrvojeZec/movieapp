@@ -118,7 +118,7 @@ export function PlanCard({
         >
           {plan.features.map((feature) => (
             <List.Item key={feature.label} c={feature.comingSoon ? "dimmed" : "gray.3"}>
-              <Group gap={6} wrap="nowrap">
+              <Group gap={6}>
                 {feature.label}
                 {feature.comingSoon && (
                   <Badge size="xs" variant="light" color="gray">
