@@ -52,7 +52,7 @@ export function MostWatchedView() {
           </Text>
         </Group>
 
-        <Group gap="md" wrap="wrap" data-aos="fade-up" data-aos-delay="200">
+        <Group gap="md" wrap="wrap">
           <Select
             placeholder="Release Year"
             data={yearOptions}
@@ -94,9 +94,7 @@ export function MostWatchedView() {
             <Text c="dimmed">No movies match these filters.</Text>
           </Center>
         ) : (
-          <div data-aos="fade-up" data-aos-delay="400">
-            <MovieGrid movies={movies} />
-          </div>
+          <MovieGrid movies={movies} />
         )}
 
         <div ref={sentinelRef} aria-hidden />

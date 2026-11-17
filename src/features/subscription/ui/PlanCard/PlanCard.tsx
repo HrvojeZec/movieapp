@@ -1,20 +1,12 @@
 "use client";
 import type { ReactNode } from "react";
-import {
-  Badge,
-  Button,
-  Card,
-  Group,
-  Indicator,
-  List,
-  Loader,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Badge, Button, Group, Indicator, List, Loader, Stack, Text, Title } from "@mantine/core";
 import { Check, CheckIcon, Star, Zap } from "lucide-react";
 import type { PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
 import { COLORS } from "@/shared/theme/colors";
+import ShinyText from "@/shared/vendor/react-bits/ShinyText/ShinyText";
+import SpotlightCard from "@/shared/vendor/react-bits/SpotlightCard/SpotlightCard";
+import StarBorder from "@/shared/vendor/react-bits/StarBorder/StarBorder";
 import classes from "./PlanCard.module.scss";
 
 const PLAN_ICON_SIZE = 48;
@@ -25,6 +17,21 @@ const PLAN_ICONS: Record<SubscriptionPlan, ReactNode> = {
   pro: <Zap size={PLAN_ICON_SIZE} color={COLORS.warning} />,
 };
 
+// The light that follows the pointer takes the plan's color
+const SPOTLIGHT_COLORS: Record<SubscriptionPlan, string> = {
+  basic: "rgba(16, 185, 129, 0.25)",
+  premium: "rgba(59, 130, 246, 0.3)",
+  pro: "rgba(245, 158, 11, 0.25)",
+};
+
+// A light sheen moving across the "Most Popular" label
+const BADGE_SHINE = { base: "#dbeafe", highlight: "#ffffff" };
+
+// A star traveling around the recommended plan's button
+const STAR_BORDER = { thickness: 2, radius: 8, duration: 4 };
+// StarBorder brings its own padding and surface; here it is only a frame around our button
+const STAR_BORDER_FRAME_STYLE = { display: "flex", width: "100%", padding: STAR_BORDER.thickness };
+
 interface PlanCardProps {
   plan: PlanDetails;
   isCurrent: boolean;
@@ -33,7 +40,6 @@ interface PlanCardProps {
   /** This plan's checkout is starting. */
   pending: boolean;
   onSubscribe: () => void;
-  animationDelay: number;
 }
 
 export function PlanCard({
@@ -43,7 +49,6 @@ export function PlanCard({
   disabled,
   pending,
   onSubscribe,
-  animationDelay,
 }: PlanCardProps) {
   const cardClasses = [
     classes.card,
@@ -52,14 +57,26 @@ export function PlanCard({
     isCurrent && classes.current,
   ];
 
+  const button = (
+    <Button
+      fullWidth
+      size="lg"
+      variant={plan.popular ? "filled" : "outline"}
+      color={plan.popular ? "blue" : "gray"}
+      onClick={onSubscribe}
+      disabled={disabled}
+      className={`${classes.subscribe} ${plan.popular ? classes.highlighted : ""}`}
+    >
+      {pending ? <Loader size="sm" /> : buttonLabel}
+    </Button>
+  );
+
   return (
     <Indicator disabled={!isCurrent} color="green" size="lg" label={<CheckIcon />}>
-      <Card
-        data-aos="fade-up"
-        data-aos-delay={animationDelay}
-        p="xl"
-        radius="lg"
+      <SpotlightCard
         className={cardClasses.filter(Boolean).join(" ")}
+        spotlightColor={SPOTLIGHT_COLORS[plan.id]}
+        theme="dark"
       >
         {plan.popular && (
           <Badge
@@ -69,7 +86,11 @@ export function PlanCard({
             leftSection={<Star size={14} />}
             className={classes.badge}
           >
-            Most Popular
+            <ShinyText
+              text="Most Popular"
+              color={BADGE_SHINE.base}
+              shineColor={BADGE_SHINE.highlight}
+            />
           </Badge>
         )}
 
@@ -109,18 +130,22 @@ export function PlanCard({
           ))}
         </List>
 
-        <Button
-          fullWidth
-          size="lg"
-          variant={plan.popular ? "filled" : "outline"}
-          color={plan.popular ? "blue" : "gray"}
-          onClick={onSubscribe}
-          disabled={disabled}
-          className={`${classes.subscribe} ${plan.popular ? classes.highlighted : ""}`}
-        >
-          {pending ? <Loader size="sm" /> : buttonLabel}
-        </Button>
-      </Card>
+        {plan.popular && !disabled ? (
+          <StarBorder
+            as="div"
+            color={COLORS.primary}
+            thickness={STAR_BORDER.thickness}
+            radius={STAR_BORDER.radius}
+            duration={STAR_BORDER.duration}
+            backgroundColor="transparent"
+            style={STAR_BORDER_FRAME_STYLE}
+          >
+            {button}
+          </StarBorder>
+        ) : (
+          button
+        )}
+      </SpotlightCard>
     </Indicator>
   );
 }

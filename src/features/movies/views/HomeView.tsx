@@ -34,7 +34,7 @@ export function HomeView() {
 
       <Container size="xl" py="xl">
         <Stack gap="xl">
-          <div data-aos="fade-up" data-aos-delay="200">
+          <div>
             {nowPlaying.isError ? (
               <QueryError onRetry={() => nowPlaying.refetch()} />
             ) : (
@@ -47,7 +47,7 @@ export function HomeView() {
             )}
           </div>
 
-          <div data-aos="fade-up" data-aos-delay="400">
+          <div>
             <SectionTitle icon={<Trophy size={24} color="gold" />}>Top rated</SectionTitle>
             {topRated.isError ? (
               <QueryError onRetry={() => topRated.refetch()} />

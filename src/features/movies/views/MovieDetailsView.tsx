@@ -26,9 +26,13 @@ import { HttpError } from "@/shared/lib/http";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
+import TiltedCard from "@/shared/vendor/react-bits/TiltedCard/TiltedCard";
 import classes from "./MovieDetailsView.module.scss";
 
-const POSTER = { width: 300, height: 450 };
+const POSTER = { width: 300, height: 450, radius: 12 };
+// Subtle: the poster leans toward the pointer, it doesn't spin
+const POSTER_TILT_DEGREES = 8;
+const POSTER_HOVER_SCALE = 1.03;
 const NOT_FOUND_HEIGHT = 400;
 
 export function MovieDetailsView() {
@@ -68,20 +72,38 @@ export function MovieDetailsView() {
   return (
     <div>
       <Box
-        data-aos="fade-in"
-        data-aos-duration="1000"
         className={classes.backdrop}
         style={{ backgroundImage: `url(${getImageUrl(movie.backdrop_path, "w1280")})` }}
       >
         <Container size="xl" h="100%" className={classes.header}>
           <Group gap="xl" align="flex-start">
-            <Image
-              src={getImageUrl(movie.poster_path, "w500")}
-              alt={movie.title}
-              width={POSTER.width}
-              height={POSTER.height}
-              className={classes.poster}
-            />
+            {/* Tilts toward the pointer on desktop; a plain image on touch screens */}
+            <Box visibleFrom="md">
+              <TiltedCard
+                imageSrc={getImageUrl(movie.poster_path, "w500")}
+                altText={movie.title}
+                containerWidth={POSTER.width}
+                containerHeight={POSTER.height}
+                imageWidth={POSTER.width}
+                imageHeight={POSTER.height}
+                radius={POSTER.radius}
+                rotateAmplitude={POSTER_TILT_DEGREES}
+                scaleOnHover={POSTER_HOVER_SCALE}
+                showTooltip={false}
+                flipOnClick={false}
+                gyroscope={false}
+                intro={false}
+              />
+            </Box>
+            <Box hiddenFrom="md">
+              <Image
+                src={getImageUrl(movie.poster_path, "w500")}
+                alt={movie.title}
+                width={POSTER.width}
+                height={POSTER.height}
+                className={classes.poster}
+              />
+            </Box>
 
             <Stack gap="md" maw={700}>
               <Group>

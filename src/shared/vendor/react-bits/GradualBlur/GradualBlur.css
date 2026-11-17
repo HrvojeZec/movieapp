@@ -1,0 +1,8 @@
+/*
+ * GradualBlur from React Bits (https://reactbits.dev), (c) 2026 David Haz.
+ * MIT + Commons Clause license, see THIRD_PARTY_NOTICES.md. Vendored as is: wrap it in our own
+ * components instead of editing it, so it can be updated from upstream.
+ */
+.gradual-blur {
+  pointer-events: none;
+}

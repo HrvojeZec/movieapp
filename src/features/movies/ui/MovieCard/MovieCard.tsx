@@ -10,6 +10,7 @@ import type { Movie } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
+import GlareHover from "@/shared/vendor/react-bits/GlareHover/GlareHover";
 import classes from "./MovieCard.module.scss";
 
 interface MovieCardProps {
@@ -23,8 +24,6 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
 
   return (
     <Card
-      data-aos="zoom-in"
-      data-aos-duration="600"
       shadow="md"
       padding="md"
       radius="md"
@@ -33,12 +32,15 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
       onClick={() => router.push(ROUTES.movie(movie.id))}
     >
       <Card.Section>
-        <Image
-          src={getImageUrl(movie.poster_path)}
-          height={dimensions.image}
-          alt={movie.title}
-          fallbackSrc={PLACEHOLDER_POSTER}
-        />
+        {/* A light sweep across the poster on hover */}
+        <GlareHover width="100%" borderRadius="0" glareOpacity={0.25} rimGlint={false}>
+          <Image
+            src={getImageUrl(movie.poster_path)}
+            height={dimensions.image}
+            alt={movie.title}
+            fallbackSrc={PLACEHOLDER_POSTER}
+          />
+        </GlareHover>
       </Card.Section>
 
       <Box className={classes.favorite}>

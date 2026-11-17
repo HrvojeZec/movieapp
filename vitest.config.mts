@@ -21,7 +21,7 @@ export default defineConfig({
         "src/shared/lib/**/*.ts",
         "src/server/**/*.ts",
       ],
-      exclude: ["**/__tests__/**"],
+      exclude: ["**/__tests__/**", "src/shared/vendor/**"],
       reporter: ["text", "html"],
     },
   },

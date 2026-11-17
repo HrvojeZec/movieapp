@@ -1,0 +1,9 @@
+// BlurText renders a flex <p> of words; center it like the title above
+.subtitle {
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: var(--mantine-font-size-xl);
+  color: var(--mantine-color-dimmed);
+  text-align: center;
+}

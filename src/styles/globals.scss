@@ -37,17 +37,35 @@ body {
   min-height: 100vh;
 }
 
-// Shared by every skeleton placeholder
+// Shared by every skeleton placeholder: a highlight sweeping across, like content about to appear
 .loading-skeleton {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: linear-gradient(
+    100deg,
+    var(--mantine-color-dark-6) 30%,
+    var(--mantine-color-dark-5) 50%,
+    var(--mantine-color-dark-6) 70%
+  );
+  background-size: 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
   }
-  50% {
-    opacity: 0.5;
+  to {
+    background-position: 0 0;
+  }
+}
+
+// Respect the OS setting everywhere, including CSS animations and third-party components
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

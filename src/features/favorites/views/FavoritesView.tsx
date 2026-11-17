@@ -8,6 +8,7 @@ import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { ROUTES } from "@/shared/routes";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
+import { Reveal } from "@/shared/ui/motion/Reveal";
 
 export function FavoritesView() {
   const { user, loading: authLoading } = useAuth();
@@ -20,35 +21,33 @@ export function FavoritesView() {
   return (
     <Container size="xl" py="xl">
       <Stack gap="xl">
-        <div data-aos="fade-down">
-          <SectionTitle icon={<Heart color="red" />} size="2rem">
-            My Favorites ({favorites.length})
-          </SectionTitle>
-        </div>
+        <SectionTitle icon={<Heart color="red" />} size="2rem">
+          My Favorites ({favorites.length})
+        </SectionTitle>
 
         {isError && <QueryError message="Some favorites couldn't be loaded." onRetry={refetch} />}
 
         {loading ? (
           <MovieGrid movies={[]} loading />
         ) : movies.length > 0 ? (
-          <div data-aos="fade-up" data-aos-delay="200">
-            <MovieGrid movies={movies} />
-          </div>
+          <MovieGrid movies={movies} />
         ) : (
-          <Stack data-aos="fade-up" data-aos-delay="200" gap="md" mt="xl">
-            <Text c="dimmed" ta="center" size="lg">
-              {user
-                ? "You haven't added any movies to your favorites yet."
-                : "Please log in to view your favorites."}
-            </Text>
-            {!user && (
-              <Center>
-                <Button variant="outline" onClick={() => router.push(ROUTES.login)}>
-                  Log In
-                </Button>
-              </Center>
-            )}
-          </Stack>
+          <Reveal>
+            <Stack gap="md" mt="xl">
+              <Text c="dimmed" ta="center" size="lg">
+                {user
+                  ? "You haven't added any movies to your favorites yet."
+                  : "Please log in to view your favorites."}
+              </Text>
+              {!user && (
+                <Center>
+                  <Button variant="outline" onClick={() => router.push(ROUTES.login)}>
+                    Log In
+                  </Button>
+                </Center>
+              )}
+            </Stack>
+          </Reveal>
         )}
       </Stack>
     </Container>

@@ -7,6 +7,8 @@ import { COLORS } from "@/shared/theme/colors";
 import classes from "./TrailerModal.module.scss";
 
 const STAGE_HEIGHT = 400;
+// The player grows out of the button instead of appearing abruptly
+const MODAL_TRANSITION = { transition: "pop", duration: 200 } as const;
 const YOUTUBE_PERMISSIONS =
   "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
 
@@ -36,6 +38,7 @@ export const TrailerModal = ({ opened, onClose, movieId, movieTitle }: TrailerMo
       size="xl"
       centered
       withCloseButton={false}
+      transitionProps={MODAL_TRANSITION}
       classNames={{ content: classes.content, body: classes.body }}
     >
       <Group justify="space-between" p="md" className={classes.header}>

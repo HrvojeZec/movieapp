@@ -20,6 +20,8 @@ const eslintConfig = [
       "playwright-report/**",
       "test-results/**",
       "next-env.d.ts",
+      // Third-party components with their own license, kept as published upstream
+      "src/shared/vendor/**",
     ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
