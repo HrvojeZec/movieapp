@@ -15,6 +15,12 @@ export const SEARCH_DEBOUNCE_MS = 400;
 export const SEARCH_SUGGESTION_MIN_LENGTH = 3;
 export const SEARCH_SUGGESTION_LIMIT = 8;
 
+// Recently viewed: kept in this browser only
+export const RECENTLY_VIEWED_STORAGE_KEY = "movieapp:recently-viewed";
+export const RECENTLY_VIEWED_LIMIT = 12;
+// The command palette shows a few of them before anything is typed
+export const PALETTE_RECENT_LIMIT = 5;
+
 // Home page
 // Which TMDB list feeds each home page section; also prefetched on the server
 export const HOME_LISTS = {
