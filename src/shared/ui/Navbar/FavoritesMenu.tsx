@@ -8,9 +8,11 @@ import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
+import classes from "./FavoritesMenu.module.scss";
 
 const MENU_WIDTH = 250;
 const THUMBNAIL = { width: 32, height: 48 };
+const BADGE = { size: 16, offset: 6 };
 
 /** Heart icon with the favorites count and a preview of the latest favorites. */
 export function FavoritesMenu({ favorites }: { favorites: string[] }) {
@@ -20,17 +22,23 @@ export function FavoritesMenu({ favorites }: { favorites: string[] }) {
 
   return (
     <Menu shadow="md" width={MENU_WIDTH}>
-      <Menu.Target>
-        <ActionIcon variant="subtle" size="lg" c="white" aria-label="Favorites">
-          {favorites.length > 0 ? (
-            <Indicator size={13} color="orange" label={<Text size="xs">{favorites.length}</Text>}>
-              <Heart size={18} />
-            </Indicator>
-          ) : (
+      {/* Wraps the button rather than sitting inside it: ActionIcon clips its overflow, which cut
+          the badge in half */}
+      <Indicator
+        inline
+        size={BADGE.size}
+        offset={BADGE.offset}
+        color="orange"
+        label={favorites.length}
+        disabled={favorites.length === 0}
+        classNames={{ indicator: classes.badge }}
+      >
+        <Menu.Target>
+          <ActionIcon variant="subtle" size="lg" c="white" aria-label="Favorites">
             <Heart size={18} />
-          )}
-        </ActionIcon>
-      </Menu.Target>
+          </ActionIcon>
+        </Menu.Target>
+      </Indicator>
 
       <Menu.Dropdown>
         <Menu.Label>Favorites</Menu.Label>
