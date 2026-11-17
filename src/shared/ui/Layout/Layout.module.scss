@@ -4,3 +4,14 @@
 .header {
   background-color: transparent;
 }
+
+// AppShell.Main is at least as tall as the viewport; the page grows so the footer stays at the
+// bottom even on short pages
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1;
+}

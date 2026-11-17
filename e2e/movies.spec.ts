@@ -28,7 +28,7 @@ test("a movie page shows details and plays the trailer", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
   await expect(page.getByText("Cast")).toBeVisible();
 
-  await page.getByRole("button", { name: "Watch Trailer" }).click();
+  await page.getByRole("button", { name: "Play trailer" }).click();
   await expect(page.locator('iframe[src*="youtube.com/embed/"]')).toBeVisible();
 });
 
@@ -57,7 +57,7 @@ test("a failed request shows an error state that can be retried", async ({ page 
   );
 
   await page.goto(`/movie/${FIGHT_CLUB_ID}`);
-  await page.getByRole("button", { name: "Watch Trailer" }).click();
+  await page.getByRole("button", { name: "Play trailer" }).click();
   // Server errors are retried twice with backoff before the error state appears
   await expect(page.getByText("Failed to load trailer")).toBeVisible({ timeout: 15_000 });
 

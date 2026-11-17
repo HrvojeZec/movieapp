@@ -50,6 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   as the Open Graph and Twitter preview image
 - Unknown or malformed movie IDs respond with HTTP 404
 - End-to-end tests for the server-rendered HTML, the metadata and the 404
+- Responsive header: on phones a burger opens a drawer with search, navigation and login, so the
+  header fits on one line; a Pricing link next to Most Watched
+- Footer with the TMDB attribution required by its terms of use
+- 404 pages (a general one and a movie-specific one), an error page with "Try again", and a loading
+  state for the home page
+- End-to-end tests for the mobile drawer, the footer attribution and the 404 pages
 
 ### Changed
 
@@ -136,6 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Favorite hearts clicked before the session loaded sent logged-in users to the login page
 - An empty filter in the Most Watched URL (e.g. `?year=`) filtered by year 0 and showed an error
 - The profile showed "Inactive" for trialing and past-due subscriptions, which still have access
+- The hero labeled TMDB ratings as IMDb; trailer buttons now read "Play trailer" instead of
+  "watch now" / "Watch Trailer"
 
 ### Removed
 
@@ -151,6 +159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `minlength` check on the stored password, which only ever saw the 60-character hash
 - Unused global CSS classes and the leftover `globals.css` from the project template
 - Unused date formats and dayjs plugins, and exports that nothing outside their module used
+- Unused images from the project template in `public/`
 
 ### Security
 

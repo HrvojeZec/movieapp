@@ -37,13 +37,13 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
           </Text>
           <Group gap="md" mb="xl">
             <Badge leftSection={<Star size={14} />} variant="filled" color="yellow">
-              {formatRating(movie.vote_average)} IMDb
+              {formatRating(movie.vote_average)} TMDB
             </Badge>
             <Text c="gray.4">{formatYear(movie.release_date)}</Text>
           </Group>
           <Group data-aos="fade-up" data-aos-delay="600">
             <Button leftSection={<PlayCircle size={20} />} size="lg" onClick={onPlayTrailer}>
-              watch now
+              Play trailer
             </Button>
             <Button
               variant="outline"
@@ -51,7 +51,7 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
               c="white"
               onClick={() => router.push(ROUTES.movie(movie.id))}
             >
-              more info
+              More info
             </Button>
           </Group>
         </Box>
