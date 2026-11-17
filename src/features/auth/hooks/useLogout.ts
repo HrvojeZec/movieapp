@@ -1,19 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { notifications } from "@mantine/notifications";
-import { authKeys } from "@/features/auth/api/queries";
-import { fetchJson } from "@/shared/lib/http";
+import { logout } from "@/features/auth/api/auth.api";
+import { authKeys } from "@/features/auth/api/query-keys";
+import { notifyError, notifyInfo } from "@/shared/lib/notify";
 
 export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => fetchJson<unknown>("/api/auth/logout", { method: "POST" }),
+    mutationFn: logout,
     onSuccess: () => {
       queryClient.setQueryData(authKeys.me, null);
-      notifications.show({ title: "Goodbye!", message: "Successfully logged out", color: "blue" });
+      notifyInfo("Goodbye!", "Successfully logged out");
     },
-    onError: () => {
-      notifications.show({ title: "Logout failed", message: "Please try again", color: "red" });
-    },
+    onError: () => notifyError("Logout failed", "Please try again"),
   });
 }

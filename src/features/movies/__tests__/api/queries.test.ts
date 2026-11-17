@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Movie, TMDBResponse } from "@/features/movies/types";
-import { getNextPage, movieKeys } from "@/features/movies/api/queries";
+import { getNextPage } from "@/features/movies/api/queries";
+import { movieKeys } from "@/features/movies/api/query-keys";
 
 const page = (current: number, totalPages: number): TMDBResponse<Movie> => ({
   page: current,

@@ -51,6 +51,9 @@ export interface Video {
   published_at: string;
 }
 
+// Image widths offered by TMDB's CDN
+export type TmdbImageSize = "w200" | "w300" | "w500" | "w780" | "w1280" | "original";
+
 export interface DiscoverFilters {
   year?: number;
   genre?: number;

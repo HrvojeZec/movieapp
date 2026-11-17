@@ -1,13 +1,14 @@
 // TMDB serves at most 500 pages per list, regardless of total_pages
 export const TMDB_MAX_PAGE = 500;
 
-export const DAY = 24 * 60 * 60 * 1000;
-
 // Bounds for user input, so nonsense values never reach TMDB
 export const MIN_RELEASE_YEAR = 1870;
 export const MAX_RELEASE_YEAR = 2100;
 export const MAX_RATING = 10;
 export const SEARCH_QUERY_MAX_LENGTH = 100;
+
+// Shown when TMDB has no poster for a movie
+export const PLACEHOLDER_POSTER = "/placeholder-movie.svg";
 
 // Search-as-you-type: wait for a pause in typing and at least a few characters
 export const SEARCH_DEBOUNCE_MS = 400;
@@ -27,6 +28,7 @@ export const CAST_LIMIT = 12;
 // Most Watched
 export const YEAR_OPTIONS_COUNT = 30;
 export const INFINITE_SCROLL_MARGIN = "600px";
+export const FILTER_WIDTHS = { year: 150, genre: 200, rating: 150 } as const;
 
 // Grids and rows
 export const GRID_COLUMNS = { base: 2, sm: 3, md: 4, lg: 6 };

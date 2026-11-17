@@ -1,7 +1,7 @@
 import { Avatar, Badge, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { Calendar, Heart, Mail } from "lucide-react";
 import type { AuthUser } from "@/features/auth/types";
-import { formatDateDisplay } from "@/shared/lib/format";
+import { formatDate } from "@/shared/lib/format";
 import { COLORS } from "@/shared/theme/colors";
 
 export function ProfileHeader({ user }: { user: AuthUser }) {
@@ -24,7 +24,7 @@ export function ProfileHeader({ user }: { user: AuthUser }) {
             </Group>
             <Group gap="xs">
               <Calendar size={16} color={COLORS.muted} />
-              <Text c="gray.4">Member since {formatDateDisplay.long(user.createdAt)}</Text>
+              <Text c="gray.4">Member since {formatDate(user.createdAt)}</Text>
             </Group>
           </Group>
 

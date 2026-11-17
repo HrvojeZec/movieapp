@@ -4,7 +4,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
 import { ProfileHeader } from "@/features/profile/ui/ProfileHeader/ProfileHeader";
 import { SubscriptionPanel } from "@/features/profile/ui/SubscriptionPanel/SubscriptionPanel";
-import { formatDateDisplay } from "@/shared/lib/format";
+import { formatDate } from "@/shared/lib/format";
 
 export function ProfileView() {
   return (
@@ -34,7 +34,7 @@ function ProfileContent() {
           </Title>
           <Stack gap="md">
             <Text c="gray.4">Favorited {user.favorites.length} movies</Text>
-            <Text c="gray.4">Member since {formatDateDisplay.long(user.createdAt)}</Text>
+            <Text c="gray.4">Member since {formatDate(user.createdAt)}</Text>
           </Stack>
         </Paper>
       </Stack>

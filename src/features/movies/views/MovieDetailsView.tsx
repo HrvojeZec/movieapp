@@ -23,6 +23,7 @@ import { CastGrid } from "@/features/movies/ui/CastGrid/CastGrid";
 import { TrailerModal } from "@/features/movies/ui/TrailerModal/TrailerModal";
 import { formatRuntime, formatYear } from "@/shared/lib/format";
 import { HttpError } from "@/shared/lib/http";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import classes from "./MovieDetailsView.module.scss";
@@ -44,7 +45,7 @@ export function MovieDetailsView() {
     );
   }
 
-  if (error && !(error instanceof HttpError && error.status === 404)) {
+  if (error && !(error instanceof HttpError && error.status === HTTP_STATUS.NOT_FOUND)) {
     return (
       <Container size="xl" py="xl">
         <QueryError message="We couldn't load this movie." onRetry={() => refetch()} />

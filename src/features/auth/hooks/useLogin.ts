@@ -1,8 +1,8 @@
+import { login } from "@/features/auth/api/auth.api";
 import { useSessionMutation } from "@/features/auth/hooks/useSessionMutation";
-import type { Credentials } from "@/features/auth/types";
 
 export function useLogin() {
-  return useSessionMutation<Credentials>("/api/auth/login", {
+  return useSessionMutation(login, {
     successTitle: "Welcome back!",
     successMessage: "Successfully logged in",
     failureTitle: "Login failed",

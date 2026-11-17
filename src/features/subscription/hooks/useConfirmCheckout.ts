@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/queries";
+import { authKeys } from "@/features/auth/api/query-keys";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { fetchJson } from "@/shared/lib/http";
+import { API_ROUTES } from "@/shared/api-routes";
+import { postJson } from "@/shared/lib/http";
 
 /**
  * Confirms a finished Stripe Checkout so the new plan shows right away (the webhook stays the
@@ -14,10 +15,7 @@ export function useConfirmCheckout(sessionId: string | null) {
 
   const confirmation = useMutation({
     mutationFn: (id: string) =>
-      fetchJson<unknown>("/api/stripe/checkout-success", {
-        method: "POST",
-        body: JSON.stringify({ sessionId: id }),
-      }),
+      postJson<unknown>(API_ROUTES.stripe.checkoutSuccess, { sessionId: id }),
     // Refetch the session so the navbar and profile show the new plan right away
     onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.me }),
   });

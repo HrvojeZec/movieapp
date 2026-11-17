@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { Center, Group, Loader, NumberInput, Select, Stack, Text, Container } from "@mantine/core";
 import { Flame } from "lucide-react";
 import {
+  FILTER_WIDTHS,
   INFINITE_SCROLL_MARGIN,
   MAX_RATING,
   YEAR_OPTIONS_COUNT,
@@ -58,7 +59,7 @@ export function MostWatchedView() {
             value={values.year}
             onChange={(value) => setFilter("year", value)}
             clearable
-            w={150}
+            w={FILTER_WIDTHS.year}
             classNames={filterClassNames}
           />
 
@@ -68,7 +69,7 @@ export function MostWatchedView() {
             value={values.genre}
             onChange={(value) => setFilter("genre", value)}
             clearable
-            w={200}
+            w={FILTER_WIDTHS.genre}
             classNames={filterClassNames}
           />
 
@@ -79,7 +80,7 @@ export function MostWatchedView() {
             step={RATING_STEP}
             value={values.minRating ?? ""}
             onChange={(value) => setFilter("minRating", value === "" ? null : String(value))}
-            w={150}
+            w={FILTER_WIDTHS.rating}
             classNames={{ input: classes.filterInput }}
           />
         </Group>

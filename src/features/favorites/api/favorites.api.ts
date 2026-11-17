@@ -1,14 +1,12 @@
-import { fetchJson } from "@/shared/lib/http";
+import { API_ROUTES } from "@/shared/api-routes";
+import { deleteJson, postJson } from "@/shared/lib/http";
 
-export const favoritesMutationKey = ["auth", "favorites"] as const;
+interface FavoritesResponse {
+  favorites: string[];
+}
 
 export const postFavorite = (movieId: string) =>
-  fetchJson<{ favorites: string[] }>("/api/user/favorites", {
-    method: "POST",
-    body: JSON.stringify({ movieId }),
-  });
+  postJson<FavoritesResponse>(API_ROUTES.user.favorites, { movieId });
 
 export const deleteFavorite = (movieId: string) =>
-  fetchJson<{ favorites: string[] }>(`/api/user/favorites/${movieId}`, {
-    method: "DELETE",
-  });
+  deleteJson<FavoritesResponse>(API_ROUTES.user.favorite(movieId));

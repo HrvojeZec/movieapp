@@ -4,20 +4,13 @@ import {
   getGenres,
   getMovieDetails,
   getMovieList,
+  getMovieVideos,
 } from "@/features/movies/api/movies.api";
-import { DAY, TMDB_MAX_PAGE } from "@/features/movies/constants";
+import { movieKeys } from "@/features/movies/api/query-keys";
+import { TMDB_MAX_PAGE } from "@/features/movies/constants";
 import type { DiscoverFilters, Movie, TMDBResponse } from "@/features/movies/types";
 import type { MovieList } from "@/features/movies/validations/movies.schema";
-
-export const movieKeys = {
-  all: ["movies"] as const,
-  list: (list: MovieList) => [...movieKeys.all, "list", list] as const,
-  details: (id: number) => [...movieKeys.all, "details", id] as const,
-  videos: (id: number) => [...movieKeys.all, "videos", id] as const,
-  search: (query: string) => [...movieKeys.all, "search", query] as const,
-  discover: (filters: DiscoverFilters) => [...movieKeys.all, "discover", filters] as const,
-  genres: () => [...movieKeys.all, "genres"] as const,
-};
+import { DAY_MS } from "@/shared/lib/time";
 
 export const movieListQuery = (list: MovieList) =>
   queryOptions({ queryKey: movieKeys.list(list), queryFn: () => getMovieList(list) });
@@ -25,8 +18,16 @@ export const movieListQuery = (list: MovieList) =>
 export const movieDetailsQuery = (id: number) =>
   queryOptions({ queryKey: movieKeys.details(id), queryFn: () => getMovieDetails(id) });
 
+// Genres and trailers practically never change
 export const genresQuery = () =>
-  queryOptions({ queryKey: movieKeys.genres(), queryFn: getGenres, staleTime: DAY });
+  queryOptions({ queryKey: movieKeys.genres(), queryFn: getGenres, staleTime: DAY_MS });
+
+export const movieVideosQuery = (id: number) =>
+  queryOptions({
+    queryKey: movieKeys.videos(id),
+    queryFn: () => getMovieVideos(id),
+    staleTime: DAY_MS,
+  });
 
 export function getNextPage(lastPage: TMDBResponse<Movie>): number | undefined {
   const lastAvailable = Math.min(lastPage.total_pages, TMDB_MAX_PAGE);

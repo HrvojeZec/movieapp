@@ -3,7 +3,7 @@ import { Box, Card, Group, Image, Text } from "@mantine/core";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
-import { MOVIE_CARD_SIZES } from "@/features/movies/constants";
+import { MOVIE_CARD_SIZES, PLACEHOLDER_POSTER } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating } from "@/features/movies/lib/movies";
 import type { Movie } from "@/features/movies/types";
@@ -37,7 +37,7 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
           src={getImageUrl(movie.poster_path)}
           height={dimensions.image}
           alt={movie.title}
-          fallbackSrc="/placeholder-movie.svg"
+          fallbackSrc={PLACEHOLDER_POSTER}
         />
       </Card.Section>
 

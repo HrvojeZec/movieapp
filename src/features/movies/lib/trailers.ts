@@ -1,19 +1,14 @@
 import type { Video } from "@/features/movies/types";
 
+const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed";
+
+const isYouTubeTrailer = (video: Video) => video.type === "Trailer" && video.site === "YouTube";
+
+/** Embed URL of the official YouTube trailer, or any YouTube trailer, or null if there is none. */
 export const getTrailerUrl = (videos: Video[]): string | null => {
-  const officialTrailer = videos.find(
-    (video) => video.type === "Trailer" && video.official && video.site === "YouTube",
-  );
+  const trailer =
+    videos.find((video) => isYouTubeTrailer(video) && video.official) ??
+    videos.find(isYouTubeTrailer);
 
-  if (officialTrailer) {
-    return `https://www.youtube.com/embed/${officialTrailer.key}?autoplay=1&rel=0`;
-  }
-
-  const anyTrailer = videos.find((video) => video.type === "Trailer" && video.site === "YouTube");
-
-  if (anyTrailer) {
-    return `https://www.youtube.com/embed/${anyTrailer.key}?autoplay=1&rel=0`;
-  }
-
-  return null;
+  return trailer ? `${YOUTUBE_EMBED_URL}/${trailer.key}?autoplay=1&rel=0` : null;
 };

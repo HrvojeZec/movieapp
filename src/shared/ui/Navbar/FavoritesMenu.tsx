@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ActionIcon, Box, Group, Image, Indicator, Loader, Menu, Text } from "@mantine/core";
 import { Heart } from "lucide-react";
 import { FAVORITES_PREVIEW_LIMIT } from "@/features/favorites/constants";
+import { PLACEHOLDER_POSTER } from "@/features/movies/constants";
 import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatYear } from "@/shared/lib/format";
@@ -51,7 +52,7 @@ export function FavoritesMenu({ favorites }: { favorites: string[] }) {
                   w={THUMBNAIL.width}
                   h={THUMBNAIL.height}
                   radius="sm"
-                  fallbackSrc="/placeholder-movie.svg"
+                  fallbackSrc={PLACEHOLDER_POSTER}
                 />
                 <Box>
                   <Text size="sm" c="white" lineClamp={1} fw={500}>
