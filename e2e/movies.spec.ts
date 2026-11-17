@@ -48,18 +48,36 @@ test("movie data is fetched through our API, never directly from TMDB", async ({
 });
 
 test("a failed request shows an error state that can be retried", async ({ page }) => {
+  // Trailers are fetched in the browser (the movie itself is rendered on the server)
   let apiDown = true;
-  await page.route(`**/api/movies/${FIGHT_CLUB_ID}`, (route) =>
+  await page.route(`**/api/movies/${FIGHT_CLUB_ID}/videos`, (route) =>
     apiDown
       ? route.fulfill({ status: 502, json: { message: "Movie service unavailable" } })
       : route.fallback(),
   );
 
   await page.goto(`/movie/${FIGHT_CLUB_ID}`);
+  await page.getByRole("button", { name: "Watch Trailer" }).click();
   // Server errors are retried twice with backoff before the error state appears
-  await expect(page.getByText("We couldn't load this movie.")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("Failed to load trailer")).toBeVisible({ timeout: 15_000 });
 
   apiDown = false;
   await page.getByRole("button", { name: "Try again" }).click();
-  await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
+  await expect(page.locator('iframe[src*="youtube.com/embed/"]')).toBeVisible();
+});
+
+test("the movie page is rendered on the server with title and preview metadata", async ({
+  request,
+}) => {
+  // Raw HTML, before any JavaScript runs: what search engines and link previews see
+  const html = await (await request.get(`/movie/${FIGHT_CLUB_ID}`)).text();
+
+  expect(html).toContain("<title>Fight Club (1999) | MovieHub</title>");
+  expect(html).toContain('<meta property="og:image" content="https://image.tmdb.org/t/p/w500/');
+  expect(html).toContain(">Fight Club</h1>");
+});
+
+test("an unknown movie responds with 404", async ({ request }) => {
+  expect((await request.get("/movie/999999999")).status()).toBe(404);
+  expect((await request.get("/movie/not-a-number")).status()).toBe(404);
 });

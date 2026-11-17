@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatRuntime, formatYear } from "@/shared/lib/format";
+import { formatDate, formatRuntime, formatYear, truncate } from "@/shared/lib/format";
 
 describe("formatRuntime", () => {
   it.each([
@@ -26,5 +26,19 @@ describe("formatYear", () => {
 describe("formatDate", () => {
   it("formats a date with the full month name", () => {
     expect(formatDate("2026-11-17T12:00:00")).toBe("November 17, 2026");
+  });
+});
+
+describe("truncate", () => {
+  it("keeps text that fits", () => {
+    expect(truncate("Short text", 20)).toBe("Short text");
+  });
+
+  it("cuts at a word boundary and adds an ellipsis", () => {
+    expect(truncate("The quick brown fox jumps", 15)).toBe("The quick…");
+  });
+
+  it("cuts a single long word", () => {
+    expect(truncate("Supercalifragilistic", 10)).toBe("Supercali…");
   });
 });

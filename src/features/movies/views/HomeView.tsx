@@ -2,7 +2,7 @@
 import { Box, Container, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Clapperboard, Trophy } from "lucide-react";
-import { GENRE_ROWS, HERO_HEIGHT, TOP_RATED_LIMIT } from "@/features/movies/constants";
+import { GENRE_ROWS, HERO_HEIGHT, HOME_LISTS, TOP_RATED_LIMIT } from "@/features/movies/constants";
 import { useGenres } from "@/features/movies/hooks/useGenres";
 import { useMovieList } from "@/features/movies/hooks/useMovieList";
 import { GenreRow } from "@/features/movies/ui/GenreRow/GenreRow";
@@ -14,9 +14,9 @@ import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
 
 export function HomeView() {
-  const popular = useMovieList("popular");
-  const nowPlaying = useMovieList("now_playing");
-  const topRated = useMovieList("top_rated");
+  const popular = useMovieList(HOME_LISTS.hero);
+  const nowPlaying = useMovieList(HOME_LISTS.nowPlaying);
+  const topRated = useMovieList(HOME_LISTS.topRated);
   const genres = useGenres();
   const [trailerOpened, trailer] = useDisclosure(false);
 

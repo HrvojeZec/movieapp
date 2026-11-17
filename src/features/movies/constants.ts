@@ -16,6 +16,12 @@ export const SEARCH_SUGGESTION_MIN_LENGTH = 3;
 export const SEARCH_SUGGESTION_LIMIT = 8;
 
 // Home page
+// Which TMDB list feeds each home page section; also prefetched on the server
+export const HOME_LISTS = {
+  hero: "popular",
+  nowPlaying: "now_playing",
+  topRated: "top_rated",
+} as const;
 export const HERO_HEIGHT = 600;
 export const TOP_RATED_LIMIT = 6;
 export const GENRE_ROWS = 10;
@@ -24,6 +30,10 @@ export const GENRE_ROW_PRELOAD_MARGIN = "400px";
 
 // Movie page
 export const CAST_LIMIT = 12;
+// Search engines show about this many characters of a description
+export const META_DESCRIPTION_MAX_LENGTH = 160;
+// TMDB posters are 2:3, so the w500 size is 500 x 750
+export const OG_POSTER = { size: "w500", width: 500, height: 750 } as const;
 
 // Most Watched
 export const YEAR_OPTIONS_COUNT = 30;
