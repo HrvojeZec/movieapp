@@ -152,6 +152,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   development and production, `next dev` writes to `.next/dev` so a build no longer breaks a
   running dev server, and ESLint uses the package's native flat config. `next build` no longer
   runs ESLint; CI runs it as a separate step
+- Upgrade Mantine to 9.8.0. The app keeps its look: the theme pins the previous default radius
+  (`sm`) and the translucent 8.x colors of light and subtle variants (`v8CssVariablesResolver`).
+  The password field's show/hide button now has an accessible name
 
 ### Fixed
 
