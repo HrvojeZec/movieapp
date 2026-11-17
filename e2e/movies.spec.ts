@@ -46,3 +46,20 @@ test("movie data is fetched through our API, never directly from TMDB", async ({
 
   expect(tmdbApiRequests).toEqual([]);
 });
+
+test("a failed request shows an error state that can be retried", async ({ page }) => {
+  let apiDown = true;
+  await page.route(`**/api/movies/${FIGHT_CLUB_ID}`, (route) =>
+    apiDown
+      ? route.fulfill({ status: 502, json: { message: "Movie service unavailable" } })
+      : route.fallback(),
+  );
+
+  await page.goto(`/movie/${FIGHT_CLUB_ID}`);
+  // Server errors are retried twice with backoff before the error state appears
+  await expect(page.getByText("We couldn't load this movie.")).toBeVisible({ timeout: 15_000 });
+
+  apiDown = false;
+  await page.getByRole("button", { name: "Try again" }).click();
+  await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
+});
