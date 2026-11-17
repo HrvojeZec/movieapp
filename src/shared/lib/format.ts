@@ -15,6 +15,15 @@ export const formatDate = (date: string | Date): string => dayjs(date).format("M
 export const pluralize = (count: number, singular: string, plural = `${singular}s`): string =>
   count === 1 ? singular : plural;
 
+const SECONDS_PER_MINUTE = 60;
+
+/** A wait in words, rounded up: "45 seconds", "1 minute", "12 minutes". */
+export const formatWait = (seconds: number): string => {
+  if (seconds < SECONDS_PER_MINUTE) return `${seconds} ${pluralize(seconds, "second")}`;
+  const minutes = Math.ceil(seconds / SECONDS_PER_MINUTE);
+  return `${minutes} ${pluralize(minutes, "minute")}`;
+};
+
 const ELLIPSIS = "…";
 
 /** Shortens text to at most `maxLength` characters, cutting at a word boundary. */

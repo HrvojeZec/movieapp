@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatRuntime, formatYear, pluralize, truncate } from "@/shared/lib/format";
+import {
+  formatDate,
+  formatRuntime,
+  formatWait,
+  formatYear,
+  pluralize,
+  truncate,
+} from "@/shared/lib/format";
 
 describe("formatRuntime", () => {
   it.each([
@@ -54,5 +61,17 @@ describe("pluralize", () => {
 
   it("accepts an irregular plural", () => {
     expect(pluralize(2, "person", "people")).toBe("people");
+  });
+});
+
+describe("formatWait", () => {
+  it.each([
+    [1, "1 second"],
+    [45, "45 seconds"],
+    [60, "1 minute"],
+    [61, "2 minutes"],
+    [900, "15 minutes"],
+  ])("formats %i seconds as %s", (seconds, expected) => {
+    expect(formatWait(seconds)).toBe(expected);
   });
 });
