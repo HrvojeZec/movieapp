@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Plan entitlements in one place (`PLAN_FEATURES`): Premium unlocks the watchlist, custom lists and
+  advanced filters, Pro adds recommendations and statistics, Basic keeps up to 20 favorites. The
+  server checks them with `requireFeature` (403 naming the plan), and `LockedFeature` shows an
+  upgrade prompt in place of a locked feature
 - Favicon, home screen icon and a generated share image: links to the app show a MovieHub preview
   in Slack, LinkedIn, WhatsApp and X, and movie pages show their poster
 - TMDB logo in the footer next to the attribution
