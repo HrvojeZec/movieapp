@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ActionIcon, Box, Burger, Group, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Film, Search } from "lucide-react";
+import { useCommandPaletteStore } from "@/features/movies/store/command-palette.store";
+import { ShortcutHint } from "@/features/movies/ui/CommandPalette/ShortcutHint";
 import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchBox";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
@@ -16,6 +18,7 @@ const SEARCH_WIDTH = 300;
 
 export function Navbar() {
   const [drawerOpened, drawer] = useDisclosure(false);
+  const openPalette = useCommandPaletteStore((state) => state.open);
 
   return (
     <header className={classes.header}>
@@ -52,12 +55,16 @@ export function Navbar() {
 
         <Group gap="sm" wrap="nowrap">
           <Box w={SEARCH_WIDTH} visibleFrom="sm">
-            <MovieSearchBox placeholder="Search movies..." clearOnSubmit />
+            <MovieSearchBox
+              placeholder="Search movies..."
+              clearOnSubmit
+              rightSection={<ShortcutHint />}
+            />
           </Box>
 
+          {/* On phones the search opens as a full-screen palette */}
           <ActionIcon
-            component={Link}
-            href={ROUTES.search()}
+            onClick={openPalette}
             variant="subtle"
             size="lg"
             c="white"

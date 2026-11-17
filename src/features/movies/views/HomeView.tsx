@@ -9,6 +9,7 @@ import { GenreRow } from "@/features/movies/ui/GenreRow/GenreRow";
 import { HorizontalMovieScroll } from "@/features/movies/ui/HorizontalMovieScroll/HorizontalMovieScroll";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { MovieHero } from "@/features/movies/ui/MovieHero/MovieHero";
+import { RecentlyViewedRow } from "@/features/movies/ui/RecentlyViewedRow/RecentlyViewedRow";
 import { TrailerModal } from "@/features/movies/ui/TrailerModal/TrailerModal";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
@@ -34,6 +35,8 @@ export function HomeView() {
 
       <Container size="xl" py="xl">
         <Stack gap="xl">
+          <RecentlyViewedRow />
+
           <div>
             {nowPlaying.isError ? (
               <QueryError onRetry={() => nowPlaying.refetch()} />

@@ -24,18 +24,3 @@
   border: 1px solid var(--primary-glow);
   border-radius: 8px;
 }
-
-.option {
-  width: 100%;
-  border-radius: 4px;
-
-  &:hover,
-  &.active {
-    background-color: var(--primary-glow-soft);
-  }
-}
-
-.poster {
-  border-radius: 4px;
-  flex-shrink: 0;
-}

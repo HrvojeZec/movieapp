@@ -17,6 +17,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Calendar, Clock, MapPin, PlayCircle, Star } from "lucide-react";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
 import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
+import { useTrackRecentlyViewed } from "@/features/movies/hooks/useRecentlyViewed";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating } from "@/features/movies/lib/movies";
 import { CastGrid } from "@/features/movies/ui/CastGrid/CastGrid";
@@ -40,6 +41,7 @@ export function MovieDetailsView() {
   const movieId = Number(params.id);
   const [trailerOpened, trailer] = useDisclosure(false);
   const { data: movie, isPending, error, refetch } = useMovieDetails(movieId);
+  useTrackRecentlyViewed(movie);
 
   if (isPending) {
     return (

@@ -42,6 +42,7 @@ const eslintConfig = [
       "src/features/*/lib/**",
       "src/features/*/ui/**",
       "src/features/*/views/**",
+      "src/features/*/store/**",
       "src/features/*/constants.ts",
       "src/features/*/types.ts",
       "src/shared/**",

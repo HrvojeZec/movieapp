@@ -6,7 +6,7 @@ import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteB
 import { MOVIE_CARD_SIZES, PLACEHOLDER_POSTER } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating } from "@/features/movies/lib/movies";
-import type { Movie } from "@/features/movies/types";
+import type { MovieSummary } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
@@ -14,7 +14,7 @@ import GlareHover from "@/shared/vendor/react-bits/GlareHover/GlareHover";
 import classes from "./MovieCard.module.scss";
 
 interface MovieCardProps {
-  movie: Movie;
+  movie: MovieSummary;
   size?: keyof typeof MOVIE_CARD_SIZES;
 }
 

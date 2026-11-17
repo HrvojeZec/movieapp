@@ -15,6 +15,12 @@ export interface Movie {
   video: boolean;
 }
 
+/** What a movie card needs; small enough to keep in localStorage (recently viewed). */
+export type MovieSummary = Pick<
+  Movie,
+  "id" | "title" | "poster_path" | "release_date" | "vote_average"
+>;
+
 export interface MovieDetails extends Movie {
   genres: { id: number; name: string }[];
   runtime: number;
