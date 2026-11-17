@@ -2,60 +2,46 @@
 import { Container, Title, Text, Button, Stack, Paper, Loader, Center } from "@mantine/core";
 import { CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useEffect, useRef } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authKeys, useAuth } from "@/features/auth/queries";
+import { fetchJson } from "@/shared/lib/http";
 
 export function SubscriptionSuccessView() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, refreshUser } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const sessionId = searchParams.get("session_id");
+  const { user, loading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
 
-  // refreshUser() replaces the `user` object, which re-runs the effect; without this guard
-  // the same session would be confirmed again on every refresh.
+  const confirmation = useMutation({
+    mutationFn: (id: string) =>
+      fetchJson<unknown>("/api/stripe/checkout-success", {
+        method: "POST",
+        body: JSON.stringify({ sessionId: id }),
+      }),
+    // Refetch the session so the navbar and profile show the new plan right away
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.me }),
+  });
+  const { mutate: confirm } = confirmation;
+
+  // The user object changes when the session is refetched; confirm each checkout only once
   const confirmedSessionRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const sessionId = searchParams.get("session_id");
-
-    if (!sessionId) {
-      setError("No session ID found");
-      setLoading(false);
-      return;
-    }
-
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    if (confirmedSessionRef.current === sessionId) return;
+    if (!sessionId || !user || confirmedSessionRef.current === sessionId) return;
     confirmedSessionRef.current = sessionId;
+    confirm(sessionId);
+  }, [sessionId, user, confirm]);
 
-    const confirmPayment = async () => {
-      try {
-        const response = await fetch("/api/stripe/checkout-success", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        });
-
-        if (response.ok) {
-          await refreshUser();
-        } else {
-          setError("Failed to process payment");
-        }
-      } catch (error) {
-        console.error("Error processing payment:", error);
-        setError("Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    confirmPayment();
-  }, [searchParams, user, refreshUser]);
+  const error = !sessionId
+    ? "No session ID found"
+    : !authLoading && !user
+      ? "Log in to finish activating your subscription"
+      : confirmation.isError
+        ? "Failed to process payment"
+        : null;
+  const loading = !error && !confirmation.isSuccess;
 
   if (loading) {
     return (

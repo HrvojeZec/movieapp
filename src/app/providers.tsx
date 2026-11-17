@@ -5,7 +5,6 @@ import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { AuthProvider } from "@/features/auth/AuthContext";
 import { Layout } from "@/shared/components/layout/Layout";
 import { AOSProvider } from "@/shared/components/layout/AOSProvider";
 import { createQueryClient } from "@/shared/lib/query-client";
@@ -19,11 +18,9 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <MantineProvider defaultColorScheme="dark">
         <Notifications position="top-right" />
-        <AuthProvider>
-          <AOSProvider>
-            <Layout>{children}</Layout>
-          </AOSProvider>
-        </AuthProvider>
+        <AOSProvider>
+          <Layout>{children}</Layout>
+        </AOSProvider>
       </MantineProvider>
       {/* Renders nothing in production builds */}
       <ReactQueryDevtools buttonPosition="bottom-left" />

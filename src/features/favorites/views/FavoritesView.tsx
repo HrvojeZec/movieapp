@@ -2,7 +2,7 @@
 import { Container, Title, Text, Stack, Button, Group } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth } from "@/features/auth/queries";
 import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { useMoviesByIds } from "@/features/movies/queries";
 import { QueryError } from "@/shared/components/QueryError";

@@ -3,7 +3,7 @@ import { Card, Image, Text, Group, ActionIcon, Box } from "@mantine/core";
 import { Heart, Star } from "lucide-react";
 import { useState } from "react";
 import { Movie, getImageUrl } from "@/features/movies/api";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth, useToggleFavorite } from "@/features/auth/queries";
 import { useRouter } from "next/navigation";
 
 interface MovieCardProps {
@@ -12,7 +12,8 @@ interface MovieCardProps {
 }
 
 export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => {
-  const { user, toggleFavorite } = useAuth();
+  const { user } = useAuth();
+  const toggleFavorite = useToggleFavorite();
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
 

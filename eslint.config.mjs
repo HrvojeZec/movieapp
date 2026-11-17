@@ -29,7 +29,7 @@ const eslintConfig = [
     files: [
       "src/features/*/components/**",
       "src/features/*/views/**",
-      "src/features/*/AuthContext.tsx",
+      "src/features/*/queries.ts",
       "src/features/*/api.ts",
       "src/shared/**",
       "src/app/providers.tsx",

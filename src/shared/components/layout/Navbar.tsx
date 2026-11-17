@@ -16,9 +16,10 @@ import {
   Image,
   Loader,
   Indicator,
+  Skeleton,
 } from "@mantine/core";
 import { Search, Heart, User, LogOut, Film, Flame, CreditCard } from "lucide-react";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth, useLogout } from "@/features/auth/queries";
 import { getImageUrl } from "@/features/movies/api";
 import { useMovieSearch, useMoviesByIds } from "@/features/movies/queries";
 import { useRouter } from "next/navigation";
@@ -28,7 +29,8 @@ const SUGGESTION_LIMIT = 8;
 const FAVORITES_PREVIEW_LIMIT = 5;
 
 export const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const logout = useLogout();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -188,7 +190,9 @@ export const Navbar = () => {
           >
             <Search size={20} />
           </ActionIcon>
-          {user ? (
+          {authLoading ? (
+            <Skeleton height={36} width={160} radius="sm" aria-label="Loading account" />
+          ) : user ? (
             <Group gap="sm">
               <Menu shadow="md" width={250}>
                 <Menu.Target>
@@ -291,7 +295,7 @@ export const Navbar = () => {
                   >
                     Subscription
                   </Menu.Item>
-                  <Menu.Item leftSection={<LogOut size={16} />} onClick={logout}>
+                  <Menu.Item leftSection={<LogOut size={16} />} onClick={() => logout.mutate()}>
                     Logout
                   </Menu.Item>
                 </Menu.Dropdown>

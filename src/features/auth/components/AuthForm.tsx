@@ -13,7 +13,7 @@ import {
   Alert,
 } from "@mantine/core";
 import { AlertCircle } from "lucide-react";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useLogin, useRegister, toApiError } from "@/features/auth/queries";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -25,39 +25,26 @@ export const AuthForm = ({ type }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-  const { login, register } = useAuth();
+  const login = useLogin();
+  const register = useRegister();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const mutation = type === "login" ? login : register;
+  const apiError = mutation.error ? toApiError(mutation.error) : null;
+  const fieldErrors: Record<string, string> = {};
+  // Show the first error per field; later ones are usually follow-ups of the same problem.
+  for (const err of apiError?.errors ?? []) {
+    fieldErrors[err.field] ??= err.message;
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setFieldErrors({});
+    const onSuccess = () => router.push("/");
 
-    try {
-      let result;
-      if (type === "login") {
-        result = await login(email, password);
-      } else {
-        result = await register(email, password, name);
-      }
-
-      if (result.success) {
-        router.push("/");
-      } else if (result.error) {
-        setError(result.error.message);
-        const errors: Record<string, string> = {};
-        // Show the first error per field; later ones are usually follow-ups of the same problem.
-        for (const err of result.error.errors ?? []) {
-          errors[err.field] ??= err.message;
-        }
-        setFieldErrors(errors);
-      }
-    } finally {
-      setLoading(false);
+    if (type === "login") {
+      login.mutate({ email, password }, { onSuccess });
+    } else {
+      register.mutate({ email, password, name }, { onSuccess });
     }
   };
 
@@ -78,9 +65,9 @@ export const AuthForm = ({ type }: AuthFormProps) => {
       >
         <form onSubmit={handleSubmit}>
           <Stack gap="md">
-            {error && (
+            {apiError && (
               <Alert icon={<AlertCircle size={16} />} color="red" variant="light" title="Error">
-                {error}
+                {apiError.message}
               </Alert>
             )}
 
@@ -126,7 +113,13 @@ export const AuthForm = ({ type }: AuthFormProps) => {
               }}
             />
 
-            <Button type="submit" fullWidth loading={loading} size="md" className="gradient-bg">
+            <Button
+              type="submit"
+              fullWidth
+              loading={mutation.isPending}
+              size="md"
+              className="gradient-bg"
+            >
               {type === "login" ? "Sign In" : "Create Account"}
             </Button>
           </Stack>

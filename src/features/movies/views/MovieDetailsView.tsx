@@ -24,11 +24,12 @@ import { useMovieDetails } from "@/features/movies/queries";
 import { QueryError } from "@/shared/components/QueryError";
 import { HttpError } from "@/shared/lib/http";
 import { TrailerModal } from "@/features/movies/components/TrailerModal";
-import { useAuth } from "@/features/auth/AuthContext";
+import { useAuth, useToggleFavorite } from "@/features/auth/queries";
 
 export function MovieDetailsView() {
   const params = useParams();
-  const { user, toggleFavorite } = useAuth();
+  const { user } = useAuth();
+  const toggleFavorite = useToggleFavorite();
   const [trailerModalOpened, setTrailerModalOpened] = useState(false);
 
   const movieId = params.id as string;
