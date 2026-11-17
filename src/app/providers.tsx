@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, v8CssVariablesResolver } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -17,7 +17,12 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
+      {/* Mantine 9 made light and subtle variants solid; keep the translucent 8.x colors */}
+      <MantineProvider
+        theme={theme}
+        defaultColorScheme="dark"
+        cssVariablesResolver={v8CssVariablesResolver}
+      >
         <Notifications position="top-right" />
         {/* "user": animations are reduced when the OS asks for reduced motion */}
         <MotionConfig reducedMotion="user">

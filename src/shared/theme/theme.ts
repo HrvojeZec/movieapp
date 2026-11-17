@@ -5,6 +5,8 @@ import classes from "./theme.module.scss";
 // A component can still override them with its own `style` or `styles`.
 export const theme = createTheme({
   primaryColor: "blue",
+  // Mantine 9 changed the default to "md"; keep the corners the app was designed with
+  defaultRadius: "sm",
   components: {
     Paper: Paper.extend({ classNames: { root: classes.surface } }),
     Card: Card.extend({ classNames: { root: classes.surface } }),
