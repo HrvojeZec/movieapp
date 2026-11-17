@@ -89,6 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A thin progress bar at the top of the page while a navigation takes longer than 150 ms, so a slow
   server render doesn't look like the app froze
 - A "Clear filters" button on Most Watched, next to the filters and in the empty state
+- `GET /api/health` reports whether the app reaches its database (200 or 503, never cached), and
+  the Docker image uses it as its `HEALTHCHECK`
 
 ### Changed
 
@@ -230,6 +232,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   by the server-only `TMDB_API_KEY`
 - JWTs are signed and verified with an explicit `HS256` algorithm
 - `.dockerignore` keeps `.env*` files and other local files out of the Docker build context
+- Content Security Policy limited to what the app loads (TMDB images, YouTube embeds), with
+  `frame-ancestors 'none'`, `object-src 'none'` and no `eval` in production
+- HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` and
+  `Cross-Origin-Opener-Policy` on every response; `X-Powered-By` is no longer sent
 
 ## [0.1.0] - 2025-08-18
 

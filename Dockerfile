@@ -36,4 +36,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
+
+# Healthy when the app answers and reaches MongoDB (/api/health). Node's fetch, since the Alpine
+# image has no curl; the start period covers the first database connection.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD ["node", "-e", "fetch(`http://localhost:${process.env.PORT}/api/health`).then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+
 CMD ["node", "server.js"]
