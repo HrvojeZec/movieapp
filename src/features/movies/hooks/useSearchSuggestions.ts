@@ -78,6 +78,10 @@ export function useSearchSuggestions({
       case "Escape":
         close();
         break;
+      // Focus moves on to the next control; without this it would land in the scrollable list
+      case "Tab":
+        close();
+        break;
     }
   };
 
@@ -90,5 +94,6 @@ export function useSearchSuggestions({
     selectMovie,
     handleKeyDown,
     reopen: () => setOpen(suggestions.length > 0),
+    close,
   };
 }
