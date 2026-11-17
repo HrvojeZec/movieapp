@@ -27,3 +27,22 @@ test("a logged-in user is redirected to Stripe Checkout", async ({ page }) => {
 
   await page.waitForURL(/^https:\/\/checkout\.stripe\.com\//, { timeout: 30_000 });
 });
+
+test("no plan is marked as current until the session has loaded", async ({ page }) => {
+  await registerViaApi(page);
+
+  // Hold the session response so the page renders while it still doesn't know the plan
+  let releaseSession = () => {};
+  const sessionHeld = new Promise<void>((resolve) => (releaseSession = resolve));
+  await page.route("**/api/user/profile", async (route) => {
+    await sessionHeld;
+    await route.continue();
+  });
+
+  await page.goto("/subscription/pricing");
+  await expect(page.getByRole("button", { name: "Subscribe to Premium" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Current Plan" })).toHaveCount(0);
+
+  releaseSession();
+  await expect(page.getByRole("button", { name: "Current Plan" })).toHaveCount(1);
+});

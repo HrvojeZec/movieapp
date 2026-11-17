@@ -3,6 +3,7 @@ import { Container, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
 import { useCheckout } from "@/features/subscription/hooks/useCheckout";
+import { getEffectivePlan } from "@/features/subscription/lib/entitlements";
 import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
 import type { PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
 import { PlanCard } from "@/features/subscription/ui/PlanCard/PlanCard";
@@ -17,9 +18,11 @@ export function PricingView() {
   const { user, loading: authLoading } = useAuth();
   const { subscribe, pendingPlan } = useCheckout();
 
+  // Unknown until the session loads: marking Basic meanwhile would flash the wrong plan for
+  // subscribers on every page load
+  const currentPlan: SubscriptionPlan | null = authLoading ? null : getEffectivePlan(user ?? {});
+  // Any live subscription blocks a second checkout, even one whose price we don't recognize
   const isSubscribed = hasActiveSubscription(user?.subscriptionStatus);
-  const currentPlan: SubscriptionPlan =
-    isSubscribed && isPaidPlan(user?.subscriptionPlan) ? user.subscriptionPlan : "basic";
 
   const getButtonLabel = (plan: PlanDetails) => {
     if (plan.id === currentPlan) return "Current Plan";
