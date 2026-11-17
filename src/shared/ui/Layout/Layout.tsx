@@ -1,6 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 import { AppShell } from "@mantine/core";
+import { Footer } from "@/shared/ui/Footer/Footer";
 import { Navbar } from "@/shared/ui/Navbar/Navbar";
 import classes from "./Layout.module.scss";
 
@@ -16,6 +17,9 @@ export const Layout = ({ children }: { children: ReactNode }) => (
     <AppShell.Header>
       <Navbar />
     </AppShell.Header>
-    <AppShell.Main>{children}</AppShell.Main>
+    <AppShell.Main>
+      <div className={classes.page}>{children}</div>
+      <Footer />
+    </AppShell.Main>
   </AppShell>
 );
