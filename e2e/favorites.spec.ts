@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { registerViaApi } from "./helpers";
 
 test("a logged-in user can add and remove a favorite", async ({ page }) => {

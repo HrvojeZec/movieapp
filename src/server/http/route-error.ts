@@ -10,6 +10,8 @@ export class RouteError extends Error {
     readonly status: number,
     message: string,
     readonly errors?: ValidationError[],
+    /** Extra response headers, e.g. Retry-After on a 429. */
+    readonly headers?: Record<string, string>,
   ) {
     super(message);
     this.name = "RouteError";

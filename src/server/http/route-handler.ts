@@ -20,9 +20,14 @@ export function withRouteHandler<TContext>(name: string, handler: Handler<TConte
   };
 }
 
+/** The response for an expected failure: its status, message, field errors and headers. */
+export function routeErrorResponse(error: RouteError) {
+  return jsonError(error.status, error.message, error.errors, error.headers);
+}
+
 function toErrorResponse(error: unknown, name: string): Response {
   if (error instanceof RouteError) {
-    return jsonError(error.status, error.message, error.errors);
+    return routeErrorResponse(error);
   }
 
   // The zod schemas should catch invalid data first; this is the last line of defense.

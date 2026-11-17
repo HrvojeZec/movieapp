@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { registerViaApi } from "./helpers";
 
 test("the pricing page only marks existing features as available", async ({ page }) => {

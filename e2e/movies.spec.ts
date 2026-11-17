@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 const FIGHT_CLUB_ID = 550;
 
@@ -80,4 +80,15 @@ test("the movie page is rendered on the server with title and preview metadata",
 test("an unknown movie responds with 404", async ({ request }) => {
   expect((await request.get("/movie/999999999")).status()).toBe(404);
   expect((await request.get("/movie/not-a-number")).status()).toBe(404);
+});
+
+test("the movie API limits how often one client can call it", async ({ request }) => {
+  // 60 requests per minute per address protect the shared TMDB quota
+  const statuses = [];
+  for (let i = 0; i < 61; i++) {
+    statuses.push((await request.get("/api/genres")).status());
+  }
+
+  expect(statuses.slice(0, 60).every((status) => status === 200)).toBe(true);
+  expect(statuses[60]).toBe(429);
 });

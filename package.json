@@ -28,6 +28,8 @@
     "@mantine/notifications": "^8.3.18",
     "@tanstack/react-query": "^5.107.1",
     "@tanstack/react-query-devtools": "^5.107.1",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.41.0",
     "bcryptjs": "^3.0.3",
     "dayjs": "^1.11.23",
     "jsonwebtoken": "^9.0.3",

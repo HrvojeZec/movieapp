@@ -34,6 +34,15 @@ describe("withRouteHandler", () => {
     await expect(response.json()).resolves.toEqual({ message: "Validation failed", errors });
   });
 
+  it("sends the headers of a RouteError, e.g. Retry-After on a 429", async () => {
+    const response = await respond(
+      new RouteError(429, "Too many requests.", undefined, { "Retry-After": "30" }),
+    );
+
+    expect(response.status).toBe(429);
+    expect(response.headers.get("Retry-After")).toBe("30");
+  });
+
   it("omits the errors field when there are none", async () => {
     const response = await respond(new RouteError(401, "Unauthorized"));
     await expect(response.json()).resolves.toEqual({ message: "Unauthorized" });
