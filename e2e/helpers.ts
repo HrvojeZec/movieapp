@@ -29,6 +29,9 @@ export interface SeededSubscription {
   currentPeriodEnd: Date;
   cancelAt?: Date | null;
   trialEnd?: Date | null;
+  /** Real Stripe IDs, when the test created the subscription in Stripe test mode. */
+  stripeCustomerId?: string;
+  subscriptionId?: string;
 }
 
 /**
@@ -47,7 +50,10 @@ export async function seedSubscription(user: TestUser, subscription: SeededSubsc
         $set: {
           subscriptionStatus: subscription.status ?? "active",
           subscriptionPlan: subscription.plan,
-          subscriptionId: "sub_e2e",
+          subscriptionId: subscription.subscriptionId ?? "sub_e2e",
+          ...(subscription.stripeCustomerId && {
+            stripeCustomerId: subscription.stripeCustomerId,
+          }),
           subscriptionInterval: subscription.interval,
           currentPeriodEnd: subscription.currentPeriodEnd,
           cancelAt: subscription.cancelAt ?? null,
