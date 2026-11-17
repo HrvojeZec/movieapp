@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Yearly billing: the pricing page switches between monthly and yearly prices ($99.90 and $199.90
+  a year, two months free), checkout takes the interval, and webhooks map yearly prices back to
+  their plan. New `STRIPE_PREMIUM_YEARLY_PRICE_ID` and `STRIPE_PRO_YEARLY_PRICE_ID`
 - The profile shows the subscription's billing interval, price and what comes next (renewal date,
   the end date of a canceled plan, or the end of a trial), and warns when a payment failed. The
   user stores the Stripe subscription ID, price, interval, period end, cancellation and trial dates

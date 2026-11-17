@@ -8,6 +8,19 @@ test("the pricing page only marks existing features as available", async ({ page
   await expect(page.getByText("4242 4242 4242 4242")).toBeVisible();
 });
 
+test("the pricing page switches between monthly and yearly prices", async ({ page }) => {
+  await page.goto("/subscription/pricing");
+  await expect(page.getByText("$9.99", { exact: true })).toBeVisible();
+  await expect(page.getByText("/month").first()).toBeVisible();
+
+  await page.getByText("Yearly", { exact: true }).click();
+
+  await expect(page.getByText("$99.90", { exact: true })).toBeVisible();
+  await expect(page.getByText("$199.90", { exact: true })).toBeVisible();
+  await expect(page.getByText("/year").first()).toBeVisible();
+  await expect(page.getByText("$9.99", { exact: true })).toHaveCount(0);
+});
+
 test("anonymous users are sent to login before checkout", async ({ page }) => {
   await page.goto("/subscription/pricing");
   await page.getByRole("button", { name: "Subscribe to Premium" }).click();
@@ -16,18 +29,22 @@ test("anonymous users are sent to login before checkout", async ({ page }) => {
 
 // Paying on Stripe's hosted page is deliberately not automated (bot protection makes it flaky);
 // the post-payment logic is covered by unit tests and the webhook.
-test("a logged-in user is redirected to Stripe Checkout", async ({ page }) => {
-  test.skip(
-    !process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_PREMIUM_PRICE_ID,
-    "Stripe test keys are not configured",
-  );
+for (const interval of ["Monthly", "Yearly"] as const) {
+  test(`a logged-in user is redirected to Stripe Checkout (${interval})`, async ({ page }) => {
+    const priceId =
+      interval === "Monthly"
+        ? process.env.STRIPE_PREMIUM_PRICE_ID
+        : process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID;
+    test.skip(!process.env.STRIPE_SECRET_KEY || !priceId, "Stripe test keys are not configured");
 
-  await registerViaApi(page);
-  await page.goto("/subscription/pricing");
-  await page.getByRole("button", { name: "Subscribe to Premium" }).click();
+    await registerViaApi(page);
+    await page.goto("/subscription/pricing");
+    await page.getByText(interval, { exact: true }).click();
+    await page.getByRole("button", { name: "Subscribe to Premium" }).click();
 
-  await page.waitForURL(/^https:\/\/checkout\.stripe\.com\//, { timeout: 30_000 });
-});
+    await page.waitForURL(/^https:\/\/checkout\.stripe\.com\//, { timeout: 30_000 });
+  });
+}
 
 test("no plan is marked as current until the session has loaded", async ({ page }) => {
   await registerViaApi(page);
