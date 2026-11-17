@@ -1,11 +1,14 @@
-import { Badge, Group, Paper, Stack, Text, Title } from "@mantine/core";
-import { CreditCard, Crown } from "lucide-react";
+import { useId } from "react";
+import { Alert, Badge, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { AlertTriangle, CreditCard, Crown } from "lucide-react";
 import type { AuthUser } from "@/features/auth/types";
 import {
   PLAN_BADGE_COLORS,
   PLAN_SUMMARIES,
   SUBSCRIPTION_STATUS_DISPLAY,
 } from "@/features/profile/constants";
+import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { getBillingSummary } from "@/features/subscription/lib/billing";
 import { getEffectivePlan, getPlanName } from "@/features/subscription/lib/entitlements";
 import { isPaidPlan } from "@/features/subscription/lib/plans";
 import { ROUTES } from "@/shared/routes";
@@ -25,12 +28,18 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
           color: "gray",
         })
       : null;
+  const planDetails = SUBSCRIPTION_PLANS.find((details) => details.id === plan);
+  const billing =
+    isPaid && planDetails && user.subscription
+      ? getBillingSummary(planDetails, user.subscriptionStatus, user.subscription)
+      : null;
+  const titleId = useId();
 
   return (
-    <Paper p="xl" radius="md">
+    <Paper component="section" aria-labelledby={titleId} p="xl" radius="md">
       <Group gap="sm" mb="md">
         <CreditCard size={24} color={COLORS.primary} />
-        <Title order={2} size="lg" c="white">
+        <Title id={titleId} order={2} size="lg" c="white">
           Subscription
         </Title>
       </Group>
@@ -57,6 +66,21 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
           {PLAN_SUMMARIES[plan]}
         </Text>
 
+        {billing && (
+          <SimpleGrid cols={{ base: 1, xs: 3 }} spacing="md" verticalSpacing="xs">
+            <BillingFact label="Billing" value={billing.interval} />
+            <BillingFact label="Price" value={billing.price} />
+            <BillingFact label="Coming up" value={billing.date} />
+          </SimpleGrid>
+        )}
+
+        {user.subscriptionStatus === "past_due" && (
+          <Alert color="yellow" variant="light" icon={<AlertTriangle size={18} />}>
+            Your last payment failed. Stripe will try again over the next few days; if it keeps
+            failing, your plan switches to Basic.
+          </Alert>
+        )}
+
         <Group gap="sm" mt="sm">
           <LinkButton href={ROUTES.pricing} size="sm" variant={isPaid ? "outline" : "filled"}>
             {isPaid ? "Manage plan" : "See plans"}
@@ -64,5 +88,18 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
         </Group>
       </Stack>
     </Paper>
+  );
+}
+
+function BillingFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <Text size="xs" c="dimmed">
+        {label}
+      </Text>
+      <Text size="sm" c="white">
+        {value}
+      </Text>
+    </div>
   );
 }

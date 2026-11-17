@@ -3,7 +3,17 @@ import { isValidObjectId } from "mongoose";
 import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { getStripe } from "./stripe";
-import { getPlanForSubscription } from "@/features/subscription/lib/plans";
+import { getPlanForPriceId } from "@/features/subscription/lib/plans";
+import {
+  toSubscriptionFields,
+  type PriceResolver,
+} from "@/features/subscription/lib/subscription-state";
+
+// Until yearly prices exist (Task 30) every configured price is monthly
+const resolvePrice: PriceResolver = (priceId) => {
+  const plan = getPlanForPriceId(priceId);
+  return plan === "basic" ? null : { plan, interval: "month" };
+};
 
 function getId(value: string | { id: string } | null): string | null {
   if (!value) return null;
@@ -24,7 +34,8 @@ export async function linkStripeCustomer(userId: string, customerId: string): Pr
 }
 
 /**
- * Re-reads the subscription from Stripe and stores its status and plan on the owning user.
+ * Re-reads the subscription from Stripe and stores its status, plan, billing interval and dates
+ * on the owning user.
  * Always fetching the latest state makes this safe for webhook events that arrive out of order
  * or are delivered more than once.
  */
@@ -35,13 +46,10 @@ export async function syncSubscription(subscriptionId: string): Promise<IUser | 
   const customerId = getId(subscription.customer);
   if (!customerId) return null;
 
-  const priceId = subscription.items.data[0]?.price.id;
-  const plan = getPlanForSubscription(subscription.status, priceId);
-
   await connectDB();
   return User.findOneAndUpdate(
     { stripeCustomerId: customerId },
-    { subscriptionStatus: subscription.status, subscriptionPlan: plan },
+    toSubscriptionFields(subscription, resolvePrice),
     { returnDocument: "after" },
   );
 }

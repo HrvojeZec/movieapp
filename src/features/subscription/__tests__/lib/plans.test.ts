@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getPlanForPriceId,
-  getPlanForSubscription,
   getPriceIdForPlan,
   hasActiveSubscription,
   isPaidPlan,
@@ -60,14 +59,4 @@ describe("hasActiveSubscription", () => {
       expect(hasActiveSubscription(status)).toBe(false);
     },
   );
-});
-
-describe("getPlanForSubscription", () => {
-  it("returns the paid plan for an active subscription", () => {
-    expect(getPlanForSubscription("active", PRO_PRICE)).toBe("pro");
-  });
-
-  it("downgrades to basic when the subscription no longer grants access", () => {
-    expect(getPlanForSubscription("canceled", PRO_PRICE)).toBe("basic");
-  });
 });

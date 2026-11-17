@@ -20,6 +20,13 @@ export interface IUser extends Document {
   stripeCustomerId?: string;
   subscriptionStatus?: string;
   subscriptionPlan?: string;
+  subscriptionId?: string;
+  subscriptionPriceId?: string;
+  subscriptionInterval?: "month" | "year";
+  currentPeriodEnd?: Date;
+  cancelAt?: Date | null;
+  trialEnd?: Date | null;
+  hasUsedTrial: boolean;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -102,6 +109,15 @@ const UserSchema = new Schema<IUser>(
       enum: ["basic", "premium", "pro"],
       default: "basic",
     },
+    // Copied from Stripe on every sync (see toSubscriptionFields); Stripe stays the source of truth
+    subscriptionId: { type: String },
+    subscriptionPriceId: { type: String },
+    subscriptionInterval: { type: String, enum: ["month", "year"] },
+    currentPeriodEnd: { type: Date },
+    cancelAt: { type: Date, default: null },
+    trialEnd: { type: Date, default: null },
+    // One free trial per account, even after canceling
+    hasUsedTrial: { type: Boolean, default: false },
   },
   {
     timestamps: true,
