@@ -34,6 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Stripe Checkout; they use a separate `E2E_MONGODB_URI` database and clean up their users. The CI job
   runs once the E2E secrets are configured
 - Accessible names for icon-only buttons (favorite heart, account menu) and the search field
+- TanStack Query for all server state: cached and deduplicated requests, loading skeletons, error
+  states with a "Try again" button, retries for server errors only, and devtools in development
+- Infinite scroll on Most Watched with `useInfiniteQuery`; genre rows on the home page load when
+  they scroll into view
+- Debounced search suggestions (400 ms) that keep the previous results visible while typing
+- Unit tests for the HTTP helpers, retry rule, query keys and auth helpers, and an end-to-end test for
+  retrying a failed request
 
 ### Changed
 
@@ -57,6 +64,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Feature-based folder structure: `src/features/{auth,movies,favorites,subscription,profile}` (each with
   its components, views, validation and `server/` code), `src/server` (database, models, activity log) and
   `src/shared` (layout, helpers, types); `src/app` only contains thin routes. No behavior changes
+- The session is a query (`useAuth`); login, registration, logout and favorites are mutations.
+  Favorites update optimistically and roll back only the movie that failed, so quick toggles of
+  several movies stay consistent
+- The app no longer blocks every page behind a full-screen loader until the session loads; the
+  navbar shows a placeholder and protected views handle their own loading state
+- Client fetchers throw an `HttpError` with the API's message instead of returning empty data, so
+  failures are visible instead of rendering an empty page
 
 ### Fixed
 
@@ -79,6 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Pro plan was never activated because its price ID was compared with the webhook secret (#21)
 - Webhook errors were swallowed with a 200 response, so Stripe never retried failed deliveries (#21)
 - Subscription plan and status were missing from the login response until the page was reloaded
+- The subscription success page showed "Subscription Successful!" to logged-out visitors without
+  confirming the payment
 
 ### Removed
 
@@ -88,6 +104,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `axios`; the client calls the movie API with `fetch`
 - Unused `react-i18next` and `@types/bcryptjs`, debug `console.log` calls, unused shared types and
   the unused `API_ENDPOINTS` constant
+- `AuthContext` and `react-infinite-scroll-component`
+- Unused movie fetchers (`getPopularMovies`, `getTopRatedMovies`, `getNowPlayingMovies`,
+  `getUpcomingMovies`, `getMoviesByGenre`), replaced by `getMovieList` and `discoverMovies`
 
 ### Security
 
