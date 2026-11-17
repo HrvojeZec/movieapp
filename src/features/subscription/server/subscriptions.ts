@@ -42,7 +42,7 @@ export async function syncSubscription(subscriptionId: string): Promise<IUser | 
   return User.findOneAndUpdate(
     { stripeCustomerId: customerId },
     { subscriptionStatus: subscription.status, subscriptionPlan: plan },
-    { new: true },
+    { returnDocument: "after" },
   );
 }
 

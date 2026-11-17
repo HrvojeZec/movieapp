@@ -117,16 +117,12 @@ const UserSchema = new Schema<IUser>(
 
 UserSchema.index({ createdAt: -1 });
 
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// A rejected promise (e.g. bcrypt fails) aborts the save
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-  try {
-    const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error as Error);
-  }
+  const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {

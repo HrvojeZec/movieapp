@@ -12,7 +12,7 @@ async function updateFavorites(
 ): Promise<string[] | null> {
   await connectDB();
   const user = await User.findByIdAndUpdate(userId, update, {
-    new: true,
+    returnDocument: "after",
     projection: { favorites: 1 },
   });
   return user ? user.favorites : null;
