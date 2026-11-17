@@ -11,6 +11,11 @@ export const formatYear = (dateString: string): string => {
 /** e.g. "November 17, 2026" */
 export const formatDate = (date: string | Date): string => dayjs(date).format("MMMM D, YYYY");
 
+const USD = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+
+/** e.g. "$99.90": prices always show cents. */
+export const formatPrice = (amount: number): string => USD.format(amount);
+
 /** "1 favorite", "2 favorites"; pass the plural for irregular words. */
 export const pluralize = (count: number, singular: string, plural = `${singular}s`): string =>
   count === 1 ? singular : plural;

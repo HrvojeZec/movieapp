@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   formatDate,
+  formatPrice,
   formatRuntime,
   formatWait,
   formatYear,
@@ -73,5 +74,13 @@ describe("formatWait", () => {
     [900, "15 minutes"],
   ])("formats %i seconds as %s", (seconds, expected) => {
     expect(formatWait(seconds)).toBe(expected);
+  });
+});
+
+describe("formatPrice", () => {
+  it("always shows cents", () => {
+    expect(formatPrice(99.9)).toBe("$99.90");
+    expect(formatPrice(9.99)).toBe("$9.99");
+    expect(formatPrice(0)).toBe("$0.00");
   });
 });
