@@ -18,3 +18,13 @@
 .tmdbLink {
   color: var(--primary-400);
 }
+
+.tmdbLogo {
+  display: inline-flex;
+  opacity: 0.8;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+  }
+}

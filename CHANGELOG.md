@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Favicon, home screen icon and a generated share image: links to the app show a MovieHub preview
+  in Slack, LinkedIn, WhatsApp and X, and movie pages show their poster
+- TMDB logo in the footer next to the attribution
 - `getAppUrl()` resolves the app's absolute URL per environment (`APP_URL`, the Vercel production
   domain, the preview branch URL, or localhost)
 - `.env.example` documenting all required environment variables (#7)

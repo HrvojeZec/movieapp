@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Anchor, Box, Container, Group, Stack, Text } from "@mantine/core";
 import { Film } from "lucide-react";
@@ -6,6 +7,9 @@ import { COLORS } from "@/shared/theme/colors";
 import classes from "./Footer.module.scss";
 
 const TMDB_URL = "https://www.themoviedb.org";
+// TMDB's official logo (public/tmdb-logo.svg, 273×36): shown smaller than our own name, as their
+// attribution rules require
+const TMDB_LOGO = { src: "/tmdb-logo.svg", width: 122, height: 16 };
 
 const FOOTER_LINKS = [
   { label: "Most Watched", href: ROUTES.mostWatched },
@@ -38,18 +42,28 @@ export function Footer() {
           </Group>
 
           {/* Required by the TMDB API terms of use */}
-          <Text size="sm" c="dimmed">
-            Movie data and images from{" "}
-            <Anchor
+          <Group gap="sm" wrap="wrap">
+            <a
               href={TMDB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className={classes.tmdbLink}
+              className={classes.tmdbLogo}
             >
-              TMDB
-            </Anchor>
-            . This product uses the TMDB API but is not endorsed or certified by TMDB.
-          </Text>
+              <Image {...TMDB_LOGO} alt="TMDB (The Movie Database)" />
+            </a>
+            <Text size="sm" c="dimmed">
+              Movie data and images from{" "}
+              <Anchor
+                href={TMDB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={classes.tmdbLink}
+              >
+                TMDB
+              </Anchor>
+              . This product uses the TMDB API but is not endorsed or certified by TMDB.
+            </Text>
+          </Group>
 
           <Text size="xs" c="dimmed">
             © {new Date().getFullYear()} MovieHub. A portfolio project; payments run in Stripe test

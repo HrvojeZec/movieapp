@@ -31,6 +31,11 @@ describe("buildMovieMetadata", () => {
     ]);
   });
 
+  it("keeps the site name in the share preview", () => {
+    // A page's openGraph replaces the layout's, so the site name must be repeated here
+    expect(buildMovieMetadata(movie()).openGraph).toMatchObject({ siteName: "MovieHub" });
+  });
+
   it("shortens long overviews for search results", () => {
     const description = buildMovieMetadata(movie({ overview: "word ".repeat(100) })).description;
     expect(description!.length).toBeLessThanOrEqual(160);
