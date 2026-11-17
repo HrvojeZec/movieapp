@@ -4,6 +4,7 @@ import { z } from "zod";
 const pageSchema = z.coerce.number().int().min(1).max(500).default(1);
 
 export const MOVIE_LISTS = ["popular", "top_rated", "now_playing", "upcoming"] as const;
+export type MovieList = (typeof MOVIE_LISTS)[number];
 
 export const movieListQuerySchema = z.object({
   list: z.enum(MOVIE_LISTS),

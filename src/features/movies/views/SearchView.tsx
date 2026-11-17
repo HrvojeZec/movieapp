@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Container,
   Title,
@@ -13,12 +13,15 @@ import {
   Group,
   ScrollArea,
 } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { Search, ArrowLeft } from "lucide-react";
-import { searchMovies, Movie } from "@/features/movies/api";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { getImageUrl } from "@/features/movies/api";
-import { useRouter } from "next/navigation";
+import { useMovieSearch } from "@/features/movies/queries";
+import { MovieGrid } from "@/features/movies/components/MovieGrid";
+import { QueryError } from "@/shared/components/QueryError";
 import { formatYear } from "@/shared/lib/format";
+
+const SUGGESTION_LIMIT = 8;
 
 export function SearchView() {
   const searchParams = useSearchParams();
@@ -26,63 +29,22 @@ export function SearchView() {
   const router = useRouter();
 
   const [query, setQuery] = useState(initialQuery);
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [showResults, setShowResults] = useState(false);
-  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
-
+  const [debouncedQuery] = useDebouncedValue(query, 400);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // Both use the same cache, so typing the submitted query again doesn't refetch
+  const results = useMovieSearch(initialQuery, { minLength: 1 });
+  const suggestions = useMovieSearch(debouncedQuery);
+  const suggestionList = suggestions.data?.results.slice(0, SUGGESTION_LIMIT) ?? [];
+
   useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
+    searchInputRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    const fetchSearchResults = async () => {
-      if (initialQuery.trim()) {
-        try {
-          setLoading(true);
-          const results = await searchMovies(initialQuery);
-          setMovies(results.results);
-        } catch (error) {
-          console.error("Search failed:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchSearchResults();
-  }, [initialQuery]);
-
-  const handleSearch = async (searchQuery: string) => {
-    if (searchQuery.length > 2) {
-      try {
-        const results = await searchMovies(searchQuery);
-        setSearchResults(results.results.slice(0, 8));
-        setShowResults(true);
-      } catch (error) {
-        console.error("Search failed:", error);
-      }
-    } else {
-      setSearchResults([]);
-      setShowResults(false);
-    }
-  };
-
-  const debouncedSearch = (searchQuery: string) => {
-    if (searchTimeout.current) {
-      clearTimeout(searchTimeout.current);
-    }
-    searchTimeout.current = setTimeout(() => handleSearch(searchQuery), 500);
-  };
 
   const handleSearchChange = (value: string) => {
     setQuery(value);
-    debouncedSearch(value);
+    setShowResults(value.trim().length > 2);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -129,7 +91,7 @@ export function SearchView() {
             />
           </form>
 
-          {showResults && searchResults.length > 0 && (
+          {showResults && suggestionList.length > 0 && (
             <Box
               pos="absolute"
               top="100%"
@@ -145,7 +107,7 @@ export function SearchView() {
               mah={400}
             >
               <ScrollArea mah={400}>
-                {searchResults.map((movie) => (
+                {suggestionList.map((movie) => (
                   <UnstyledButton
                     key={movie.id}
                     w="100%"
@@ -192,10 +154,12 @@ export function SearchView() {
         )}
 
         {initialQuery &&
-          (loading ? (
+          (results.isError ? (
+            <QueryError onRetry={() => results.refetch()} />
+          ) : results.isPending ? (
             <MovieGrid movies={[]} loading={true} />
-          ) : movies.length > 0 ? (
-            <MovieGrid movies={movies} />
+          ) : results.data.results.length > 0 ? (
+            <MovieGrid movies={results.data.results} />
           ) : (
             <Text c="dimmed" ta="center" mt="xl">
               No movies found for &ldquo;{initialQuery}&rdquo;.

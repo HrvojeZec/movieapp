@@ -1,77 +1,37 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Container, Title, Text, Stack, Box, Group, Badge, Button } from "@mantine/core";
-import { Clapperboard, Drama, PlayCircle, Star, Trophy } from "lucide-react";
-import {
-  getPopularMovies,
-  getTopRatedMovies,
-  getNowPlayingMovies,
-  getGenres,
-  getMoviesByGenre,
-  Movie,
-  Genre,
-  getImageUrl,
-} from "@/features/movies/api";
+import { Clapperboard, PlayCircle, Star, Trophy } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getImageUrl } from "@/features/movies/api";
+import { useGenres, useMovieList } from "@/features/movies/queries";
 import { MovieGrid } from "@/features/movies/components/MovieGrid";
 import { HorizontalMovieScroll } from "@/features/movies/components/HorizontalMovieScroll";
+import { GenreRow } from "@/features/movies/components/GenreRow";
 import { TrailerModal } from "@/features/movies/components/TrailerModal";
-import { useRouter } from "next/navigation";
+import { QueryError } from "@/shared/components/QueryError";
+
+const GENRE_ROWS = 10;
 
 export function HomeView() {
-  const [heroMovie, setHeroMovie] = useState<Movie | null>(null);
-  const [newestMovies, setNewestMovies] = useState<Movie[]>([]);
-  const [topRatedMovies, setTopRatedMovies] = useState<Movie[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [genreMovies, setGenreMovies] = useState<{ [key: number]: Movie[] }>({});
-  const [loading, setLoading] = useState(true);
+  const popular = useMovieList("popular");
+  const nowPlaying = useMovieList("now_playing");
+  const topRated = useMovieList("top_rated");
+  const genres = useGenres();
   const [trailerModalOpened, setTrailerModalOpened] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [popularResponse, topRatedResponse, nowPlayingResponse, genresResponse] =
-          await Promise.all([
-            getPopularMovies(),
-            getTopRatedMovies(),
-            getNowPlayingMovies(),
-            getGenres(),
-          ]);
-
-        setHeroMovie(popularResponse.results[0]);
-
-        setNewestMovies(nowPlayingResponse.results.slice(0, 20));
-        setTopRatedMovies(topRatedResponse.results.slice(0, 20));
-        setGenres(genresResponse.slice(0, 10));
-
-        const genreMoviePromises = genresResponse.slice(0, 10).map(async (genre) => {
-          const movies = await getMoviesByGenre(genre.id);
-          return { genreId: genre.id, movies: movies.results.slice(0, 20) };
-        });
-
-        const genreMovieResults = await Promise.all(genreMoviePromises);
-        const genreMoviesMap = genreMovieResults.reduce(
-          (acc, { genreId, movies }) => {
-            acc[genreId] = movies;
-            return acc;
-          },
-          {} as { [key: number]: Movie[] },
-        );
-
-        setGenreMovies(genreMoviesMap);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const heroMovie = popular.data?.results[0];
 
   return (
     <>
       <div>
+        {popular.isError && (
+          <Container size="xl" pt="xl">
+            <QueryError onRetry={() => popular.refetch()} />
+          </Container>
+        )}
+        {popular.isPending && <Box h={600} className="loading-skeleton" />}
         {heroMovie && (
           <Box
             data-aos="fade-in"
@@ -125,16 +85,20 @@ export function HomeView() {
         <Container size="xl" py="xl">
           <Stack gap="xl">
             <div data-aos="fade-up" data-aos-delay="200">
-              <HorizontalMovieScroll
-                title={
-                  <Group gap={8} align="center">
-                    <Clapperboard size={18} />
-                    <Text>Now Playing</Text>
-                  </Group>
-                }
-                movies={newestMovies}
-                loading={loading}
-              />
+              {nowPlaying.isError ? (
+                <QueryError onRetry={() => nowPlaying.refetch()} />
+              ) : (
+                <HorizontalMovieScroll
+                  title={
+                    <Group gap={8} align="center">
+                      <Clapperboard size={18} />
+                      <Text>Now Playing</Text>
+                    </Group>
+                  }
+                  movies={nowPlaying.data?.results ?? []}
+                  loading={nowPlaying.isPending}
+                />
+              )}
             </div>
 
             <div data-aos="fade-up" data-aos-delay="400">
@@ -145,23 +109,20 @@ export function HomeView() {
                     Top rated
                   </Title>
                 </Group>
-                <MovieGrid movies={topRatedMovies.slice(0, 6)} loading={loading} />
+                {topRated.isError ? (
+                  <QueryError onRetry={() => topRated.refetch()} />
+                ) : (
+                  <MovieGrid
+                    movies={topRated.data?.results.slice(0, 6) ?? []}
+                    loading={topRated.isPending}
+                  />
+                )}
               </Box>
             </div>
 
-            {genres.map((genre, index) => (
-              <div key={genre.id} data-aos="fade-up" data-aos-delay={600 + index * 100}>
-                <HorizontalMovieScroll
-                  title={
-                    <Group gap={8} align="center">
-                      <Drama size={18} />
-                      <Text>{genre.name}</Text>
-                    </Group>
-                  }
-                  movies={genreMovies[genre.id] || []}
-                  loading={loading}
-                />
-              </div>
+            {genres.isError && <QueryError onRetry={() => genres.refetch()} />}
+            {genres.data?.slice(0, GENRE_ROWS).map((genre) => (
+              <GenreRow key={genre.id} genre={genre} />
             ))}
           </Stack>
         </Container>
