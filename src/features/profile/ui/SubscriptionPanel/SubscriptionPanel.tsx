@@ -1,53 +1,70 @@
-import { useRouter } from "next/navigation";
-import { Badge, Button, Group, Paper, Stack, Text, Title } from "@mantine/core";
+import { Badge, Group, Paper, Stack, Text, Title } from "@mantine/core";
 import { CreditCard, Crown } from "lucide-react";
 import type { AuthUser } from "@/features/auth/types";
-import { PLAN_BADGE_COLORS, PLAN_SUMMARIES } from "@/features/profile/constants";
+import {
+  PLAN_BADGE_COLORS,
+  PLAN_SUMMARIES,
+  SUBSCRIPTION_STATUS_DISPLAY,
+} from "@/features/profile/constants";
+import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
 import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
+import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";
 
 export function SubscriptionPanel({ user }: { user: AuthUser }) {
-  const router = useRouter();
-  const plan = isPaidPlan(user.subscriptionPlan) ? user.subscriptionPlan : "basic";
-  // Same rule as the server: trialing and past_due still have access
-  const isActive = hasActiveSubscription(user.subscriptionStatus);
+  // Same rule as the server: trialing and past_due still have access to the paid plan
+  const plan =
+    hasActiveSubscription(user.subscriptionStatus) && isPaidPlan(user.subscriptionPlan)
+      ? user.subscriptionPlan
+      : "basic";
+  const planName = SUBSCRIPTION_PLANS.find((details) => details.id === plan)?.name ?? plan;
+  const isPaid = isPaidPlan(plan);
+  // The free plan has no subscription, so there is no status to show
+  const status =
+    isPaid && user.subscriptionStatus
+      ? (SUBSCRIPTION_STATUS_DISPLAY[user.subscriptionStatus] ?? {
+          label: user.subscriptionStatus,
+          color: "gray",
+        })
+      : null;
 
   return (
     <Paper p="xl" radius="md">
       <Group gap="sm" mb="md">
         <CreditCard size={24} color={COLORS.primary} />
-        <Title size="lg" c="white">
+        <Title order={2} size="lg" c="white">
           Subscription
         </Title>
       </Group>
 
       <Stack gap="md">
-        <Group gap="md">
+        <Group gap="sm">
           <Badge
             variant="filled"
             color={PLAN_BADGE_COLORS[plan]}
             size="lg"
-            leftSection={isPaidPlan(plan) ? <Crown size={14} /> : null}
+            tt="none"
+            leftSection={isPaid ? <Crown size={14} /> : null}
           >
-            {plan.toUpperCase()} PLAN
+            {isPaid ? `${planName} plan` : "Free plan"}
           </Badge>
-          <Badge variant="outline" color={isActive ? "green" : "gray"}>
-            {isActive ? "Active" : "Inactive"}
-          </Badge>
+          {status && (
+            <Badge variant="outline" color={status.color} tt="none">
+              {status.label}
+            </Badge>
+          )}
         </Group>
 
         <Text c="gray.3" size="sm">
           {PLAN_SUMMARIES[plan]}
         </Text>
 
-        {!isActive && (
-          <Group gap="sm" mt="sm">
-            <Button size="sm" color="blue" onClick={() => router.push(ROUTES.pricing)}>
-              Upgrade to Premium
-            </Button>
-          </Group>
-        )}
+        <Group gap="sm" mt="sm">
+          <LinkButton href={ROUTES.pricing} size="sm" variant={isPaid ? "outline" : "filled"}>
+            {isPaid ? "Manage plan" : "See plans"}
+          </LinkButton>
+        </Group>
       </Stack>
     </Paper>
   );
