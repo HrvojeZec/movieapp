@@ -71,6 +71,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   close the list
 - Movie cards are real links: they work with the keyboard, show a focus ring and can open in a new tab
 - End-to-end tests for keyboard search, the favorite button on touch screens and the profile wording
+- Recently viewed: the last 12 opened movies appear in a row on the home page, saved in this
+  browser (Zustand with localStorage, loaded after mounting so the server-rendered HTML still matches)
+- Command palette: Ctrl+K / ⌘K searches movies from anywhere with the keyboard and lists recently
+  viewed movies before anything is typed; on phones the search icon opens it full screen; the navbar
+  search box shows the shortcut
+- Unit tests for the recently viewed list and store, end-to-end tests for both features
 
 ### Changed
 
@@ -125,6 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All TMDB requests live in one server module shared by the API routes and the server-rendered
   pages; the home and movie pages render per request (TMDB responses stay cached for an hour), so
   the build still needs no secrets
+- The navbar search box and the command palette share one suggestion list component
 
 ### Fixed
 
