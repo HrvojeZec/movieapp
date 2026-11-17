@@ -1,9 +1,9 @@
-import type { PAID_PLANS } from "@/features/subscription/constants";
+import type { BILLING_INTERVALS, PAID_PLANS } from "@/features/subscription/constants";
 
 export type PaidPlan = (typeof PAID_PLANS)[number];
 export type SubscriptionPlan = "basic" | PaidPlan;
 
-export type BillingInterval = "month" | "year";
+export type BillingInterval = (typeof BILLING_INTERVALS)[number];
 
 /** What we store on the user about their Stripe subscription (see toSubscriptionFields). */
 export interface SubscriptionFields {

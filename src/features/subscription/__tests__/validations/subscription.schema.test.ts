@@ -16,6 +16,18 @@ describe("checkoutSessionSchema", () => {
   it.each(["basic", "", undefined])("rejects %j", (plan) => {
     expect(checkoutSessionSchema.safeParse({ plan }).success).toBe(false);
   });
+
+  it("bills monthly unless yearly is asked for", () => {
+    expect(checkoutSessionSchema.parse({ plan: "pro" })).toEqual({
+      plan: "pro",
+      interval: "month",
+    });
+    expect(checkoutSessionSchema.parse({ plan: "pro", interval: "year" }).interval).toBe("year");
+  });
+
+  it.each(["week", "yearly", ""])("rejects an unknown interval (%j)", (interval) => {
+    expect(checkoutSessionSchema.safeParse({ plan: "pro", interval }).success).toBe(false);
+  });
 });
 
 describe("checkoutSuccessSchema", () => {

@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { PAID_PLANS } from "@/features/subscription/constants";
+import { BILLING_INTERVALS, PAID_PLANS } from "@/features/subscription/constants";
 
 export const checkoutSessionSchema = z.object({
   plan: z.enum(PAID_PLANS),
+  interval: z.enum(BILLING_INTERVALS).default("month"),
 });
 
 export const checkoutSuccessSchema = z.object({

@@ -2,6 +2,8 @@ import type { Feature, PlanDetails, SubscriptionPlan } from "@/features/subscrip
 
 export const PAID_PLANS = ["premium", "pro"] as const;
 
+export const BILLING_INTERVALS = ["month", "year"] as const;
+
 // Statuses in which the customer keeps access to their paid plan. `past_due` is included so a
 // failed renewal doesn't downgrade immediately while Stripe retries the payment.
 export const ENTITLED_STATUSES = new Set(["active", "trialing", "past_due"]);

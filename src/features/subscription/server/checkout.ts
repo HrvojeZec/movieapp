@@ -5,7 +5,7 @@ import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { findUserById } from "@/features/auth/server/users";
 import type { AuthUser } from "@/features/auth/types";
 import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/lib/plans";
-import type { PaidPlan } from "@/features/subscription/types";
+import type { BillingInterval, PaidPlan } from "@/features/subscription/types";
 import { getStripe } from "./stripe";
 import {
   getSubscriptionIdFromSession,
@@ -36,10 +36,11 @@ async function getOrCreateStripeCustomer(user: IUser): Promise<string> {
 export async function createSubscriptionCheckout(
   userId: string,
   plan: PaidPlan,
+  interval: BillingInterval,
   origin: string,
 ): Promise<string> {
   // The price is resolved on the server so clients can't choose an arbitrary price ID.
-  const priceId = getPriceIdForPlan(plan);
+  const priceId = getPriceIdForPlan(plan, interval);
   if (!priceId) {
     throw new RouteError(HTTP_STATUS.SERVICE_UNAVAILABLE, "Payments are not configured");
   }

@@ -2,7 +2,8 @@
 import type { ReactNode } from "react";
 import { Badge, Button, Group, Indicator, List, Loader, Stack, Text, Title } from "@mantine/core";
 import { Check, CheckIcon, Star, Zap } from "lucide-react";
-import type { PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
+import type { BillingInterval, PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
+import { formatPrice } from "@/shared/lib/format";
 import { COLORS } from "@/shared/theme/colors";
 import ShinyText from "@/shared/vendor/react-bits/ShinyText/ShinyText";
 import SpotlightCard from "@/shared/vendor/react-bits/SpotlightCard/SpotlightCard";
@@ -34,6 +35,8 @@ const STAR_BORDER_FRAME_STYLE = { display: "flex", width: "100%", padding: STAR_
 
 interface PlanCardProps {
   plan: PlanDetails;
+  /** Which price to show: per month or for a whole year. */
+  interval: BillingInterval;
   isCurrent: boolean;
   buttonLabel: string;
   disabled: boolean;
@@ -44,12 +47,14 @@ interface PlanCardProps {
 
 export function PlanCard({
   plan,
+  interval,
   isCurrent,
   buttonLabel,
   disabled,
   pending,
   onSubscribe,
 }: PlanCardProps) {
+  const price = interval === "year" ? plan.yearlyPrice : plan.price;
   const cardClasses = [
     classes.card,
     classes[plan.id],
@@ -103,9 +108,9 @@ export function PlanCard({
 
           <Group gap={4} align="baseline">
             <Text size="3rem" fw={700} c="white">
-              ${plan.price}
+              {price > 0 ? formatPrice(price) : "$0"}
             </Text>
-            {plan.price > 0 && <Text c="dimmed">/month</Text>}
+            {price > 0 && <Text c="dimmed">{interval === "year" ? "/year" : "/month"}</Text>}
           </Group>
         </Stack>
 

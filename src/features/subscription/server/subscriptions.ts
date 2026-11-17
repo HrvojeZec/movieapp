@@ -4,16 +4,7 @@ import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { getStripe } from "./stripe";
 import { getPlanForPriceId } from "@/features/subscription/lib/plans";
-import {
-  toSubscriptionFields,
-  type PriceResolver,
-} from "@/features/subscription/lib/subscription-state";
-
-// Until yearly prices exist (Task 30) every configured price is monthly
-const resolvePrice: PriceResolver = (priceId) => {
-  const plan = getPlanForPriceId(priceId);
-  return plan === "basic" ? null : { plan, interval: "month" };
-};
+import { toSubscriptionFields } from "@/features/subscription/lib/subscription-state";
 
 function getId(value: string | { id: string } | null): string | null {
   if (!value) return null;
@@ -49,7 +40,7 @@ export async function syncSubscription(subscriptionId: string): Promise<IUser | 
   await connectDB();
   return User.findOneAndUpdate(
     { stripeCustomerId: customerId },
-    toSubscriptionFields(subscription, resolvePrice),
+    toSubscriptionFields(subscription, getPlanForPriceId),
     { returnDocument: "after" },
   );
 }

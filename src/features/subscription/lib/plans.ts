@@ -1,24 +1,42 @@
-import { ENTITLED_STATUSES, PAID_PLANS } from "@/features/subscription/constants";
-import type { PaidPlan, SubscriptionPlan } from "@/features/subscription/types";
+import {
+  BILLING_INTERVALS,
+  ENTITLED_STATUSES,
+  PAID_PLANS,
+} from "@/features/subscription/constants";
+import type { BillingInterval, PaidPlan } from "@/features/subscription/types";
 
 export function isPaidPlan(value: unknown): value is PaidPlan {
   return typeof value === "string" && (PAID_PLANS as readonly string[]).includes(value);
 }
 
 // Optional: without them checkout answers 503 instead of failing, so they are read per call
-const getPriceIds = (): Record<PaidPlan, string | undefined> => ({
-  premium: process.env.STRIPE_PREMIUM_PRICE_ID,
-  pro: process.env.STRIPE_PRO_PRICE_ID,
+const getPriceIds = (): Record<PaidPlan, Record<BillingInterval, string | undefined>> => ({
+  premium: {
+    month: process.env.STRIPE_PREMIUM_PRICE_ID,
+    year: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID,
+  },
+  pro: {
+    month: process.env.STRIPE_PRO_PRICE_ID,
+    year: process.env.STRIPE_PRO_YEARLY_PRICE_ID,
+  },
 });
 
-export function getPriceIdForPlan(plan: PaidPlan): string | undefined {
-  return getPriceIds()[plan];
+export function getPriceIdForPlan(plan: PaidPlan, interval: BillingInterval): string | undefined {
+  return getPriceIds()[plan][interval];
 }
 
-export function getPlanForPriceId(priceId: string | null | undefined): SubscriptionPlan {
-  if (!priceId) return "basic";
+/** Which plan and billing interval a Stripe price stands for; null for a price we don't sell. */
+export function getPlanForPriceId(
+  priceId: string | null | undefined,
+): { plan: PaidPlan; interval: BillingInterval } | null {
+  if (!priceId) return null;
   const priceIds = getPriceIds();
-  return PAID_PLANS.find((plan) => priceIds[plan] === priceId) ?? "basic";
+  for (const plan of PAID_PLANS) {
+    for (const interval of BILLING_INTERVALS) {
+      if (priceIds[plan][interval] === priceId) return { plan, interval };
+    }
+  }
+  return null;
 }
 
 export function hasActiveSubscription(status: string | null | undefined): boolean {

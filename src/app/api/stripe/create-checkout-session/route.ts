@@ -9,8 +9,8 @@ import { enforceRateLimit } from "@/server/rate-limit/enforce";
 export const POST = withRouteHandler("Create checkout session", async (request) => {
   const { userId } = requireSession(request);
   await enforceRateLimit("checkout", userId);
-  const { plan } = await parseJson(request, checkoutSessionSchema, "Invalid plan");
+  const { plan, interval } = await parseJson(request, checkoutSessionSchema, "Invalid plan");
 
-  const url = await createSubscriptionCheckout(userId, plan, request.nextUrl.origin);
+  const url = await createSubscriptionCheckout(userId, plan, interval, request.nextUrl.origin);
   return NextResponse.json({ url });
 });

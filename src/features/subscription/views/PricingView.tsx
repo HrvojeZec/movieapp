@@ -1,11 +1,12 @@
 "use client";
-import { Container, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { useState } from "react";
+import { Container, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
 import { useCheckout } from "@/features/subscription/hooks/useCheckout";
 import { getEffectivePlan } from "@/features/subscription/lib/entitlements";
 import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
-import type { PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
+import type { BillingInterval, PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
 import { PlanCard } from "@/features/subscription/ui/PlanCard/PlanCard";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 import BlurText from "@/shared/vendor/react-bits/BlurText/BlurText";
@@ -14,9 +15,15 @@ import classes from "./PricingView.module.scss";
 // Words of the subtitle come into focus one after another
 const SUBTITLE_WORD_DELAY_MS = 60;
 
+const INTERVAL_OPTIONS = [
+  { label: "Monthly", value: "month" },
+  { label: "Yearly", value: "year" },
+];
+
 export function PricingView() {
   const { user, loading: authLoading } = useAuth();
   const { subscribe, pendingPlan } = useCheckout();
+  const [interval, setBillingInterval] = useState<BillingInterval>("month");
 
   // Unknown until the session loads: marking Basic meanwhile would flash the wrong plan for
   // subscribers on every page load
@@ -46,6 +53,19 @@ export function PricingView() {
           />
         </div>
 
+        <Stack gap={6} align="center">
+          <SegmentedControl
+            aria-label="Billing period"
+            data={INTERVAL_OPTIONS}
+            value={interval}
+            onChange={(value) => setBillingInterval(value as BillingInterval)}
+            radius="xl"
+          />
+          <Text size="sm" c="dimmed">
+            Yearly billing gets you two months free
+          </Text>
+        </Stack>
+
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl" w="100%">
           {SUBSCRIPTION_PLANS.map((plan, index) => {
             const paidPlan = isPaidPlan(plan.id) ? plan.id : null;
@@ -55,12 +75,13 @@ export function PricingView() {
               <Reveal key={plan.id} index={index}>
                 <PlanCard
                   plan={plan}
+                  interval={interval}
                   isCurrent={plan.id === currentPlan}
                   buttonLabel={getButtonLabel(plan)}
                   // The session decides between checkout and login, so wait for it
                   disabled={!canSubscribe || pendingPlan != null || authLoading}
                   pending={pendingPlan === plan.id}
-                  onSubscribe={() => paidPlan && subscribe(paidPlan)}
+                  onSubscribe={() => paidPlan && subscribe(paidPlan, interval)}
                 />
               </Reveal>
             );
