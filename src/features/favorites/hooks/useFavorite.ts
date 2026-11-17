@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
 import { ROUTES } from "@/shared/routes";
@@ -8,7 +8,7 @@ export function useFavorite(movieId: number | string) {
   const id = String(movieId);
   const { user, loading } = useAuth();
   const toggleFavorite = useToggleFavorite();
-  const router = useRouter();
+  const router = useAppRouter();
 
   const toggle = () => {
     if (!user) {

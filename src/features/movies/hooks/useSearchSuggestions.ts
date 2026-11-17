@@ -1,5 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { useDebouncedValue } from "@mantine/hooks";
 import {
   SEARCH_DEBOUNCE_MS,
@@ -26,7 +26,7 @@ export function useSearchSuggestions({
   clearOnSubmit = false,
   emptyResults = NO_MOVIES,
 }: SearchSuggestionsOptions = {}) {
-  const router = useRouter();
+  const router = useAppRouter();
   const [query, setQuery] = useState(initialQuery);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);

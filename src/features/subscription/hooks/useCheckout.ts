@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { PaidPlan } from "@/features/subscription/types";
 import { toApiError } from "@/shared/lib/api-error";
@@ -11,7 +11,7 @@ import { ROUTES } from "@/shared/routes";
 /** Starts Stripe Checkout for a plan; logged-out users are sent to login first. */
 export function useCheckout() {
   const { user } = useAuth();
-  const router = useRouter();
+  const router = useAppRouter();
 
   const checkout = useMutation({
     mutationFn: (plan: PaidPlan) =>

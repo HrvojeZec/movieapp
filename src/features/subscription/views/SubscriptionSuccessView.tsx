@@ -1,7 +1,8 @@
 "use client";
 import { Button, Center, Container, Loader, Paper, Stack, Text, Title } from "@mantine/core";
 import { CheckCircle } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { useConfirmCheckout } from "@/features/subscription/hooks/useConfirmCheckout";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
@@ -9,7 +10,7 @@ import { COLORS } from "@/shared/theme/colors";
 const LOADING_HEIGHT = 400;
 
 export function SubscriptionSuccessView() {
-  const router = useRouter();
+  const router = useAppRouter();
   const sessionId = useSearchParams().get("session_id");
   const { user, error, loading } = useConfirmCheckout(sessionId);
 

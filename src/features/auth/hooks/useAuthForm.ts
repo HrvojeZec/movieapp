@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { useRegister } from "@/features/auth/hooks/useRegister";
 import { toApiError } from "@/shared/lib/api-error";
@@ -12,7 +12,7 @@ export function useAuthForm(type: AuthFormType) {
   const [values, setValues] = useState({ email: "", password: "", name: "" });
   const login = useLogin();
   const register = useRegister();
-  const router = useRouter();
+  const router = useAppRouter();
 
   const mutation = type === "login" ? login : register;
   const error = mutation.error ? toApiError(mutation.error) : null;
