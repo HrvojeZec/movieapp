@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { tmdbFetch } from "@/features/movies/server/tmdb";
+import { fetchSearchResults } from "@/features/movies/server/movies";
 import {
   searchParamsToObject,
   tmdbErrorResponse,
@@ -11,7 +11,7 @@ import { movieSearchQuerySchema } from "@/features/movies/validations/movies.sch
 export async function GET(request: NextRequest) {
   try {
     const { query, page } = movieSearchQuerySchema.parse(searchParamsToObject(request.url));
-    return tmdbJson(await tmdbFetch("/search/movie", { query, page, include_adult: false }));
+    return tmdbJson(await fetchSearchResults(query, page));
   } catch (error) {
     return tmdbErrorResponse(error, "Movie search");
   }

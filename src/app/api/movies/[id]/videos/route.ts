@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { tmdbFetch } from "@/features/movies/server/tmdb";
+import { fetchMovieVideos } from "@/features/movies/server/movies";
 import { tmdbErrorResponse, tmdbJson } from "@/features/movies/server/route-helpers";
 import { movieIdSchema } from "@/features/movies/validations/movies.schema";
 
@@ -7,7 +7,7 @@ import { movieIdSchema } from "@/features/movies/validations/movies.schema";
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const id = movieIdSchema.parse((await params).id);
-    return tmdbJson(await tmdbFetch(`/movie/${id}/videos`));
+    return tmdbJson({ results: await fetchMovieVideos(id) });
   } catch (error) {
     return tmdbErrorResponse(error, "Movie videos");
   }

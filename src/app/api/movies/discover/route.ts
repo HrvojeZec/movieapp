@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { tmdbFetch } from "@/features/movies/server/tmdb";
+import { fetchDiscover } from "@/features/movies/server/movies";
 import {
   searchParamsToObject,
   tmdbErrorResponse,
@@ -10,18 +10,8 @@ import { movieDiscoverQuerySchema } from "@/features/movies/validations/movies.s
 // GET /api/movies/discover?year=2024&genre=28&minRating=7&page=1
 export async function GET(request: NextRequest) {
   try {
-    const { year, genre, minRating, page } = movieDiscoverQuerySchema.parse(
-      searchParamsToObject(request.url),
-    );
-    return tmdbJson(
-      await tmdbFetch("/discover/movie", {
-        page,
-        sort_by: "popularity.desc",
-        primary_release_year: year,
-        with_genres: genre,
-        "vote_average.gte": minRating,
-      }),
-    );
+    const filters = movieDiscoverQuerySchema.parse(searchParamsToObject(request.url));
+    return tmdbJson(await fetchDiscover(filters));
   } catch (error) {
     return tmdbErrorResponse(error, "Movie discover");
   }
