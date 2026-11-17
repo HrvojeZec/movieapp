@@ -24,7 +24,7 @@ test("the footer credits TMDB as its terms require", async ({ page }) => {
   await expect(
     page.getByText("This product uses the TMDB API but is not endorsed or certified by TMDB."),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "TMDB" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "TMDB", exact: true })).toHaveAttribute(
     "href",
     "https://www.themoviedb.org",
   );
