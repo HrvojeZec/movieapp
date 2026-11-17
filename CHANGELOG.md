@@ -157,6 +157,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The navbar search box and the command palette share one suggestion list component
 - Movie cards prefetch their page when hovered, focused or touched instead of whenever they scroll
   into view (previously 10-40 server renders per page of cards)
+- The subscription success page shows the new plan as an admission ticket (what it includes and the
+  price), with a loading skeleton, the API's reason when confirmation fails, and links to movies
+  and the profile
 - Upgrade Next.js and `eslint-config-next` to 16.4.6: Turbopack builds and serves the app in
   development and production, `next dev` writes to `.next/dev` so a build no longer breaks a
   running dev server, and ESLint uses the package's native flat config. `next build` no longer
@@ -169,6 +172,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The pricing page briefly marked Basic as the current plan for subscribers on every load; no
+  plan is marked until the session has loaded
 - Registration failed with a 500 error because the wrong model was imported for user activity (#6)
 - Genre filter from the URL was ignored on the Most Watched page (#11)
 - Subscription success page could confirm the same Stripe session repeatedly (#11)
