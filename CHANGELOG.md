@@ -75,6 +75,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   file), `ui/` (one folder per component), `views/`, `lib/` (pure helpers), `validations/`, `server/`,
   `constants.ts` and `types.ts`; favorites logic moved from auth into the favorites feature and unit
   tests into `__tests__` folders. No behavior changes
+- API routes share small helpers (`withRouteHandler`, `parseJson`, `requireSession`, `RouteError`)
+  instead of repeating try/catch, validation and 401 handling; every error response has the same
+  `{ message, errors? }` shape. Checkout logic moved from the route handlers into the subscription
+  feature
+- Password and name limits are defined once for the zod schemas and the User model; emails are
+  trimmed and lowercased by the schemas; magic numbers in TMDB validation, cache headers and the
+  database connection are named constants
 
 ### Fixed
 
@@ -100,6 +107,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The subscription success page showed "Subscription Successful!" to logged-out visitors without
   confirming the payment
 - Subscribe buttons ignored clicks while the session was still loading
+- A malformed JSON body on login or registration returned 500 instead of 400
+- The registration response was missing the subscription plan and status that login returns
 
 ### Removed
 
@@ -112,6 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AuthContext` and `react-infinite-scroll-component`
 - Unused movie fetchers (`getPopularMovies`, `getTopRatedMovies`, `getNowPlayingMovies`,
   `getUpcomingMovies`, `getMoviesByGenre`), replaced by `getMovieList` and `discoverMovies`
+- The `minlength` check on the stored password, which only ever saw the 60-character hash
 
 ### Security
 

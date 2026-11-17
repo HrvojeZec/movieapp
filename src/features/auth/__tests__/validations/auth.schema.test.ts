@@ -53,3 +53,10 @@ describe("loginSchema", () => {
     expect(loginSchema.safeParse({ email: "ana@example.com", password: "" }).success).toBe(false);
   });
 });
+
+describe("email normalization", () => {
+  it.each([registerSchema, loginSchema])("trims and lowercases the email", (schema) => {
+    const parsed = schema.parse({ ...validUser, email: "  Ana@Example.COM " });
+    expect(parsed.email).toBe("ana@example.com");
+  });
+});

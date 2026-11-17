@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { jsonError } from "@/server/http/responses";
 import type Stripe from "stripe";
 import { getStripe } from "@/features/subscription/server/stripe";
 import {
@@ -12,12 +13,12 @@ export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
     console.error("STRIPE_WEBHOOK_SECRET is not set");
-    return NextResponse.json({ message: "Webhook not configured" }, { status: 500 });
+    return jsonError(500, "Webhook not configured");
   }
 
   const signature = request.headers.get("stripe-signature");
   if (!signature) {
-    return NextResponse.json({ message: "Missing Stripe signature" }, { status: 400 });
+    return jsonError(400, "Missing Stripe signature");
   }
 
   let event: Stripe.Event;
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     event = getStripe().webhooks.constructEvent(await request.text(), signature, webhookSecret);
   } catch (error) {
     console.error("Webhook signature verification failed:", error);
-    return NextResponse.json({ message: "Invalid signature" }, { status: 400 });
+    return jsonError(400, "Invalid signature");
   }
 
   try {
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     // A 5xx makes Stripe retry the delivery; handlers are idempotent, so retries are safe.
     console.error(`Webhook handler failed for ${event.type} (${event.id}):`, error);
-    return NextResponse.json({ message: "Webhook handler failed" }, { status: 500 });
+    return jsonError(500, "Webhook handler failed");
   }
 }
 
