@@ -5,8 +5,8 @@ import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { MotionConfig } from "motion/react";
 import { Layout } from "@/shared/ui/Layout/Layout";
-import { AOSProvider } from "@/shared/providers/AOSProvider";
 import { createQueryClient } from "@/shared/lib/query-client";
 import { theme } from "@/shared/theme/theme";
 
@@ -19,9 +19,10 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={theme} defaultColorScheme="dark">
         <Notifications position="top-right" />
-        <AOSProvider>
+        {/* "user": animations are reduced when the OS asks for reduced motion */}
+        <MotionConfig reducedMotion="user">
           <Layout>{children}</Layout>
-        </AOSProvider>
+        </MotionConfig>
       </MantineProvider>
       {/* Renders nothing in production builds */}
       <ReactQueryDevtools buttonPosition="bottom-left" />
