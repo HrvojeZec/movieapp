@@ -4,7 +4,7 @@ import { PlayCircle, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { HERO_HEIGHT } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
-import { formatRating } from "@/features/movies/lib/movies";
+import { formatRating, hasRating } from "@/features/movies/lib/movies";
 import type { Movie } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
@@ -39,7 +39,8 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
           </Text>
           <Group gap="md" mb="xl">
             <Badge leftSection={<Star size={14} />} variant="filled" color="yellow">
-              {formatRating(movie.vote_average)} TMDB
+              {formatRating(movie.vote_average)}
+              {hasRating(movie.vote_average) && " TMDB"}
             </Badge>
             <Text c="gray.4">{formatYear(movie.release_date)}</Text>
           </Group>
