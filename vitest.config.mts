@@ -8,7 +8,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/__tests__/**/*.test.ts"],
     // Tests stub env vars and timers; reset them so tests can't leak state into each other
     unstubEnvs: true,
     unstubGlobals: true,
@@ -16,7 +16,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/features/**/*.ts", "src/shared/lib/**/*.ts", "src/server/**/*.ts"],
-      exclude: ["**/*.test.ts"],
+      exclude: ["**/__tests__/**"],
       reporter: ["text", "html"],
     },
   },

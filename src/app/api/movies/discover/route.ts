@@ -5,7 +5,7 @@ import {
   tmdbErrorResponse,
   tmdbJson,
 } from "@/features/movies/server/route-helpers";
-import { movieDiscoverQuerySchema } from "@/features/movies/validation";
+import { movieDiscoverQuerySchema } from "@/features/movies/validations/movies.schema";
 
 // GET /api/movies/discover?year=2024&genre=28&minRating=7&page=1
 export async function GET(request: NextRequest) {

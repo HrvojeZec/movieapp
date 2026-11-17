@@ -17,14 +17,11 @@ import {
 import { notifications } from "@mantine/notifications";
 import { Check, Star, Zap, CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/features/auth/queries";
-import { SUBSCRIPTION_PLANS, type PlanDetails } from "@/features/subscription/catalog";
-import {
-  hasActiveSubscription,
-  isPaidPlan,
-  type PaidPlan,
-  type SubscriptionPlan,
-} from "@/features/subscription/plans";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { type PlanDetails } from "@/features/subscription/types";
+import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
+import { type PaidPlan, type SubscriptionPlan } from "@/features/subscription/types";
 
 const PLAN_ICONS: Record<SubscriptionPlan, ReactNode> = {
   basic: <Check size={48} color="#10b981" />,

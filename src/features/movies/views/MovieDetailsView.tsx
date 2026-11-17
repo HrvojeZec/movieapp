@@ -19,12 +19,13 @@ import {
   Button,
 } from "@mantine/core";
 import { Heart, Star, Clock, MapPin, Calendar, PlayCircle } from "lucide-react";
-import { getImageUrl } from "@/features/movies/api";
-import { useMovieDetails } from "@/features/movies/queries";
-import { QueryError } from "@/shared/components/QueryError";
+import { getImageUrl } from "@/features/movies/lib/images";
+import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { HttpError } from "@/shared/lib/http";
-import { TrailerModal } from "@/features/movies/components/TrailerModal";
-import { useAuth, useToggleFavorite } from "@/features/auth/queries";
+import { TrailerModal } from "@/features/movies/ui/TrailerModal/TrailerModal";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
 
 export function MovieDetailsView() {
   const params = useParams();

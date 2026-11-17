@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateToken } from "@/features/auth/server/tokens";
 import { createUser } from "@/features/auth/server/users";
 import { setAuthCookie } from "@/features/auth/server/session";
-import { registerSchema } from "@/features/auth/validation";
+import { registerSchema } from "@/features/auth/validations/auth.schema";
 import { z } from "zod";
 import mongoose from "mongoose";
 

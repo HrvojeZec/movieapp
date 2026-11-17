@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { removeFavorite } from "@/features/favorites/server/favorites";
 import { logUserActivity } from "@/server/activity";
 import { getSessionUser } from "@/features/auth/server/session";
-import { favoriteMovieIdSchema } from "@/features/favorites/validation";
+import { favoriteMovieIdSchema } from "@/features/favorites/validations/favorites.schema";
 
 // DELETE /api/user/favorites/550
 export async function DELETE(

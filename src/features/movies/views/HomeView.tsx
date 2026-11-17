@@ -3,13 +3,14 @@ import { useState } from "react";
 import { Container, Title, Text, Stack, Box, Group, Badge, Button } from "@mantine/core";
 import { Clapperboard, PlayCircle, Star, Trophy } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getImageUrl } from "@/features/movies/api";
-import { useGenres, useMovieList } from "@/features/movies/queries";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
-import { HorizontalMovieScroll } from "@/features/movies/components/HorizontalMovieScroll";
-import { GenreRow } from "@/features/movies/components/GenreRow";
-import { TrailerModal } from "@/features/movies/components/TrailerModal";
-import { QueryError } from "@/shared/components/QueryError";
+import { getImageUrl } from "@/features/movies/lib/images";
+import { useGenres } from "@/features/movies/hooks/useGenres";
+import { useMovieList } from "@/features/movies/hooks/useMovieList";
+import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { HorizontalMovieScroll } from "@/features/movies/ui/HorizontalMovieScroll/HorizontalMovieScroll";
+import { GenreRow } from "@/features/movies/ui/GenreRow/GenreRow";
+import { TrailerModal } from "@/features/movies/ui/TrailerModal/TrailerModal";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
 
 const GENRE_ROWS = 10;
 

@@ -27,10 +27,13 @@ const eslintConfig = [
   {
     // Client code must not pull server-only modules (DB, Stripe, secrets) into the browser bundle
     files: [
-      "src/features/*/components/**",
+      "src/features/*/api/**",
+      "src/features/*/hooks/**",
+      "src/features/*/lib/**",
+      "src/features/*/ui/**",
       "src/features/*/views/**",
-      "src/features/*/queries.ts",
-      "src/features/*/api.ts",
+      "src/features/*/constants.ts",
+      "src/features/*/types.ts",
       "src/shared/**",
       "src/app/providers.tsx",
     ],

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser } from "@/features/auth/server/session";
 import connectDB from "@/server/db/mongodb";
 import { getStripe } from "@/features/subscription/server/stripe";
-import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/plans";
-import { checkoutSessionSchema } from "@/features/subscription/validation";
+import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/lib/plans";
+import { checkoutSessionSchema } from "@/features/subscription/validations/subscription.schema";
 import User from "@/server/models/User";
 
 export async function POST(request: NextRequest) {
