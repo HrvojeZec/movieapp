@@ -77,6 +77,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   viewed movies before anything is typed; on phones the search icon opens it full screen; the navbar
   search box shows the shortcut
 - Unit tests for the recently viewed list and store, end-to-end tests for both features
+- Rate limiting with a sliding window: login 5 per 15 minutes per IP and email, registration 5 per
+  hour per IP, movie API 60 per minute per IP (protects the shared TMDB quota), checkout 10 per
+  minute per user. Blocked requests get a 429 with `Retry-After` and a message the forms show.
+  Counts live in Upstash Redis (free plan) when `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`
+  (or the Vercel Marketplace `KV_REST_API_*` variables) are set, and in memory otherwise; if Redis
+  fails, requests go through rather than locking everyone out
+- Unit tests for the limiters, the 429 response and client IP detection; end-to-end tests for the
+  login and movie API limits. Each end-to-end test uses its own client address, so tests running in
+  parallel don't share a quota
 
 ### Changed
 
