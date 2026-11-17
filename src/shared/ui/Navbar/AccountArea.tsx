@@ -1,23 +1,22 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { Button, Group, Skeleton } from "@mantine/core";
+import { Box, Group, Skeleton } from "@mantine/core";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { ROUTES } from "@/shared/routes";
+import { AuthButtons } from "./AuthButtons";
 import { FavoritesMenu } from "./FavoritesMenu";
 import { UserMenu } from "./UserMenu";
 
-const PLACEHOLDER = { width: 160, height: 36 };
+// Roughly the size of what replaces it: two icons on phones, two buttons on wider screens
+const PLACEHOLDER = { height: 36, width: { base: 72, sm: 160 } };
 
 /** Right side of the navbar: a placeholder while the session loads, then menus or auth buttons. */
 export function AccountArea() {
   const { user, loading } = useAuth();
-  const router = useRouter();
 
   if (loading) {
     return (
       <Skeleton
-        height={PLACEHOLDER.height}
-        width={PLACEHOLDER.width}
+        h={PLACEHOLDER.height}
+        w={PLACEHOLDER.width}
         radius="sm"
         aria-label="Loading account"
       />
@@ -25,13 +24,11 @@ export function AccountArea() {
   }
 
   if (!user) {
+    // On phones the buttons live in the drawer, so the header fits on one line
     return (
-      <Group gap="sm">
-        <Button variant="subtle" onClick={() => router.push(ROUTES.login)}>
-          Login
-        </Button>
-        <Button onClick={() => router.push(ROUTES.register)}>Sign Up</Button>
-      </Group>
+      <Box visibleFrom="sm">
+        <AuthButtons />
+      </Box>
     );
   }
 
