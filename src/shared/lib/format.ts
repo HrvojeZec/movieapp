@@ -11,6 +11,16 @@ export const formatYear = (dateString: string): string => {
 /** e.g. "November 17, 2026" */
 export const formatDate = (date: string | Date): string => dayjs(date).format("MMMM D, YYYY");
 
+const ELLIPSIS = "…";
+
+/** Shortens text to at most `maxLength` characters, cutting at a word boundary. */
+export const truncate = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) return text;
+  const cut = text.slice(0, maxLength - ELLIPSIS.length);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trimEnd()}${ELLIPSIS}`;
+};
+
 export const formatRuntime = (minutes: number): string => {
   if (!minutes || minutes <= 0) return NOT_AVAILABLE;
 
