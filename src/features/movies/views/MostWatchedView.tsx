@@ -16,9 +16,10 @@ import { dedupeMovies } from "@/features/movies/lib/movies";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { useInfiniteScroll } from "@/shared/hooks/useInfiniteScroll";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
+import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
 import classes from "./MostWatchedView.module.scss";
 
-const yearOptions = buildYearOptions(new Date().getFullYear(), YEAR_OPTIONS_COUNT);
+const yearOptions = buildYearOptions(new Date().getFullYear() + 1, YEAR_OPTIONS_COUNT);
 const RATING_STEP = 0.1;
 const EMPTY_STATE_HEIGHT = 200;
 const filterClassNames = { input: classes.filterInput, dropdown: classes.filterDropdown };
@@ -45,12 +46,9 @@ export function MostWatchedView() {
   return (
     <Container size="xl" py="xl">
       <Stack gap="xl">
-        <Group gap="sm">
-          <Flame color="red" size={30} />
-          <Text c="white" size="xl">
-            Most Watched
-          </Text>
-        </Group>
+        <SectionTitle icon={<Flame color="red" size={28} />} order={1} size="2rem">
+          Most Watched
+        </SectionTitle>
 
         <Group gap="md" wrap="wrap">
           <Select
