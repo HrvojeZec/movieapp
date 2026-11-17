@@ -38,3 +38,12 @@ export async function fetchJson<T>(input: string, init?: RequestInit): Promise<T
   }
   return body as T;
 }
+
+/** POST with an optional JSON body. */
+export const postJson = <T>(input: string, body?: unknown) =>
+  fetchJson<T>(input, {
+    method: "POST",
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+
+export const deleteJson = <T>(input: string) => fetchJson<T>(input, { method: "DELETE" });
