@@ -1,0 +1,6 @@
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  // The badge only decorates the button; clicks go to the button underneath
+  pointer-events: none;
+}

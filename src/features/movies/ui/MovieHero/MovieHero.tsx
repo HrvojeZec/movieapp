@@ -1,7 +1,7 @@
 "use client";
 import { Badge, Box, Button, Container, Group, Text, Title } from "@mantine/core";
 import { PlayCircle, Star } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { HERO_HEIGHT } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating, hasRating } from "@/features/movies/lib/movies";
@@ -21,7 +21,7 @@ interface MovieHeroProps {
 
 /** Full-width backdrop with the featured movie on the home page. */
 export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
-  const router = useRouter();
+  const router = useAppRouter();
 
   return (
     <Box

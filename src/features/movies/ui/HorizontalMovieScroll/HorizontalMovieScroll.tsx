@@ -24,8 +24,9 @@ export const HorizontalMovieScroll = ({
 }: HorizontalMovieScrollProps) => (
   <Box mb="xl">
     <SectionTitle icon={icon}>{title}</SectionTitle>
-    <ScrollArea>
-      <Group gap="md" wrap="nowrap" pb="md">
+    {/* Only horizontal: the hover lift and the reveal animation used to add a vertical scrollbar */}
+    <ScrollArea scrollbars="x" className={classes.scroll}>
+      <Group gap="md" wrap="nowrap" className={classes.track}>
         {loading
           ? Array.from({ length: ROW_SKELETON_COUNT }, (_, index) => (
               <MovieCardSkeleton key={index} size="sm" width={ROW_CARD_WIDTH} />

@@ -1,6 +1,6 @@
 "use client";
 import { Button, Center, Container, Stack, Text } from "@mantine/core";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
@@ -12,7 +12,7 @@ import { Reveal } from "@/shared/ui/motion/Reveal";
 
 export function FavoritesView() {
   const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
+  const router = useAppRouter();
   const favorites = user?.favorites ?? [];
   const { movies, isPending, isError, refetch } = useMoviesByIds(favorites.map(Number));
   // Removing a favorite keeps the remaining cards visible instead of flashing a skeleton

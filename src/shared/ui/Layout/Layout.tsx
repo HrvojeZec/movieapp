@@ -1,8 +1,9 @@
 "use client";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { AppShell } from "@mantine/core";
 import { CommandPalette } from "@/features/movies/ui/CommandPalette/CommandPalette";
 import { Footer } from "@/shared/ui/Footer/Footer";
+import { NavigationProgress } from "@/shared/ui/NavigationProgress/NavigationProgress";
 import { Navbar } from "@/shared/ui/Navbar/Navbar";
 import classes from "./Layout.module.scss";
 
@@ -23,5 +24,9 @@ export const Layout = ({ children }: { children: ReactNode }) => (
       <Footer />
     </AppShell.Main>
     <CommandPalette />
+    {/* useSearchParams needs a Suspense boundary, or static pages bail out of prerendering */}
+    <Suspense fallback={null}>
+      <NavigationProgress />
+    </Suspense>
   </AppShell>
 );

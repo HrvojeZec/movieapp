@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { useEffect } from "react";
 import { Loader, Center } from "@mantine/core";
 import { ROUTES } from "@/shared/routes";
@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
-  const router = useRouter();
+  const router = useAppRouter();
 
   useEffect(() => {
     if (!loading && !user) {

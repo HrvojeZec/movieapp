@@ -43,3 +43,25 @@ test("an unknown movie shows a movie-specific 404 page", async ({ page }) => {
   await page.goto("/movie/999999999");
   await expect(page.getByRole("heading", { name: "Movie not found" })).toBeVisible();
 });
+
+test("a slow navigation shows a progress bar until the page arrives", async ({ page }) => {
+  await page.goto("/");
+  const card = page.locator('main a[href^="/movie/"]').first();
+  await expect(card).toBeVisible();
+
+  // Hold back the movie page's server render, as a cold serverless function would
+  let release = () => {};
+  const held = new Promise<void>((resolve) => (release = resolve));
+  await page.route(/\/movie\/\d+/, async (route) => {
+    if (route.request().resourceType() === "fetch") await held;
+    await route.continue();
+  });
+
+  const progress = page.getByRole("progressbar", { name: "Loading page" });
+  await card.click();
+  await expect(progress).toBeVisible();
+
+  release();
+  await expect(page).toHaveURL(/\/movie\/\d+$/);
+  await expect(progress).toBeHidden();
+});

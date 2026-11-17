@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { Box, Card, Group, Image, Text } from "@mantine/core";
 import { Star } from "lucide-react";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
@@ -10,6 +9,7 @@ import type { MovieSummary } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
+import { IntentPrefetchLink } from "@/shared/ui/IntentPrefetchLink/IntentPrefetchLink";
 import GlareHover from "@/shared/vendor/react-bits/GlareHover/GlareHover";
 import classes from "./MovieCard.module.scss";
 
@@ -20,7 +20,7 @@ interface MovieCardProps {
 
 export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => (
   <Card shadow="md" padding={0} radius="md" className={classes.card}>
-    <Link href={ROUTES.movie(movie.id)} className={classes.link}>
+    <IntentPrefetchLink href={ROUTES.movie(movie.id)} className={classes.link}>
       {/* A light sweep across the poster on hover */}
       <GlareHover width="100%" borderRadius="0" glareOpacity={0.25} rimGlint={false}>
         <Image
@@ -48,7 +48,7 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => (
           </Text>
         </Group>
       </Box>
-    </Link>
+    </IntentPrefetchLink>
 
     <Box className={classes.favorite}>
       <FavoriteButton movieId={movie.id} />
