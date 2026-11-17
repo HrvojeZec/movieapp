@@ -1,7 +1,17 @@
 "use client";
 import { useMemo } from "react";
-import { Center, Group, Loader, NumberInput, Select, Stack, Text, Container } from "@mantine/core";
-import { Flame } from "lucide-react";
+import {
+  Button,
+  Center,
+  Container,
+  Group,
+  Loader,
+  NumberInput,
+  Select,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { Flame, FunnelX } from "lucide-react";
 import {
   FILTER_WIDTHS,
   INFINITE_SCROLL_MARGIN,
@@ -25,7 +35,7 @@ const EMPTY_STATE_HEIGHT = 200;
 const filterClassNames = { input: classes.filterInput, dropdown: classes.filterDropdown };
 
 export function MostWatchedView() {
-  const { filters, values, setFilter } = useDiscoverFilters();
+  const { filters, values, hasFilters, setFilter, clearFilters } = useDiscoverFilters();
   const genres = useGenres();
   const { data, isPending, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteDiscoverMovies(filters);
@@ -81,6 +91,17 @@ export function MostWatchedView() {
             w={FILTER_WIDTHS.rating}
             classNames={{ input: classes.filterInput }}
           />
+
+          {hasFilters && (
+            <Button
+              variant="subtle"
+              color="gray"
+              leftSection={<FunnelX size={16} />}
+              onClick={clearFilters}
+            >
+              Clear filters
+            </Button>
+          )}
         </Group>
 
         {isError ? (
@@ -88,9 +109,14 @@ export function MostWatchedView() {
         ) : isPending ? (
           <MovieGrid movies={[]} loading />
         ) : movies.length === 0 ? (
-          <Center h={EMPTY_STATE_HEIGHT}>
+          <Stack h={EMPTY_STATE_HEIGHT} align="center" justify="center" gap="md">
             <Text c="dimmed">No movies match these filters.</Text>
-          </Center>
+            {hasFilters && (
+              <Button variant="light" leftSection={<FunnelX size={16} />} onClick={clearFilters}>
+                Clear filters
+              </Button>
+            )}
+          </Stack>
         ) : (
           <MovieGrid movies={movies} />
         )}

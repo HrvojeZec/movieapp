@@ -88,6 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parallel don't share a quota
 - A thin progress bar at the top of the page while a navigation takes longer than 150 ms, so a slow
   server render doesn't look like the app froze
+- A "Clear filters" button on Most Watched, next to the filters and in the empty state
 
 ### Changed
 
@@ -193,6 +194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   real page heading
 - Horizontal movie rows showed a vertical scrollbar, and a hovered card could be cut off at the top
 - The favorites count badge in the navbar was clipped by the heart button's rounded corners
+- End-to-end tests reused the same client addresses on every run, so with Redis they inherited the
+  previous run's rate limit counts
 
 ### Removed
 
