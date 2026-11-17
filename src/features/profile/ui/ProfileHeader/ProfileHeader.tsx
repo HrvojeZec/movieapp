@@ -3,10 +3,11 @@ import { Calendar, Heart, Mail } from "lucide-react";
 import type { AuthUser } from "@/features/auth/types";
 import { formatDate } from "@/shared/lib/format";
 import { COLORS } from "@/shared/theme/colors";
+import CountUp from "@/shared/vendor/react-bits/CountUp/CountUp";
 
 export function ProfileHeader({ user }: { user: AuthUser }) {
   return (
-    <Paper data-aos="fade-up" data-aos-delay="200" p="xl" radius="md">
+    <Paper p="xl" radius="md">
       <Group gap="xl">
         <Avatar size="xl" color="blue" radius="md">
           {user.name.charAt(0).toUpperCase()}
@@ -31,7 +32,7 @@ export function ProfileHeader({ user }: { user: AuthUser }) {
           <Group gap="xs">
             <Heart size={16} color={COLORS.danger} />
             <Badge variant="light" color="red">
-              {user.favorites.length} Favorites
+              <CountUp to={user.favorites.length} /> Favorites
             </Badge>
           </Group>
         </Stack>

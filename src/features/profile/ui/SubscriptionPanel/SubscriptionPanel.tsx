@@ -14,7 +14,7 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
   const isActive = hasActiveSubscription(user.subscriptionStatus);
 
   return (
-    <Paper data-aos="fade-up" data-aos-delay="300" p="xl" radius="md">
+    <Paper p="xl" radius="md">
       <Group gap="sm" mb="md">
         <CreditCard size={24} color={COLORS.primary} />
         <Title size="lg" c="white">
