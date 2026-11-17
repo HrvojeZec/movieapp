@@ -242,6 +242,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `frame-ancestors 'none'`, `object-src 'none'` and no `eval` in production
 - HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` and
   `Cross-Origin-Opener-Policy` on every response; `X-Powered-By` is no longer sent
+- The dependency audit in CI fails on high and critical advisories except ones accepted in
+  `scripts/audit.mjs` with a reason and an expiry date; picomatch ReDoS (GHSA-fc5q-39xc-vjpf) is
+  accepted until 2026-12-31 because no patched release exists and globs never come from user input
 
 ## [0.1.0] - 2025-08-18
 
