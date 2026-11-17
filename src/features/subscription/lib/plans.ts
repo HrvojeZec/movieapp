@@ -24,10 +24,3 @@ export function getPlanForPriceId(priceId: string | null | undefined): Subscript
 export function hasActiveSubscription(status: string | null | undefined): boolean {
   return !!status && ENTITLED_STATUSES.has(status);
 }
-
-export function getPlanForSubscription(
-  status: string,
-  priceId: string | null | undefined,
-): SubscriptionPlan {
-  return hasActiveSubscription(status) ? getPlanForPriceId(priceId) : "basic";
-}

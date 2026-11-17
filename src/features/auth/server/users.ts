@@ -4,8 +4,19 @@ import { logUserActivity } from "@/server/activity";
 import { RouteError } from "@/server/http/route-error";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import type { AuthUser } from "@/features/auth/types";
+import { isPaidPlan } from "@/features/subscription/lib/plans";
 
 // Emails reach these functions already normalized (trimmed, lowercase) by the zod schemas.
+
+function toSubscriptionDetails(user: IUser): AuthUser["subscription"] {
+  if (!isPaidPlan(user.subscriptionPlan) || !user.currentPeriodEnd) return undefined;
+  return {
+    interval: user.subscriptionInterval ?? "month",
+    currentPeriodEnd: user.currentPeriodEnd.toISOString(),
+    cancelAt: user.cancelAt?.toISOString() ?? null,
+    trialEnd: user.trialEnd?.toISOString() ?? null,
+  };
+}
 
 /** The public shape of a user: never includes the password hash. */
 export function toAuthUser(user: IUser): AuthUser {
@@ -17,6 +28,7 @@ export function toAuthUser(user: IUser): AuthUser {
     stripeCustomerId: user.stripeCustomerId,
     subscriptionStatus: user.subscriptionStatus,
     subscriptionPlan: user.subscriptionPlan,
+    subscription: toSubscriptionDetails(user),
     createdAt: user.createdAt,
     lastLogin: user.lastLogin,
   };

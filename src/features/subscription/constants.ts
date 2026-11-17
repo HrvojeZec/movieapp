@@ -37,6 +37,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     id: "basic",
     name: "Basic",
     price: 0,
+    yearlyPrice: 0,
     features: [
       { label: "Browse and search movies" },
       { label: "Filter by year, genre and rating" },
@@ -48,6 +49,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     id: "premium",
     name: "Premium",
     price: 9.99,
+    yearlyPrice: 99.9,
     popular: true,
     features: [
       { label: "Everything in Basic" },
@@ -59,6 +61,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     id: "pro",
     name: "Pro",
     price: 19.99,
+    yearlyPrice: 199.9,
     features: [
       { label: "Everything in Premium" },
       { label: "Personalized recommendations", comingSoon: true },
