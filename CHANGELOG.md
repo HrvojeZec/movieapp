@@ -155,6 +155,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade Mantine to 9.8.0. The app keeps its look: the theme pins the previous default radius
   (`sm`) and the translucent 8.x colors of light and subtle variants (`v8CssVariablesResolver`).
   The password field's show/hide button now has an accessible name
+- Upgrade Mongoose to 9.12.1 (MongoDB driver 7.8): the password hashing hook is a plain async
+  function, and updates that return the new document use `returnDocument: "after"`
 
 ### Fixed
 
