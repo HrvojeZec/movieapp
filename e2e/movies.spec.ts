@@ -10,7 +10,7 @@ test("the home page shows movie posters", async ({ page }) => {
 
 test("searching from the navbar finds a movie and opens its page", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("textbox", { name: "Search movies" }).fill("fight club");
+  await page.getByRole("combobox", { name: "Search movies" }).fill("fight club");
 
   await page.getByText("Fight Club", { exact: true }).first().click();
 

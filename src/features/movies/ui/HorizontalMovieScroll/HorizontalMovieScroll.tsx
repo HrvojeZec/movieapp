@@ -28,7 +28,7 @@ export const HorizontalMovieScroll = ({
       <Group gap="md" wrap="nowrap" pb="md">
         {loading
           ? Array.from({ length: ROW_SKELETON_COUNT }, (_, index) => (
-              <MovieCardSkeleton key={index} width={ROW_CARD_WIDTH} />
+              <MovieCardSkeleton key={index} size="sm" width={ROW_CARD_WIDTH} />
             ))
           : movies.map((movie, index) => (
               <Reveal key={movie.id} index={index} className={classes.item}>

@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useId, type FocusEvent } from "react";
 import Image from "next/image";
 import { Box, Group, ScrollArea, Text, TextInput, UnstyledButton } from "@mantine/core";
 import { Search } from "lucide-react";
@@ -37,12 +38,31 @@ export function MovieSearchBox({
 }: MovieSearchBoxProps) {
   const search = useSearchSuggestions({ initialQuery, clearOnSubmit });
   const thumbnail = THUMBNAILS[variant];
+  const listId = useId();
+  const optionId = (index: number) => `${listId}-option-${index}`;
+  const activeId =
+    search.isOpen && search.activeIndex >= 0 ? optionId(search.activeIndex) : undefined;
+
+  // Keep the option chosen with the arrow keys in view inside the scrolling list
+  useEffect(() => {
+    if (activeId) document.getElementById(activeId)?.scrollIntoView({ block: "nearest" });
+  }, [activeId]);
+
+  // Tabbing away or clicking elsewhere closes the list; moving focus within the box doesn't
+  const handleBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) search.close();
+  };
 
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root} onBlur={handleBlur}>
       <TextInput
         placeholder={placeholder}
         aria-label="Search movies"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={search.isOpen}
+        aria-controls={search.isOpen ? listId : undefined}
+        aria-activedescendant={activeId}
         leftSection={<Search size={size === "lg" ? 18 : 16} />}
         size={size}
         autoFocus={autoFocus}
@@ -54,11 +74,17 @@ export function MovieSearchBox({
       />
 
       {search.isOpen && (
-        <Box className={classes.dropdown}>
+        <Box className={classes.dropdown} id={listId} role="listbox" aria-label="Suggestions">
           <ScrollArea.Autosize mah={DROPDOWN_MAX_HEIGHT}>
             {search.suggestions.map((movie, index) => (
               <UnstyledButton
                 key={movie.id}
+                id={optionId(index)}
+                role="option"
+                aria-selected={index === search.activeIndex}
+                // Options are chosen with the arrow keys; focus stays in the input
+                tabIndex={-1}
+                onMouseDown={(event) => event.preventDefault()}
                 p={variant === "detailed" ? "md" : "sm"}
                 className={`${classes.option} ${index === search.activeIndex ? classes.active : ""}`}
                 onClick={() => search.selectMovie(movie)}
@@ -66,7 +92,8 @@ export function MovieSearchBox({
                 <Group gap={variant === "detailed" ? "md" : "sm"} wrap="nowrap">
                   <Image
                     src={getImageUrl(movie.poster_path, "w200")}
-                    alt={movie.title}
+                    // Decorative: the title is right next to it
+                    alt=""
                     width={thumbnail.width}
                     height={thumbnail.height}
                     className={classes.poster}

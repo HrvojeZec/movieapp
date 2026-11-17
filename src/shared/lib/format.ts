@@ -11,6 +11,10 @@ export const formatYear = (dateString: string): string => {
 /** e.g. "November 17, 2026" */
 export const formatDate = (date: string | Date): string => dayjs(date).format("MMMM D, YYYY");
 
+/** "1 favorite", "2 favorites"; pass the plural for irregular words. */
+export const pluralize = (count: number, singular: string, plural = `${singular}s`): string =>
+  count === 1 ? singular : plural;
+
 const ELLIPSIS = "…";
 
 /** Shortens text to at most `maxLength` characters, cutting at a word boundary. */

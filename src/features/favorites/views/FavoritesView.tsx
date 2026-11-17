@@ -21,7 +21,7 @@ export function FavoritesView() {
   return (
     <Container size="xl" py="xl">
       <Stack gap="xl">
-        <SectionTitle icon={<Heart color="red" />} size="2rem">
+        <SectionTitle icon={<Heart color="red" size={28} />} order={1} size="2rem">
           My Favorites ({favorites.length})
         </SectionTitle>
 

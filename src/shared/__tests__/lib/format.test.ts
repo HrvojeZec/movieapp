@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatRuntime, formatYear, truncate } from "@/shared/lib/format";
+import { formatDate, formatRuntime, formatYear, pluralize, truncate } from "@/shared/lib/format";
 
 describe("formatRuntime", () => {
   it.each([
@@ -40,5 +40,19 @@ describe("truncate", () => {
 
   it("cuts a single long word", () => {
     expect(truncate("Supercalifragilistic", 10)).toBe("Supercali…");
+  });
+});
+
+describe("pluralize", () => {
+  it.each([
+    [0, "favorites"],
+    [1, "favorite"],
+    [2, "favorites"],
+  ])("uses the right form for %i", (count, expected) => {
+    expect(pluralize(count, "favorite")).toBe(expected);
+  });
+
+  it("accepts an irregular plural", () => {
+    expect(pluralize(2, "person", "people")).toBe("people");
   });
 });
