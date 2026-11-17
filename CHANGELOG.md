@@ -66,6 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   subtitles (BlurText), counting numbers on the profile (CountUp) and an animated background on the
   login and registration pages (DarkVeil, loaded only there). Third-party license in
   `THIRD_PARTY_NOTICES.md`
+- Search suggestions follow the ARIA combobox pattern: screen readers announce the list and the
+  highlighted movie, the highlighted option scrolls into view, and Tab, Escape or clicking elsewhere
+  close the list
+- Movie cards are real links: they work with the keyboard, show a focus ring and can open in a new tab
+- End-to-end tests for keyboard search, the favorite button on touch screens and the profile wording
 
 ### Changed
 
@@ -156,6 +161,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "watch now" / "Watch Trailer"
 - A click on Sign In before the page was interactive was lost; the button stays disabled until the
   form can handle it
+- The favorite button on movie cards only appeared on hover, so touch screens never showed it
+- Movie cards had a fixed height that left empty space under short titles; cards now fit their
+  content and line up, and loading skeletons match their size
+- Unrated movies showed a rating of 0.0; they now say "Not rated"
+- The profile called a free account "Inactive", described features that don't exist, used emoji and
+  showed "Member since" twice; it now shows the plan, a readable subscription status and a link to
+  the plans
+- "Coming soon" badges on the pricing cards were cut off
+- The Most Watched year filter couldn't show next year's releases; Most Watched and Favorites have a
+  real page heading
 
 ### Removed
 
