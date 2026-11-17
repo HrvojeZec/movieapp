@@ -6,9 +6,12 @@ import { useCheckout } from "@/features/subscription/hooks/useCheckout";
 import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
 import type { PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
 import { PlanCard } from "@/features/subscription/ui/PlanCard/PlanCard";
+import { Reveal } from "@/shared/ui/motion/Reveal";
+import BlurText from "@/shared/vendor/react-bits/BlurText/BlurText";
+import classes from "./PricingView.module.scss";
 
-// Cards fade in one after another
-const CARD_ANIMATION_STEP_MS = 100;
+// Words of the subtitle come into focus one after another
+const SUBTITLE_WORD_DELAY_MS = 60;
 
 export function PricingView() {
   const { user, loading: authLoading } = useAuth();
@@ -28,13 +31,16 @@ export function PricingView() {
   return (
     <Container size="lg" py="xl">
       <Stack gap="xl" align="center">
-        <div data-aos="fade-down">
+        <div>
           <Title size="3rem" fw={700} ta="center" c="white" mb="md">
             Choose Your Plan
           </Title>
-          <Text size="xl" ta="center" c="dimmed" maw={600}>
-            Unlock premium features and enhance your movie discovery experience
-          </Text>
+          <BlurText
+            text="Unlock premium features and enhance your movie discovery experience"
+            className={classes.subtitle}
+            delay={SUBTITLE_WORD_DELAY_MS}
+            trigger="load"
+          />
         </div>
 
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl" w="100%">
@@ -43,27 +49,25 @@ export function PricingView() {
             const canSubscribe = paidPlan !== null && !isSubscribed;
 
             return (
-              <PlanCard
-                key={plan.id}
-                plan={plan}
-                isCurrent={plan.id === currentPlan}
-                buttonLabel={getButtonLabel(plan)}
-                // The session decides between checkout and login, so wait for it
-                disabled={!canSubscribe || pendingPlan != null || authLoading}
-                pending={pendingPlan === plan.id}
-                onSubscribe={() => paidPlan && subscribe(paidPlan)}
-                animationDelay={index * CARD_ANIMATION_STEP_MS}
-              />
+              <Reveal key={plan.id} index={index}>
+                <PlanCard
+                  plan={plan}
+                  isCurrent={plan.id === currentPlan}
+                  buttonLabel={getButtonLabel(plan)}
+                  // The session decides between checkout and login, so wait for it
+                  disabled={!canSubscribe || pendingPlan != null || authLoading}
+                  pending={pendingPlan === plan.id}
+                  onSubscribe={() => paidPlan && subscribe(paidPlan)}
+                />
+              </Reveal>
             );
           })}
         </SimpleGrid>
 
-        <div data-aos="fade-up" data-aos-delay="400">
-          <Text ta="center" c="dimmed" size="sm">
-            Payments run in Stripe test mode. Use card 4242 4242 4242 4242 with any future date and
-            any CVC.
-          </Text>
-        </div>
+        <Text ta="center" c="dimmed" size="sm">
+          Payments run in Stripe test mode. Use card 4242 4242 4242 4242 with any future date and
+          any CVC.
+        </Text>
       </Stack>
     </Container>
   );
