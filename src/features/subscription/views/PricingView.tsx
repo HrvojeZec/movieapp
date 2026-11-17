@@ -4,6 +4,7 @@ import { Container, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@ma
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
 import { useCheckout } from "@/features/subscription/hooks/useCheckout";
+import { useManageSubscription } from "@/features/subscription/hooks/useManageSubscription";
 import { getEffectivePlan } from "@/features/subscription/lib/entitlements";
 import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
 import type { BillingInterval, PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
@@ -23,6 +24,7 @@ const INTERVAL_OPTIONS = [
 export function PricingView() {
   const { user, loading: authLoading } = useAuth();
   const { subscribe, pendingPlan } = useCheckout();
+  const { openPortal, openingPortal } = useManageSubscription();
   const [interval, setBillingInterval] = useState<BillingInterval>("month");
 
   // Unknown until the session loads: marking Basic meanwhile would flash the wrong plan for
@@ -34,7 +36,8 @@ export function PricingView() {
   const getButtonLabel = (plan: PlanDetails) => {
     if (plan.id === currentPlan) return "Current Plan";
     if (plan.id === "basic") return "Free";
-    if (isSubscribed) return "Plan changes coming soon";
+    // Switching plans or billing period happens in the Stripe Customer Portal (with proration)
+    if (isSubscribed) return `Switch to ${plan.name}`;
     return `Subscribe to ${plan.name}`;
   };
 
@@ -69,7 +72,8 @@ export function PricingView() {
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl" w="100%">
           {SUBSCRIPTION_PLANS.map((plan, index) => {
             const paidPlan = isPaidPlan(plan.id) ? plan.id : null;
-            const canSubscribe = paidPlan !== null && !isSubscribed;
+            const canSwitch = paidPlan !== null && isSubscribed && plan.id !== currentPlan;
+            const canSubscribe = (paidPlan !== null && !isSubscribed) || canSwitch;
 
             return (
               <Reveal key={plan.id} index={index}>
@@ -79,9 +83,12 @@ export function PricingView() {
                   isCurrent={plan.id === currentPlan}
                   buttonLabel={getButtonLabel(plan)}
                   // The session decides between checkout and login, so wait for it
-                  disabled={!canSubscribe || pendingPlan != null || authLoading}
+                  disabled={!canSubscribe || pendingPlan != null || openingPortal || authLoading}
                   pending={pendingPlan === plan.id}
-                  onSubscribe={() => paidPlan && subscribe(paidPlan, interval)}
+                  onSubscribe={() => {
+                    if (canSwitch) openPortal();
+                    else if (paidPlan) subscribe(paidPlan, interval);
+                  }}
                 />
               </Reveal>
             );

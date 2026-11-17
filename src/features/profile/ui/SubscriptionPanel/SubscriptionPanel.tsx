@@ -1,5 +1,6 @@
 import { useId } from "react";
-import { Alert, Badge, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Alert, Badge, Button, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { AlertTriangle, CreditCard, Crown } from "lucide-react";
 import type { AuthUser } from "@/features/auth/types";
 import {
@@ -8,6 +9,8 @@ import {
   SUBSCRIPTION_STATUS_DISPLAY,
 } from "@/features/profile/constants";
 import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { CancelSubscriptionModal } from "@/features/profile/ui/CancelSubscriptionModal/CancelSubscriptionModal";
+import { useManageSubscription } from "@/features/subscription/hooks/useManageSubscription";
 import { getBillingSummary } from "@/features/subscription/lib/billing";
 import { getEffectivePlan, getPlanName } from "@/features/subscription/lib/entitlements";
 import { isPaidPlan } from "@/features/subscription/lib/plans";
@@ -34,6 +37,9 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
       ? getBillingSummary(planDetails, user.subscriptionStatus, user.subscription)
       : null;
   const titleId = useId();
+  const manage = useManageSubscription();
+  const [cancelOpened, cancelModal] = useDisclosure(false);
+  const isCanceled = !!user.subscription?.cancelAt;
 
   return (
     <Paper component="section" aria-labelledby={titleId} p="xl" radius="md">
@@ -76,17 +82,63 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
 
         {user.subscriptionStatus === "past_due" && (
           <Alert color="yellow" variant="light" icon={<AlertTriangle size={18} />}>
-            Your last payment failed. Stripe will try again over the next few days; if it keeps
-            failing, your plan switches to Basic.
+            <Stack gap="xs" align="flex-start">
+              <Text size="sm">
+                Your last payment failed. Stripe will try again over the next few days; if it keeps
+                failing, your plan switches to Basic.
+              </Text>
+              <Button
+                size="xs"
+                color="yellow"
+                variant="light"
+                onClick={manage.openPortal}
+                loading={manage.openingPortal}
+              >
+                Update payment method
+              </Button>
+            </Stack>
           </Alert>
         )}
 
         <Group gap="sm" mt="sm">
-          <LinkButton href={ROUTES.pricing} size="sm" variant={isPaid ? "outline" : "filled"}>
-            {isPaid ? "Manage plan" : "See plans"}
-          </LinkButton>
+          {!isPaid && (
+            <LinkButton href={ROUTES.pricing} size="sm">
+              See plans
+            </LinkButton>
+          )}
+          {isPaid && isCanceled && (
+            <Button size="sm" onClick={manage.resume} loading={manage.resuming}>
+              Resume subscription
+            </Button>
+          )}
+          {user.stripeCustomerId && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={manage.openPortal}
+              loading={manage.openingPortal}
+            >
+              Manage billing
+            </Button>
+          )}
+          {isPaid && !isCanceled && user.subscription && (
+            <Button size="sm" variant="subtle" color="red" onClick={cancelModal.open}>
+              Cancel subscription
+            </Button>
+          )}
         </Group>
       </Stack>
+
+      {isPaid && user.subscription && (
+        <CancelSubscriptionModal
+          opened={cancelOpened}
+          onClose={cancelModal.close}
+          onConfirm={() => manage.cancel(cancelModal.close)}
+          confirming={manage.canceling}
+          plan={plan}
+          periodEnd={user.subscription.currentPeriodEnd}
+        />
+      )}
     </Paper>
   );
 }
