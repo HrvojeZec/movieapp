@@ -148,6 +148,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The navbar search box and the command palette share one suggestion list component
 - Movie cards prefetch their page when hovered, focused or touched instead of whenever they scroll
   into view (previously 10-40 server renders per page of cards)
+- Upgrade Next.js and `eslint-config-next` to 16.4.6: Turbopack builds and serves the app in
+  development and production, `next dev` writes to `.next/dev` so a build no longer breaks a
+  running dev server, and ESLint uses the package's native flat config. `next build` no longer
+  runs ESLint; CI runs it as a separate step
 
 ### Fixed
 
@@ -215,6 +219,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused date formats and dayjs plugins, and exports that nothing outside their module used
 - Unused images from the project template in `public/`
 - `aos`, replaced by Motion; it hid all content until scrolled into view
+- The postcss override for Next.js 15 (Next.js 16 ships a patched postcss) and the unused
+  `@eslint/eslintrc` compatibility layer
 
 ### Security
 
@@ -236,6 +242,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `frame-ancestors 'none'`, `object-src 'none'` and no `eval` in production
 - HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` and
   `Cross-Origin-Opener-Policy` on every response; `X-Powered-By` is no longer sent
+- The dependency audit in CI fails on high and critical advisories except ones accepted in
+  `scripts/audit.mjs` with a reason and an expiry date; picomatch ReDoS (GHSA-fc5q-39xc-vjpf) is
+  accepted until 2026-12-31 because no patched release exists and globs never come from user input
 
 ## [0.1.0] - 2025-08-18
 

@@ -63,7 +63,9 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - run: npm audit --omit=dev --audit-level=high
+      # npm audit for production dependencies; fails on high/critical advisories except the ones
+      # accepted (with a reason and an expiry date) in scripts/audit.mjs
+      - run: node scripts/audit.mjs --omit=dev
 
   docker:
     name: Docker image build

@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
   // No need to advertise the framework in every response
   poweredByHeader: false,
+  // `next dev` must not write generated instruction files into the repository root
+  agentRules: false,
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
