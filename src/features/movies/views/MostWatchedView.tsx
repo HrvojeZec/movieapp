@@ -4,10 +4,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Container, Group, Select, NumberInput, Stack, Text, Loader, Center } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { Flame } from "lucide-react";
-import type { DiscoverFilters, Movie } from "@/features/movies/api";
-import { useGenres, useInfiniteDiscoverMovies } from "@/features/movies/queries";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
-import { QueryError } from "@/shared/components/QueryError";
+import type { DiscoverFilters, Movie } from "@/features/movies/types";
+import { useGenres } from "@/features/movies/hooks/useGenres";
+import { useInfiniteDiscoverMovies } from "@/features/movies/hooks/useInfiniteDiscoverMovies";
+import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 30 }, (_, i) => ({

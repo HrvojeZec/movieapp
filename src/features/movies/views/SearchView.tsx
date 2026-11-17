@@ -15,10 +15,10 @@ import {
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Search, ArrowLeft } from "lucide-react";
-import { getImageUrl } from "@/features/movies/api";
-import { useMovieSearch } from "@/features/movies/queries";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
-import { QueryError } from "@/shared/components/QueryError";
+import { getImageUrl } from "@/features/movies/lib/images";
+import { useMovieSearch } from "@/features/movies/hooks/useMovieSearch";
+import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { formatYear } from "@/shared/lib/format";
 
 const SUGGESTION_LIMIT = 8;

@@ -5,8 +5,8 @@ import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Layout } from "@/shared/components/layout/Layout";
-import { AOSProvider } from "@/shared/components/layout/AOSProvider";
+import { Layout } from "@/shared/ui/Layout/Layout";
+import { AOSProvider } from "@/shared/providers/AOSProvider";
 import { createQueryClient } from "@/shared/lib/query-client";
 
 // Client-side providers live here so the root layout can stay a Server Component.

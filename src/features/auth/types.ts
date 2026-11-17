@@ -9,3 +9,12 @@ export interface AuthUser {
   createdAt: Date;
   lastLogin?: Date;
 }
+
+export interface Credentials {
+  email: string;
+  password: string;
+}
+
+export interface Registration extends Credentials {
+  name: string;
+}

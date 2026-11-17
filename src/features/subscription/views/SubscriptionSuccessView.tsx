@@ -4,7 +4,8 @@ import { CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys, useAuth } from "@/features/auth/queries";
+import { authKeys } from "@/features/auth/api/queries";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { fetchJson } from "@/shared/lib/http";
 
 export function SubscriptionSuccessView() {

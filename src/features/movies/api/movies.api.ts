@@ -1,0 +1,35 @@
+import { fetchJson, withQuery } from "@/shared/lib/http";
+import type {
+  DiscoverFilters,
+  Genre,
+  Movie,
+  MovieDetails,
+  TMDBResponse,
+  Video,
+} from "@/features/movies/types";
+import type { MovieList } from "@/features/movies/validations/movies.schema";
+
+// Client-side access to movie data. All requests go through our own API routes
+// (src/app/api/movies, src/app/api/genres), which call TMDB on the server with the secret key.
+
+export const getMovieList = (list: MovieList, page = 1) =>
+  fetchJson<TMDBResponse<Movie>>(withQuery("/api/movies", { list, page }));
+
+export const getMovieDetails = (movieId: number) =>
+  fetchJson<MovieDetails>(`/api/movies/${movieId}`);
+
+export const searchMovies = (query: string, page = 1) =>
+  fetchJson<TMDBResponse<Movie>>(withQuery("/api/movies/search", { query, page }));
+
+export const getGenres = async (): Promise<Genre[]> => {
+  const data = await fetchJson<{ genres: Genre[] }>("/api/genres");
+  return data.genres;
+};
+
+export const discoverMovies = ({ page = 1, ...filters }: DiscoverFilters & { page?: number }) =>
+  fetchJson<TMDBResponse<Movie>>(withQuery("/api/movies/discover", { ...filters, page }));
+
+export const getMovieVideos = async (movieId: number): Promise<Video[]> => {
+  const data = await fetchJson<{ results: Video[] }>(`/api/movies/${movieId}/videos`);
+  return data.results;
+};

@@ -1,0 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { movieDetailsQuery } from "@/features/movies/api/queries";
+
+export function useMovieDetails(id: number) {
+  return useQuery({ ...movieDetailsQuery(id), enabled: Number.isInteger(id) && id > 0 });
+}

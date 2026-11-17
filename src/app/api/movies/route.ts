@@ -5,7 +5,7 @@ import {
   tmdbErrorResponse,
   tmdbJson,
 } from "@/features/movies/server/route-helpers";
-import { movieListQuerySchema } from "@/features/movies/validation";
+import { movieListQuerySchema } from "@/features/movies/validations/movies.schema";
 
 // GET /api/movies?list=popular|top_rated|now_playing|upcoming&page=1
 export async function GET(request: NextRequest) {

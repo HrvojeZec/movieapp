@@ -17,14 +17,11 @@ import {
 import { notifications } from "@mantine/notifications";
 import { Check, Star, Zap, CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/features/auth/queries";
-import { SUBSCRIPTION_PLANS, type PlanDetails } from "@/features/subscription/catalog";
-import {
-  hasActiveSubscription,
-  isPaidPlan,
-  type PaidPlan,
-  type SubscriptionPlan,
-} from "@/features/subscription/plans";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { type PlanDetails } from "@/features/subscription/types";
+import { hasActiveSubscription, isPaidPlan } from "@/features/subscription/lib/plans";
+import { type PaidPlan, type SubscriptionPlan } from "@/features/subscription/types";
 
 const PLAN_ICONS: Record<SubscriptionPlan, ReactNode> = {
   basic: <Check size={48} color="#10b981" />,
@@ -42,7 +39,6 @@ export function PricingView() {
     isSubscribed && isPaidPlan(user?.subscriptionPlan) ? user.subscriptionPlan : "basic";
 
   const handleSubscribe = async (plan: PaidPlan) => {
-    if (authLoading) return;
     if (!user) {
       router.push("/auth/login");
       return;
@@ -181,7 +177,8 @@ export function PricingView() {
                     variant={plan.popular ? "filled" : "outline"}
                     color={plan.popular ? "blue" : "gray"}
                     onClick={() => paidPlan && handleSubscribe(paidPlan)}
-                    disabled={!canSubscribe || loadingPlan !== null}
+                    // The session decides between checkout and login, so wait for it
+                    disabled={!canSubscribe || loadingPlan !== null || authLoading}
                     className={plan.popular ? "blue" : ""}
                     styles={{
                       root: {

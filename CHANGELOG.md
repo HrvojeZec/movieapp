@@ -71,6 +71,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   navbar shows a placeholder and protected views handle their own loading state
 - Client fetchers throw an `HttpError` with the API's message instead of returning empty data, so
   failures are visible instead of rendering an empty page
+- Features follow one folder layout: `api/` (fetchers and query options), `hooks/` (one hook per
+  file), `ui/` (one folder per component), `views/`, `lib/` (pure helpers), `validations/`, `server/`,
+  `constants.ts` and `types.ts`; favorites logic moved from auth into the favorites feature and unit
+  tests into `__tests__` folders. No behavior changes
 
 ### Fixed
 
@@ -95,6 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Subscription plan and status were missing from the login response until the page was reloaded
 - The subscription success page showed "Subscription Successful!" to logged-out visitors without
   confirming the payment
+- Subscribe buttons ignored clicks while the session was still loading
 
 ### Removed
 

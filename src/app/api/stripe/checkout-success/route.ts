@@ -7,7 +7,7 @@ import {
   linkStripeCustomer,
   syncSubscription,
 } from "@/features/subscription/server/subscriptions";
-import { checkoutSuccessSchema } from "@/features/subscription/validation";
+import { checkoutSuccessSchema } from "@/features/subscription/validations/subscription.schema";
 
 /**
  * Called by the success page right after Checkout so the user sees the new plan immediately.

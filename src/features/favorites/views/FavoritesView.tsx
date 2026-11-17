@@ -2,10 +2,10 @@
 import { Container, Title, Text, Stack, Button, Group } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
-import { useAuth } from "@/features/auth/queries";
-import { MovieGrid } from "@/features/movies/components/MovieGrid";
-import { useMoviesByIds } from "@/features/movies/queries";
-import { QueryError } from "@/shared/components/QueryError";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
+import { QueryError } from "@/shared/ui/QueryError/QueryError";
 
 export function FavoritesView() {
   const { user, loading: authLoading } = useAuth();
