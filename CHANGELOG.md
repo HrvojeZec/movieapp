@@ -86,6 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests for the limiters, the 429 response and client IP detection; end-to-end tests for the
   login and movie API limits. Each end-to-end test uses its own client address, so tests running in
   parallel don't share a quota
+- A thin progress bar at the top of the page while a navigation takes longer than 150 ms, so a slow
+  server render doesn't look like the app froze
 
 ### Changed
 
@@ -141,6 +143,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   pages; the home and movie pages render per request (TMDB responses stay cached for an hour), so
   the build still needs no secrets
 - The navbar search box and the command palette share one suggestion list component
+- Movie cards prefetch their page when hovered, focused or touched instead of whenever they scroll
+  into view (previously 10-40 server renders per page of cards)
 
 ### Fixed
 
@@ -187,6 +191,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Coming soon" badges on the pricing cards were cut off
 - The Most Watched year filter couldn't show next year's releases; Most Watched and Favorites have a
   real page heading
+- Horizontal movie rows showed a vertical scrollbar, and a hovered card could be cut off at the top
+- The favorites count badge in the navbar was clipped by the heart button's rounded corners
 
 ### Removed
 
