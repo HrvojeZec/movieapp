@@ -56,6 +56,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 404 pages (a general one and a movie-specific one), an error page with "Try again", and a loading
   state for the home page
 - End-to-end tests for the mobile drawer, the footer attribution and the 404 pages
+- Animations with Motion: movie cards and panels fade in as they scroll into view, in short
+  staggered waves; a page transition, a pop on the trailer modal and a shimmer on loading skeletons.
+  Above-the-fold content (hero, page transition) animates with CSS, so it never waits for JavaScript,
+  and everything respects the reduced-motion setting
+- React Bits effects: a blurred hero edge (GradualBlur), a tilting poster on the movie page
+  (TiltedCard), sparks when adding a favorite (ClickSpark), a glare over posters (GlareHover),
+  spotlight pricing cards with a star border on the recommended plan and a shiny badge, blur-in
+  subtitles (BlurText), counting numbers on the profile (CountUp) and an animated background on the
+  login and registration pages (DarkVeil, loaded only there). Third-party license in
+  `THIRD_PARTY_NOTICES.md`
 
 ### Changed
 
@@ -144,6 +154,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The profile showed "Inactive" for trialing and past-due subscriptions, which still have access
 - The hero labeled TMDB ratings as IMDb; trailer buttons now read "Play trailer" instead of
   "watch now" / "Watch Trailer"
+- A click on Sign In before the page was interactive was lost; the button stays disabled until the
+  form can handle it
 
 ### Removed
 
@@ -160,6 +172,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused global CSS classes and the leftover `globals.css` from the project template
 - Unused date formats and dayjs plugins, and exports that nothing outside their module used
 - Unused images from the project template in `public/`
+- `aos`, replaced by Motion; it hid all content until scrolled into view
 
 ### Security
 
