@@ -1,0 +1,38 @@
+.content {
+  border: 1px solid var(--surface-border);
+}
+
+.body {
+  padding: 0;
+}
+
+.header {
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.stage {
+  min-height: 400px;
+}
+
+.message {
+  text-align: center;
+}
+
+.messageIcon {
+  margin: 0 auto 16px;
+}
+
+// 16:9 box that scales with the modal width
+.player {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}

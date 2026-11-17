@@ -1,0 +1,41 @@
+.root {
+  position: relative;
+}
+
+.input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  z-index: 1000;
+  background: rgba(31, 41, 55, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+}
+
+.option {
+  width: 100%;
+  border-radius: 4px;
+
+  &:hover,
+  &.active {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+}
+
+.poster {
+  border-radius: 4px;
+  flex-shrink: 0;
+}
