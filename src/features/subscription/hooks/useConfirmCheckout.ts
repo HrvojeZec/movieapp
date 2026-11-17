@@ -2,12 +2,18 @@ import { useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authKeys } from "@/features/auth/api/query-keys";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import type { AuthUser } from "@/features/auth/types";
+import { getEffectivePlan } from "@/features/subscription/lib/entitlements";
 import { API_ROUTES } from "@/shared/api-routes";
-import { postJson } from "@/shared/lib/http";
+import { HttpError, postJson } from "@/shared/lib/http";
+
+interface CheckoutConfirmation {
+  user: AuthUser | null;
+}
 
 /**
  * Confirms a finished Stripe Checkout so the new plan shows right away (the webhook stays the
- * source of truth). Returns an error message, or whether the confirmation is still running.
+ * source of truth). Returns the confirmed plan, an error message, or whether it is still running.
  */
 export function useConfirmCheckout(sessionId: string | null) {
   const { user, loading: authLoading } = useAuth();
@@ -15,7 +21,7 @@ export function useConfirmCheckout(sessionId: string | null) {
 
   const confirmation = useMutation({
     mutationFn: (id: string) =>
-      postJson<unknown>(API_ROUTES.stripe.checkoutSuccess, { sessionId: id }),
+      postJson<CheckoutConfirmation>(API_ROUTES.stripe.checkoutSuccess, { sessionId: id }),
     // Refetch the session so the navbar and profile show the new plan right away
     onSuccess: () => queryClient.invalidateQueries({ queryKey: authKeys.me }),
   });
@@ -35,8 +41,15 @@ export function useConfirmCheckout(sessionId: string | null) {
     : !authLoading && !user
       ? "Log in to finish activating your subscription"
       : confirmation.isError
-        ? "Failed to process payment"
+        ? // The API says what went wrong (e.g. the payment is still processing)
+          confirmation.error instanceof HttpError
+          ? confirmation.error.message
+          : "Couldn't confirm your subscription"
         : null;
 
-  return { user, error, loading: !error && !confirmation.isSuccess };
+  // From the confirmation itself: the cached session may still hold the plan from before
+  const confirmedUser = confirmation.data?.user;
+  const plan = confirmedUser ? getEffectivePlan(confirmedUser) : null;
+
+  return { plan, error, loading: !error && !confirmation.isSuccess };
 }

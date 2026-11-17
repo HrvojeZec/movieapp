@@ -1,0 +1,149 @@
+// Notches cut into the ticket where the stub tears off; they show the page background
+$notch: 20px;
+
+.ticket {
+  --ticket-accent: var(--primary-500);
+
+  position: relative;
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--gray-800);
+  overflow: hidden;
+  animation: ticket-in 420ms 120ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  // The plan's color runs along the left edge, like the colored band on a printed ticket
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: var(--ticket-accent);
+  }
+}
+
+.pro {
+  --ticket-accent: var(--warning-500);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--mantine-spacing-lg) var(--mantine-spacing-lg) var(--mantine-spacing-lg)
+    calc(var(--mantine-spacing-lg) + 4px);
+}
+
+.plan {
+  color: white;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.check {
+  color: var(--ticket-accent);
+}
+
+.soon {
+  color: var(--mantine-color-dimmed);
+
+  // Included in the plan but not built yet, so its check is muted too
+  .check {
+    color: var(--mantine-color-dimmed);
+  }
+}
+
+.soonNote {
+  font-size: var(--mantine-font-size-xs);
+}
+
+.stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 9.5rem;
+  padding: var(--mantine-spacing-lg) var(--mantine-spacing-md);
+  border-left: 2px dashed var(--surface-border);
+  background: rgba(255, 255, 255, 0.02);
+
+  // Half circles at the top and bottom of the tear line
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: -($notch / 2) - 1px;
+    width: $notch;
+    height: $notch;
+    border-radius: 50%;
+    background: var(--gray-900);
+  }
+
+  &::before {
+    top: -($notch / 2);
+  }
+
+  &::after {
+    bottom: -($notch / 2);
+  }
+}
+
+.price {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admit {
+  margin-top: var(--mantine-spacing-md);
+  letter-spacing: 0.04em;
+}
+
+// On narrow screens the stub moves under the ticket and tears off horizontally
+@media (max-width: 30em) {
+  .ticket {
+    flex-direction: column;
+  }
+
+  .stub {
+    width: auto;
+    flex-direction: row;
+    gap: var(--mantine-spacing-xs);
+    align-items: baseline;
+    border-left: 0;
+    border-top: 2px dashed var(--surface-border);
+
+    &::before,
+    &::after {
+      top: -($notch / 2) - 1px;
+      bottom: auto;
+    }
+
+    &::before {
+      left: -($notch / 2);
+    }
+
+    &::after {
+      left: auto;
+      right: -($notch / 2);
+    }
+  }
+
+  .admit {
+    margin: 0 0 0 auto;
+  }
+}
+
+@keyframes ticket-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
