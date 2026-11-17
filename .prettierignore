@@ -9,3 +9,4 @@ public
 playwright-report
 test-results
 blob-report
+src/shared/vendor

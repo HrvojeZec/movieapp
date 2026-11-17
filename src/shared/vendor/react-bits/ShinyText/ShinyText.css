@@ -1,0 +1,26 @@
+/*
+ * ShinyText from React Bits (https://reactbits.dev), (c) 2026 David Haz.
+ * MIT + Commons Clause license, see THIRD_PARTY_NOTICES.md. Vendored as is: wrap it in our own
+ * components instead of editing it, so it can be updated from upstream.
+ */
+.shiny-text {
+  position: relative;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shiny-text__glow {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: blur(0.14em);
+  pointer-events: none;
+  user-select: none;
+}
