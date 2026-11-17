@@ -1,24 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { findUserById } from "@/features/auth/server/users";
-import { getSessionUser } from "@/features/auth/server/session";
+import { requireSession } from "@/features/auth/server/session";
+import { RouteError } from "@/server/http/route-error";
+import { withRouteHandler } from "@/server/http/route-handler";
 
-export async function GET(request: NextRequest) {
-  try {
-    const decoded = getSessionUser(request);
-    if (!decoded) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+export const GET = withRouteHandler("Get profile", async (request) => {
+  const { userId } = requireSession(request);
 
-    const user = await findUserById(decoded.userId);
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      user,
-    });
-  } catch (error) {
-    console.error("Get profile error:", error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  const user = await findUserById(userId);
+  if (!user) {
+    throw new RouteError(404, "User not found");
   }
-}
+
+  return NextResponse.json({ user });
+});

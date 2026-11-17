@@ -1,5 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { NAME_MAX_LENGTH } from "@/features/auth/constants";
+
+// Each extra round doubles the hashing time; 12 keeps brute force expensive and logins fast enough
+const BCRYPT_SALT_ROUNDS = 12;
 
 export interface IUser extends Document {
   email: string;
@@ -35,14 +39,14 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
+      // Only the bcrypt hash is stored (always 60 characters), so length rules live in the zod schema
       required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters"],
     },
     name: {
       type: String,
       required: [true, "Name is required"],
       trim: true,
-      maxlength: [50, "Name cannot exceed 50 characters"],
+      maxlength: [NAME_MAX_LENGTH, `Name cannot exceed ${NAME_MAX_LENGTH} characters`],
     },
     favorites: [
       {
@@ -117,7 +121,7 @@ UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   try {
-    const salt = await bcrypt.genSalt(12);
+    const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {

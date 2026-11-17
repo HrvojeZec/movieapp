@@ -1,5 +1,7 @@
-import type { NextRequest, NextResponse } from "next/server";
-import { TOKEN_TTL_SECONDS, verifyToken, type AuthToken } from "./tokens";
+import { NextResponse, type NextRequest } from "next/server";
+import { RouteError } from "@/server/http/route-error";
+import type { AuthUser } from "@/features/auth/types";
+import { TOKEN_TTL_SECONDS, generateToken, verifyToken, type AuthToken } from "./tokens";
 
 export const AUTH_COOKIE_NAME = "token";
 
@@ -24,4 +26,21 @@ export function clearAuthCookie(response: NextResponse): void {
 export function getSessionUser(request: NextRequest): AuthToken | null {
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
   return token ? verifyToken(token) : null;
+}
+
+/** Like getSessionUser, but for routes that need a login: responds with 401 otherwise. */
+export function requireSession(request: NextRequest): AuthToken {
+  const session = getSessionUser(request);
+  if (!session) {
+    throw new RouteError(401, "Unauthorized");
+  }
+  return session;
+}
+
+/** Responds with the user and sets the session cookie (after login or registration). */
+export function startSession(user: AuthUser): NextResponse {
+  const token = generateToken({ userId: user.id, email: user.email, name: user.name });
+  const response = NextResponse.json({ user });
+  setAuthCookie(response, token);
+  return response;
 }
