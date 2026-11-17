@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The profile shows the subscription's billing interval, price and what comes next (renewal date,
+  the end date of a canceled plan, or the end of a trial), and warns when a payment failed. The
+  user stores the Stripe subscription ID, price, interval, period end, cancellation and trial dates
 - Plan entitlements in one place (`PLAN_FEATURES`): Premium unlocks the watchlist, custom lists and
   advanced filters, Pro adds recommendations and statistics, Basic keeps up to 20 favorites. The
   server checks them with `requireFeature` (403 naming the plan), and `LockedFeature` shows an
