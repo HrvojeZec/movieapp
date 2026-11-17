@@ -8,7 +8,11 @@ import { formatRating } from "@/features/movies/lib/movies";
 import type { Movie } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
+import GradualBlur from "@/shared/vendor/react-bits/GradualBlur/GradualBlur";
 import classes from "./MovieHero.module.scss";
+
+// The hero blurs into the page instead of ending in a hard edge
+const EDGE_BLUR_HEIGHT = "6rem";
 
 interface MovieHeroProps {
   movie: Movie;
@@ -21,14 +25,12 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
 
   return (
     <Box
-      data-aos="fade-in"
-      data-aos-duration="1000"
       h={HERO_HEIGHT}
       className={classes.hero}
       style={{ backgroundImage: `url(${getImageUrl(movie.backdrop_path, "w1280")})` }}
     >
       <Container size="xl" h="100%" className={classes.content}>
-        <Box maw={600} data-aos="fade-right" data-aos-delay="300">
+        <Box maw={600} className={classes.copy}>
           <Title size="3rem" fw={700} c="white" mb="md">
             {movie.title}
           </Title>
@@ -41,7 +43,7 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
             </Badge>
             <Text c="gray.4">{formatYear(movie.release_date)}</Text>
           </Group>
-          <Group data-aos="fade-up" data-aos-delay="600">
+          <Group className={classes.actions}>
             <Button leftSection={<PlayCircle size={20} />} size="lg" onClick={onPlayTrailer}>
               Play trailer
             </Button>
@@ -56,6 +58,7 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
           </Group>
         </Box>
       </Container>
+      <GradualBlur position="bottom" target="parent" height={EDGE_BLUR_HEIGHT} strength={2} />
     </Box>
   );
 }

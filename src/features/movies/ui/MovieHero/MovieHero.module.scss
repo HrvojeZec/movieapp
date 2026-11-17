@@ -4,9 +4,35 @@
   background-color: rgba(0, 0, 0, 0.8);
   background-size: cover;
   background-position: center;
+
+  // Darkens the left side so the title stays readable on bright backdrops
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(17, 24, 39, 0.85) 0%, rgba(17, 24, 39, 0) 65%);
+  }
 }
 
 .content {
+  position: relative;
   display: flex;
   align-items: center;
+}
+
+// CSS, not Motion: the hero is above the fold and server-rendered, so it animates on first paint
+// without waiting for JavaScript
+.copy {
+  animation: hero-enter 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.1s both;
+}
+
+.actions {
+  animation: hero-enter 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
 }
