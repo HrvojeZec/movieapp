@@ -77,15 +77,15 @@ test("the dashboard can be rearranged with the keyboard", async ({ page }) => {
   await page.getByRole("button", { name: "Move Movies watched", exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByText("Picked up. Movies watched, column 1, row 1, 3 by 2")).toBeAttached();
-  // One row down would fall straight back up, so the step lands below Favorite genres
+  // One row down would fall straight back up, so the step lands below the activity calendar
   await page.keyboard.press("ArrowDown");
-  await expect(page.getByText("Movies watched, column 1, row 8, 3 by 2")).toBeAttached();
+  await expect(page.getByText("Movies watched, column 1, row 7, 3 by 2")).toBeAttached();
   await page.keyboard.press("Shift+ArrowRight");
   await page.keyboard.press("Enter");
-  await expect(page.getByText("Dropped. Movies watched, column 1, row 8, 4 by 2")).toBeAttached();
+  await expect(page.getByText("Dropped. Movies watched, column 1, row 7, 4 by 2")).toBeAttached();
   await finish(page);
 
-  expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ x: 0, y: 7, w: 4 });
+  expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ x: 0, y: 6, w: 4 });
 });
 
 test("escape puts a picked up widget back", async ({ page }) => {
@@ -97,7 +97,7 @@ test("escape puts a picked up widget back", async ({ page }) => {
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("Escape");
   await expect(
-    page.getByText("Cancelled. Favorite genres, column 1, row 3, 6 by 5"),
+    page.getByText("Cancelled. Favorite genres, column 1, row 7, 6 by 5"),
   ).toBeAttached();
 });
 
@@ -141,12 +141,12 @@ test("reset restores the default layout", async ({ page }) => {
     .getByRole("dialog", { name: "Reset the layout?" })
     .getByRole("button", { name: "Reset" })
     .click();
-  await expect(page.locator("[data-widget]")).toHaveCount(7);
+  await expect(page.locator("[data-widget]")).toHaveCount(11);
   await finish(page);
 
   const layout = await savedLayout(page);
-  expect(layout).toHaveLength(7);
-  expect(find(layout, "genreBars")).toEqual({ type: "genreBars", x: 0, y: 2, w: 6, h: 5 });
+  expect(layout).toHaveLength(11);
+  expect(find(layout, "genreBars")).toEqual({ type: "genreBars", x: 0, y: 6, w: 6, h: 5 });
 });
 
 test.describe("on a phone", () => {

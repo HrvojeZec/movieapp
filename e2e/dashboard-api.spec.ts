@@ -16,7 +16,7 @@ test("a pro user gets the default dashboard and can save their own", async ({ pa
   const initial = await page.request.get(ROUTE);
   expect(initial.status()).toBe(200);
   expect(initial.headers()["cache-control"]).toContain("no-store");
-  expect((await initial.json()).layout).toHaveLength(7);
+  expect((await initial.json()).layout).toHaveLength(11);
 
   const layout = [
     { type: "genreBars", x: 0, y: 0, w: 12, h: 6 },

@@ -21,6 +21,8 @@ interface DashboardGridProps {
   stats: UserStats;
   editing: boolean;
   onChange: (layout: LayoutItem[]) => void;
+  /** When the stats were loaded (ms). */
+  now: number;
 }
 
 const titleOf = (type: WidgetType) => WIDGETS[type].title;
@@ -31,7 +33,7 @@ const FOLLOW_POINTER = { duration: 0 };
  * their header and resizes them by their corner (or with the keyboard); a narrow one moves
  * them up and down with buttons.
  */
-export function DashboardGrid({ layout, stats, editing, onChange }: DashboardGridProps) {
+export function DashboardGrid({ layout, stats, editing, onChange, now }: DashboardGridProps) {
   const instructionsId = useId();
   const { ref, measured, columns, metrics } = useGridColumns();
   const wide = columns === GRID_COLUMNS;
@@ -106,7 +108,7 @@ export function DashboardGrid({ layout, stats, editing, onChange }: DashboardGri
                 edit={editControls(item.type)}
                 active={drag.activeType === item.type}
               >
-                {widget.render({ stats, size: { w: item.w, h: item.h } })}
+                {widget.render({ stats, size: { w: item.w, h: item.h }, now })}
               </WidgetFrame>
             </motion.div>
           );

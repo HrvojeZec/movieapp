@@ -1,0 +1,60 @@
+.streak {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mantine-spacing-xs);
+  height: 100%;
+}
+
+.chart {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: 1;
+}
+
+.ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.track {
+  fill: none;
+  stroke: var(--input-bg-strong);
+  stroke-width: 8;
+}
+
+.progress {
+  fill: none;
+  stroke: var(--primary-500);
+  stroke-width: 8;
+  stroke-linecap: round;
+
+  // A closed ring flashes once when it's the record
+  &[data-record] {
+    animation: record-flash 900ms ease-out 600ms 1;
+  }
+}
+
+@keyframes record-flash {
+  40% {
+    stroke: var(--primary-400);
+    filter: drop-shadow(0 0 6px var(--primary-glow));
+  }
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.days {
+  font-size: 2rem;
+  line-height: 1.1;
+}

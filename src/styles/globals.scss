@@ -28,6 +28,20 @@
   --primary-glow: rgba(59, 130, 246, 0.3);
   // Hovered cards lift off the page
   --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.3);
+  // Chart series in a fixed order, validated for the dark surface (dataviz validate_palette.js
+  // on #1f1f1f): blue, orange, aqua, yellow, magenta. "Other" is a neutral, not a series hue
+  --chart-1: #3987e5;
+  --chart-2: #d95926;
+  --chart-3: #199e70;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-other: #8a8a8a;
+  // One-hue ramp for amounts (the activity calendar): empty, then dim to bright primary
+  --heat-0: var(--input-bg-strong);
+  --heat-1: color-mix(in srgb, var(--primary-500) 30%, transparent);
+  --heat-2: color-mix(in srgb, var(--primary-500) 55%, transparent);
+  --heat-3: var(--primary-500);
+  --heat-4: var(--primary-400);
 }
 
 body {

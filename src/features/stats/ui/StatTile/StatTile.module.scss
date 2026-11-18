@@ -13,3 +13,22 @@
     font-size: 3rem;
   }
 }
+
+.spark {
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin-top: var(--mantine-spacing-xs);
+  overflow: visible;
+}
+
+.sparkArea {
+  fill: color-mix(in srgb, var(--primary-500) 15%, transparent);
+}
+
+.sparkLine {
+  fill: none;
+  stroke: var(--primary-500);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}

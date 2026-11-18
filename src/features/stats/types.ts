@@ -51,3 +51,15 @@ export interface LayoutItem {
 
 /** [columns, rows] */
 export type WidgetSize = readonly [number, number];
+
+export type HeatmapLevel = 0 | 1 | 2 | 3 | 4;
+
+export interface HeatmapCell {
+  /** "YYYY-MM-DD" in UTC */
+  date: string;
+  /** Watched movies plus movie pages opened. */
+  count: number;
+  level: HeatmapLevel;
+  /** Later this week than today; drawn empty. */
+  future: boolean;
+}

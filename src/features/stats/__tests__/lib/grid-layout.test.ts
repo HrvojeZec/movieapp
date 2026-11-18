@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_LAYOUT, GRID_COLUMNS, WIDGET_SIZES } from "@/features/stats/constants";
+import {
+  DEFAULT_LAYOUT,
+  GRID_COLUMNS,
+  WIDGET_SIZES,
+  WIDGET_TYPES,
+} from "@/features/stats/constants";
 import {
   addWidget,
   compact,
@@ -19,10 +24,23 @@ const byType = (type: WidgetType) => (item: LayoutItem) => item.type === type;
 const freeze = (layout: LayoutItem[]): LayoutItem[] =>
   Object.freeze(layout.map((item) => Object.freeze({ ...item }))) as LayoutItem[];
 
+// The engine is tested on a fixed board, so changing the default board doesn't move these tests
+const BOARD: LayoutItem[] = [
+  { type: "tileWatched", x: 0, y: 0, w: 3, h: 2 },
+  { type: "tileFavorites", x: 3, y: 0, w: 3, h: 2 },
+  { type: "tileWatchlist", x: 6, y: 0, w: 3, h: 2 },
+  { type: "tileLists", x: 9, y: 0, w: 3, h: 2 },
+  { type: "genreBars", x: 0, y: 2, w: 6, h: 5 },
+  { type: "watchedMonthly", x: 6, y: 2, w: 6, h: 5 },
+  { type: "viewsTrend", x: 0, y: 7, w: 12, h: 5 },
+];
+
 const bottom = (layout: LayoutItem[]) => Math.max(0, ...layout.map((item) => item.y + item.h));
 
 describe("DEFAULT_LAYOUT", () => {
-  it("fits the grid without overlaps and within each widget's size limits", () => {
+  it("has one of every widget, packed, in the grid and within each widget's size limits", () => {
+    expect(DEFAULT_LAYOUT.map((item) => item.type).sort()).toEqual([...WIDGET_TYPES].sort());
+    expect(compact(DEFAULT_LAYOUT)).toEqual(DEFAULT_LAYOUT);
     expect(hasOverlap(DEFAULT_LAYOUT)).toBe(false);
     for (const item of DEFAULT_LAYOUT) {
       const { min, max } = WIDGET_SIZES[item.type];
@@ -75,40 +93,41 @@ describe("compact", () => {
 
 describe("moveWidget", () => {
   it("moving a widget onto another pushes it down", () => {
-    const moved = moveWidget(DEFAULT_LAYOUT, "genreBars", 6, 2);
+    const moved = moveWidget(BOARD, "genreBars", 6, 2);
     expect(moved.find(byType("genreBars"))).toMatchObject({ x: 6, y: 2 });
     expect(moved.find(byType("watchedMonthly"))!.y).toBeGreaterThanOrEqual(7);
     expect(hasOverlap(moved)).toBe(false);
   });
 
   it("moves are clamped to the grid", () => {
-    expect(
-      moveWidget(DEFAULT_LAYOUT, "tileWatched", 11, -3).find(byType("tileWatched")),
-    ).toMatchObject({ x: 9, y: 0 });
-    expect(hasOverlap(moveWidget(DEFAULT_LAYOUT, "tileWatched", 11, -3))).toBe(false);
+    expect(moveWidget(BOARD, "tileWatched", 11, -3).find(byType("tileWatched"))).toMatchObject({
+      x: 9,
+      y: 0,
+    });
+    expect(hasOverlap(moveWidget(BOARD, "tileWatched", 11, -3))).toBe(false);
   });
 
   it("a widget moved into empty space below falls back up", () => {
-    const moved = moveWidget(DEFAULT_LAYOUT, "tileWatched", 0, 40);
-    expect(moved.find(byType("tileWatched"))!.y).toBe(bottom(DEFAULT_LAYOUT));
+    const moved = moveWidget(BOARD, "tileWatched", 0, 40);
+    expect(moved.find(byType("tileWatched"))!.y).toBe(bottom(BOARD));
   });
 
   it("moving a widget that is not on the board changes nothing", () => {
-    const layout = removeWidget(DEFAULT_LAYOUT, "viewsTrend");
+    const layout = removeWidget(BOARD, "viewsTrend");
     expect(moveWidget(layout, "viewsTrend", 0, 0)).toEqual(layout);
   });
 });
 
 describe("resizeWidget", () => {
   it("resizes respect min, max and the right edge", () => {
-    const big = resizeWidget(DEFAULT_LAYOUT, "tileLists", 9, 9).find(byType("tileLists"))!;
+    const big = resizeWidget(BOARD, "tileLists", 9, 9).find(byType("tileLists"))!;
     expect([big.w, big.h]).toEqual([3, 3]); // x=9 leaves 3 columns; tile max h is 3
-    const small = resizeWidget(DEFAULT_LAYOUT, "genreBars", 1, 1).find(byType("genreBars"))!;
+    const small = resizeWidget(BOARD, "genreBars", 1, 1).find(byType("genreBars"))!;
     expect([small.w, small.h]).toEqual([4, 4]);
   });
 
   it("growing a widget pushes its neighbours down", () => {
-    const resized = resizeWidget(DEFAULT_LAYOUT, "genreBars", 8, 5);
+    const resized = resizeWidget(BOARD, "genreBars", 8, 5);
     expect(resized.find(byType("genreBars"))).toMatchObject({ x: 0, y: 2, w: 8, h: 5 });
     expect(resized.find(byType("watchedMonthly"))!.y).toBeGreaterThanOrEqual(7);
     expect(hasOverlap(resized)).toBe(false);
@@ -117,14 +136,14 @@ describe("resizeWidget", () => {
 
 describe("addWidget", () => {
   it("adds a widget in the first free spot with its default size", () => {
-    const layout = removeWidget(DEFAULT_LAYOUT, "tileLists");
+    const layout = removeWidget(BOARD, "tileLists");
     const added = addWidget(layout, "tileLists");
     expect(added.find(byType("tileLists"))).toEqual({ type: "tileLists", x: 9, y: 0, w: 3, h: 2 });
     expect(hasOverlap(added)).toBe(false);
   });
 
   it("adds a widget at the bottom when there is no room higher up", () => {
-    const layout = removeWidget(DEFAULT_LAYOUT, "viewsTrend");
+    const layout = removeWidget(BOARD, "viewsTrend");
     const added = addWidget(layout, "viewsTrend");
     const [w, h] = WIDGET_SIZES.viewsTrend.default;
     expect(added.find(byType("viewsTrend"))).toEqual({
@@ -137,13 +156,13 @@ describe("addWidget", () => {
   });
 
   it("adding a widget already on the board changes nothing", () => {
-    expect(addWidget(DEFAULT_LAYOUT, "genreBars")).toEqual(compact(DEFAULT_LAYOUT));
+    expect(addWidget(BOARD, "genreBars")).toEqual(compact(BOARD));
   });
 });
 
 describe("removeWidget", () => {
   it("removing a widget lets the others rise", () => {
-    const removed = removeWidget(DEFAULT_LAYOUT, "genreBars");
+    const removed = removeWidget(BOARD, "genreBars");
     expect(removed.some(byType("genreBars"))).toBe(false);
     expect(removed.find(byType("viewsTrend"))!.y).toBe(7); // still under watchedMonthly
     const noMonthly = removeWidget(removed, "watchedMonthly");
@@ -154,7 +173,7 @@ describe("removeWidget", () => {
 describe("toColumns", () => {
   it("toColumns halves the grid for tablets and stacks for phones", () => {
     // Both edges are halved and rounded the same way, so neighbours stay side by side
-    const tablet = toColumns(DEFAULT_LAYOUT, 6);
+    const tablet = toColumns(BOARD, 6);
     expect(tablet.filter((item) => item.type.startsWith("tile"))).toEqual([
       { type: "tileWatched", x: 0, y: 0, w: 2, h: 2 },
       { type: "tileFavorites", x: 2, y: 0, w: 1, h: 2 },
@@ -167,7 +186,7 @@ describe("toColumns", () => {
     expect(tablet.every((item) => item.x + item.w <= 6)).toBe(true);
     expect(hasOverlap(tablet)).toBe(false);
 
-    const phone = toColumns(DEFAULT_LAYOUT, 1);
+    const phone = toColumns(BOARD, 1);
     expect(phone.map((item) => item.type)).toEqual([
       "tileWatched",
       "tileFavorites",
@@ -217,9 +236,7 @@ describe("far-away positions", () => {
       { type: "genreBars", x: 0, y: far, w: 6, h: 5 },
     ]);
     expect(repaired.map((item) => item.y)).toEqual([0, 2]);
-    expect(moveWidget(DEFAULT_LAYOUT, "tileWatched", 0, far).find(byType("tileWatched"))!.y).toBe(
-      12,
-    );
+    expect(moveWidget(BOARD, "tileWatched", 0, far).find(byType("tileWatched"))!.y).toBe(12);
     expect(
       addWidget([{ type: "tileWatched", x: 0, y: far, w: 3, h: 2 }], "genreBars").map((i) => i.y),
     ).toEqual([0, 0]);
@@ -234,26 +251,26 @@ describe("stepWidget", () => {
 
   it("moving down jumps below the widget underneath", () => {
     // One row down would just fall back up into the empty cell, so the step goes past genreBars
-    const moved = stepWidget(DEFAULT_LAYOUT, "tileWatched", "down");
+    const moved = stepWidget(BOARD, "tileWatched", "down");
     expect(position(moved, "tileWatched")).toEqual({ x: 0, y: 7 });
     expect(hasOverlap(moved)).toBe(false);
   });
 
   it("moving up rises above the widget overhead", () => {
-    const moved = stepWidget(DEFAULT_LAYOUT, "genreBars", "up");
+    const moved = stepWidget(BOARD, "genreBars", "up");
     expect(position(moved, "genreBars")).toEqual({ x: 0, y: 0 });
     expect(position(moved, "tileWatched").y).toBeGreaterThanOrEqual(5);
   });
 
   it("moves sideways one column", () => {
-    const moved = stepWidget(DEFAULT_LAYOUT, "tileWatched", "right");
+    const moved = stepWidget(BOARD, "tileWatched", "right");
     expect(position(moved, "tileWatched")).toEqual({ x: 1, y: 0 });
     expect(hasOverlap(moved)).toBe(false);
   });
 
   it("at the edge of the grid nothing changes", () => {
-    expect(stepWidget(DEFAULT_LAYOUT, "tileLists", "right")).toEqual(compact(DEFAULT_LAYOUT));
-    expect(stepWidget(DEFAULT_LAYOUT, "tileWatched", "up")).toEqual(compact(DEFAULT_LAYOUT));
+    expect(stepWidget(BOARD, "tileLists", "right")).toEqual(compact(BOARD));
+    expect(stepWidget(BOARD, "tileWatched", "up")).toEqual(compact(BOARD));
   });
 });
 
@@ -261,7 +278,7 @@ describe("reorderWidget", () => {
   const readingOrder = (layout: LayoutItem[]) => toColumns(layout, 1).map((item) => item.type);
 
   it("swaps a widget with its neighbour in reading order", () => {
-    const moved = reorderWidget(DEFAULT_LAYOUT, "genreBars", -1);
+    const moved = reorderWidget(BOARD, "genreBars", -1);
     expect(readingOrder(moved)).toEqual([
       "tileWatched",
       "tileFavorites",
@@ -277,20 +294,20 @@ describe("reorderWidget", () => {
   });
 
   it("keeps sizes and lays the default board out as it was", () => {
-    const there = reorderWidget(DEFAULT_LAYOUT, "tileFavorites", -1);
-    expect(reorderWidget(there, "tileFavorites", 1)).toEqual(compact(DEFAULT_LAYOUT));
+    const there = reorderWidget(BOARD, "tileFavorites", -1);
+    expect(reorderWidget(there, "tileFavorites", 1)).toEqual(compact(BOARD));
   });
 
   it("the first widget can't go up and the last can't go down", () => {
-    expect(reorderWidget(DEFAULT_LAYOUT, "tileWatched", -1)).toEqual(compact(DEFAULT_LAYOUT));
-    expect(reorderWidget(DEFAULT_LAYOUT, "viewsTrend", 1)).toEqual(compact(DEFAULT_LAYOUT));
+    expect(reorderWidget(BOARD, "tileWatched", -1)).toEqual(compact(BOARD));
+    expect(reorderWidget(BOARD, "viewsTrend", 1)).toEqual(compact(BOARD));
   });
 });
 
 describe("immutability", () => {
   it("never mutates its input", () => {
-    const layout = freeze(DEFAULT_LAYOUT);
-    const snapshot = structuredClone(DEFAULT_LAYOUT);
+    const layout = freeze(BOARD);
+    const snapshot = structuredClone(BOARD);
     expect(() => {
       compact(layout);
       moveWidget(layout, "genreBars", 6, 2);
@@ -304,6 +321,6 @@ describe("immutability", () => {
       sanitizeLayout(layout);
       hasOverlap(layout);
     }).not.toThrow();
-    expect(DEFAULT_LAYOUT).toEqual(snapshot);
+    expect(BOARD).toEqual(snapshot);
   });
 });

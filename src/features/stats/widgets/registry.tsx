@@ -4,9 +4,13 @@ import dayjs from "dayjs";
 import {
   Bookmark,
   CalendarDays,
+  CalendarRange,
+  Clapperboard,
   Eye,
+  Flame,
   Heart,
   List,
+  PieChart,
   Tags,
   TrendingUp,
   type LucideIcon,
@@ -14,13 +18,20 @@ import {
 import { GRID_GAP, GRID_ROW_HEIGHT } from "@/features/stats/constants";
 import type { MonthActivity, UserStats, WidgetType } from "@/features/stats/types";
 import { BarList } from "@/features/stats/ui/BarList/BarList";
-import { ColumnChart } from "@/features/stats/ui/ColumnChart/ColumnChart";
+import { ActivityHeatmap } from "@/features/stats/ui/ActivityHeatmap/ActivityHeatmap";
+import { GenreDonut } from "@/features/stats/ui/GenreDonut/GenreDonut";
+import { RecentWatched } from "@/features/stats/ui/RecentWatched/RecentWatched";
 import { StatTile } from "@/features/stats/ui/StatTile/StatTile";
+import { StreakRing } from "@/features/stats/ui/StreakRing/StreakRing";
+import { TrendLine } from "@/features/stats/ui/TrendLine/TrendLine";
+import { WatchedMonthly } from "@/features/stats/ui/WatchedMonthly/WatchedMonthly";
 
 export interface WidgetProps {
   stats: UserStats;
   /** Cells the widget takes, so its content can fit the space. */
   size: { w: number; h: number };
+  /** When the stats were loaded (ms); date-based widgets end on that day. */
+  now: number;
 }
 
 export interface WidgetDefinition {
@@ -37,6 +48,8 @@ export interface WidgetDefinition {
 const FRAME_CHROME_PX = 76;
 const BAR_ROW_PX = 34;
 const MIN_BAR_ROWS = 3;
+// Tiles at least this big have room for a trend line
+const TREND_TILE = { w: 4, h: 3 };
 
 const barRowsFor = (rows: number) =>
   Math.max(
@@ -61,12 +74,20 @@ const tile = (
   icon: LucideIcon,
   label: string,
   pick: (totals: UserStats["totals"]) => number,
+  trend?: (stats: UserStats) => number[],
 ): WidgetDefinition => ({
   title,
   description,
   icon,
   bare: true,
-  render: ({ stats, size }) => <StatTile value={pick(stats.totals)} label={label} size={size} />,
+  render: ({ stats, size }) => (
+    <StatTile
+      value={pick(stats.totals)}
+      label={label}
+      size={size}
+      trend={trend && size.w >= TREND_TILE.w && size.h >= TREND_TILE.h ? trend(stats) : undefined}
+    />
+  ),
 });
 
 export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
@@ -76,6 +97,7 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
     Eye,
     "Movies watched",
     (totals) => totals.watched,
+    (stats) => stats.activityByMonth.map((month) => month.watched),
   ),
   tileFavorites: tile(
     "Favorites",
@@ -120,8 +142,7 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
     description: "Movies you marked as watched, month by month.",
     icon: CalendarDays,
     render: ({ stats }) => (
-      <ColumnChart
-        label="Movies watched per month, last 12 months"
+      <WatchedMonthly
         columns={monthColumns(stats.activityByMonth, "watched")}
         unit={["movie watched", "movies watched"]}
       />
@@ -132,11 +153,38 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
     description: "Movie pages you opened, month by month.",
     icon: TrendingUp,
     render: ({ stats }) => (
-      <ColumnChart
+      <TrendLine
         label="Movie pages opened per month, last 12 months"
-        columns={monthColumns(stats.activityByMonth, "views")}
+        points={monthColumns(stats.activityByMonth, "views")}
         unit={["movie page opened", "movie pages opened"]}
+        emptyText="Movie pages you open over the year show up here as a trend."
       />
     ),
+  },
+  genreDonut: {
+    title: "Genre mix",
+    description: "The share of your top genres, the rest as Other.",
+    icon: PieChart,
+    render: ({ stats }) => <GenreDonut genres={stats.topGenres} />,
+  },
+  activityHeatmap: {
+    title: "Activity calendar",
+    description: "A year of days: movies watched and pages opened.",
+    icon: CalendarRange,
+    render: ({ stats, now }) => <ActivityHeatmap days={stats.activityByDay} now={now} />,
+  },
+  streak: {
+    title: "Streak",
+    description: "Days in a row with something watched or opened.",
+    icon: Flame,
+    render: ({ stats }) => (
+      <StreakRing current={stats.streak.current} longest={stats.streak.longest} />
+    ),
+  },
+  recentWatched: {
+    title: "Recently watched",
+    description: "Posters of the movies you watched last.",
+    icon: Clapperboard,
+    render: ({ stats }) => <RecentWatched ids={stats.recentWatched} />,
   },
 };
