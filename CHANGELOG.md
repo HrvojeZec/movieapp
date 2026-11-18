@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The free plan keeps up to 20 favorites, checked in the same atomic update that adds one, so
+  parallel requests can't exceed it; Premium and Pro have no limit. Over the limit after a
+  downgrade, favorites are kept and can be removed. The favorites page shows "12 / 20 on the free
+  plan" with a link to upgrade when full, and the heart explains the limit instead of failing
 - Password reset: "Forgot password?" on the login page emails a one-time link that works for 1 hour
   (only a SHA-256 hash of the token is stored); the reset page sets a new password with the same
   rules as sign-up, and the owner gets a "Your password was changed" notification and email. The
@@ -208,6 +212,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Captured (E2E) and skipped emails no longer count toward the daily email limit, which they could
+  use up for real emails
 - The pricing page briefly marked Basic as the current plan for subscribers on every load; no
   plan is marked until the session has loaded
 - Registration failed with a 500 error because the wrong model was imported for user activity (#6)
