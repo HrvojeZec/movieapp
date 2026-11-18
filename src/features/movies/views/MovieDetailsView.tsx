@@ -20,6 +20,7 @@ import { WatchedButton } from "@/features/watched/ui/WatchedButton/WatchedButton
 import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
 import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
 import { useTrackRecentlyViewed } from "@/features/movies/hooks/useRecentlyViewed";
+import { useTrackMovieView } from "@/features/movies/hooks/useTrackMovieView";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating } from "@/features/movies/lib/movies";
 import { CastGrid } from "@/features/movies/ui/CastGrid/CastGrid";
@@ -44,6 +45,7 @@ export function MovieDetailsView() {
   const [trailerOpened, trailer] = useDisclosure(false);
   const { data: movie, isPending, error, refetch } = useMovieDetails(movieId);
   useTrackRecentlyViewed(movie);
+  useTrackMovieView(movie?.id);
 
   if (isPending) {
     return (

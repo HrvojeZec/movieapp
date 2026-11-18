@@ -98,3 +98,15 @@ export async function seedWatchlist(user: TestUser, movieIds: string[]) {
     .collection("users")
     .updateOne({ email: user.email }, { $set: { watchlist: movieIds } });
 }
+
+/** The user's logged activity of one kind, oldest first, straight from the E2E database. */
+export async function getActivities(user: TestUser, action: string) {
+  const connection = await getE2EDatabase();
+  const record = await connection.collection("users").findOne({ email: user.email });
+  if (!record) return [];
+  return connection
+    .collection("useractivities")
+    .find({ userId: record._id, action })
+    .sort({ createdAt: 1 })
+    .toArray();
+}
