@@ -1,0 +1,58 @@
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+  height: 100%;
+  transition: box-shadow 150ms ease;
+
+  &[data-editing] {
+    outline: 1px dashed var(--surface-border);
+  }
+
+  &[data-active] {
+    outline: 2px solid var(--primary-500);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+
+  // Dragging must not scroll the page on touch screens
+  &[data-draggable] {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+}
+
+.title {
+  min-width: 0;
+}
+
+.grip {
+  cursor: grab;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.resize {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--mantine-color-dimmed);
+  cursor: nwse-resize;
+  touch-action: none;
+}

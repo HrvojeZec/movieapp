@@ -1,0 +1,15 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.value {
+  font-size: 2rem;
+  line-height: 1.1;
+
+  .tile[data-large] & {
+    font-size: 3rem;
+  }
+}

@@ -1,19 +1,29 @@
 "use client";
-import { Center, Container, Loader, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
-import dayjs from "dayjs";
-import { BarChart3 } from "lucide-react";
+import { useState } from "react";
+import {
+  Button,
+  Center,
+  Container,
+  Group,
+  Loader,
+  Modal,
+  Stack,
+  Text,
+  VisuallyHidden,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { BarChart3, Check, Plus, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
+import { useDashboardLayout, type SaveStatus } from "@/features/stats/hooks/useDashboardLayout";
 import { useUserStats } from "@/features/stats/hooks/useUserStats";
-import type { MonthActivity, UserStats } from "@/features/stats/types";
-import { BarList } from "@/features/stats/ui/BarList/BarList";
-import { ColumnChart } from "@/features/stats/ui/ColumnChart/ColumnChart";
+import { addWidget } from "@/features/stats/lib/grid-layout";
+import type { WidgetType } from "@/features/stats/types";
+import { DashboardGrid } from "@/features/stats/ui/DashboardGrid/DashboardGrid";
+import { WidgetPalette } from "@/features/stats/ui/WidgetPalette/WidgetPalette";
 import { LockedFeature } from "@/features/subscription/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
-
-const TILE_COLUMNS = { base: 2, sm: 4 };
-const CHART_COLUMNS = { base: 1, md: 2 };
 
 export function StatsView() {
   return (
@@ -28,105 +38,126 @@ export function StatsView() {
 }
 
 function StatsContent() {
-  const { data, isPending, isError, refetch } = useUserStats();
+  const stats = useUserStats();
+  const board = useDashboardLayout();
+  const [editing, setEditing] = useState(false);
+  const [paletteOpened, palette] = useDisclosure(false);
+  const [resetOpened, resetConfirm] = useDisclosure(false);
+  const { layout, setLayout, flush, status, retry, reset } = board;
+
+  const finishEditing = () => {
+    flush();
+    setEditing(false);
+  };
+  const add = (type: WidgetType) => {
+    if (layout) setLayout(addWidget(layout, type));
+  };
+  const confirmReset = () => {
+    reset();
+    resetConfirm.close();
+  };
 
   return (
     <Stack gap="xl">
-      <SectionTitle icon={<BarChart3 color={COLORS.primary} size={28} />} order={1} size="2rem">
-        Your Stats
-      </SectionTitle>
+      <Group justify="space-between" align="center" gap="sm">
+        <SectionTitle icon={<BarChart3 color={COLORS.primary} size={28} />} order={1} size="2rem">
+          Your Stats
+        </SectionTitle>
+        {layout && stats.data && (
+          <Group gap="xs" mb="md">
+            <SaveState status={status} onRetry={retry} />
+            {editing ? (
+              <>
+                <Button variant="default" leftSection={<Plus size={16} />} onClick={palette.open}>
+                  Add widget
+                </Button>
+                <Button
+                  variant="default"
+                  leftSection={<RotateCcw size={16} />}
+                  onClick={resetConfirm.open}
+                >
+                  Reset layout
+                </Button>
+                <Button leftSection={<Check size={16} />} onClick={finishEditing}>
+                  Done
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="light"
+                leftSection={<SlidersHorizontal size={16} />}
+                onClick={() => setEditing(true)}
+              >
+                Customize
+              </Button>
+            )}
+          </Group>
+        )}
+      </Group>
+      {/* Outside the button row: an always-present live region would take a slot in it */}
+      <VisuallyHidden aria-live="polite">{SAVE_ANNOUNCEMENTS[status]}</VisuallyHidden>
 
-      {isError ? (
-        <QueryError message="Your stats couldn't be loaded." onRetry={refetch} />
-      ) : isPending ? (
+      {stats.isError || board.isError ? (
+        <QueryError
+          message="Your stats couldn't be loaded."
+          onRetry={() => {
+            if (stats.isError) stats.refetch();
+            if (board.isError) board.refetch();
+          }}
+        />
+      ) : stats.isPending || board.isPending || !layout ? (
         <Center py="xl">
           <Loader size="sm" />
         </Center>
       ) : (
-        <StatsPanels stats={data} />
+        <DashboardGrid layout={layout} stats={stats.data} editing={editing} onChange={setLayout} />
       )}
+
+      {layout && (
+        <WidgetPalette opened={paletteOpened} onClose={palette.close} layout={layout} onAdd={add} />
+      )}
+      <Modal opened={resetOpened} onClose={resetConfirm.close} title="Reset the layout?">
+        <Stack gap="md">
+          <Text size="sm">Every widget goes back to its default place and size.</Text>
+          <Group justify="flex-end" gap="xs">
+            <Button variant="default" onClick={resetConfirm.close}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={confirmReset}>
+              Reset
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Stack>
   );
 }
 
-const monthColumns = (months: MonthActivity[], key: "watched" | "views") =>
-  months.map((entry) => {
-    const month = dayjs(`${entry.month}-01`);
-    return {
-      key: entry.month,
-      shortLabel: month.format("MMM"),
-      fullLabel: month.format("MMMM YYYY"),
-      value: entry[key],
-    };
-  });
+const SAVE_ANNOUNCEMENTS: Record<SaveStatus, string> = {
+  idle: "",
+  saving: "Saving…",
+  saved: "Saved",
+  error: "Couldn't save your layout",
+};
 
-function StatsPanels({ stats }: { stats: UserStats }) {
-  const tiles = [
-    { label: "Movies watched", value: stats.totals.watched },
-    { label: "Favorites", value: stats.totals.favorites },
-    { label: "On the watchlist", value: stats.totals.watchlist },
-    { label: "Lists", value: stats.totals.lists },
-  ];
-
+// The visible status; screen readers hear SAVE_ANNOUNCEMENTS from a separate live region
+function SaveState({ status, onRetry }: { status: SaveStatus; onRetry: () => void }) {
+  if (status === "idle") return null;
+  if (status === "error") {
+    return (
+      <Group gap={6}>
+        <Text size="sm" c="red.4" aria-hidden>
+          Couldn&apos;t save
+        </Text>
+        <Button size="compact-sm" variant="subtle" onClick={onRetry}>
+          Retry
+        </Button>
+      </Group>
+    );
+  }
   return (
-    <Stack gap="xl">
-      <SimpleGrid cols={TILE_COLUMNS} spacing="md">
-        {tiles.map((tile) => (
-          <Paper key={tile.label} p="lg">
-            <Text fz="2rem" fw={700} c="white" lh={1.1}>
-              {tile.value}
-            </Text>
-            <Text size="sm" c="dimmed">
-              {tile.label}
-            </Text>
-          </Paper>
-        ))}
-      </SimpleGrid>
-
-      <Paper p="lg">
-        <Title order={2} size="h4" c="white" mb="md">
-          Favorite genres
-        </Title>
-        {stats.topGenres.length > 0 ? (
-          <BarList
-            label="Favorite genres, by number of watched and favorite movies"
-            items={stats.topGenres.map((genre) => ({
-              key: genre.id,
-              label: genre.name,
-              value: genre.count,
-            }))}
-            unit={["movie", "movies"]}
-          />
-        ) : (
-          <Text c="dimmed" size="sm">
-            Mark movies as watched or add favorites to see which genres you like most.
-          </Text>
-        )}
-      </Paper>
-
-      {/* Two charts rather than one: page views outnumber watched movies, so they need their own scale */}
-      <SimpleGrid cols={CHART_COLUMNS} spacing="md">
-        <Paper p="lg">
-          <Title order={2} size="h4" c="white" mb="xs">
-            Movies watched
-          </Title>
-          <ColumnChart
-            label="Movies watched per month, last 12 months"
-            columns={monthColumns(stats.activityByMonth, "watched")}
-            unit={["movie watched", "movies watched"]}
-          />
-        </Paper>
-        <Paper p="lg">
-          <Title order={2} size="h4" c="white" mb="xs">
-            Movie pages opened
-          </Title>
-          <ColumnChart
-            label="Movie pages opened per month, last 12 months"
-            columns={monthColumns(stats.activityByMonth, "views")}
-            unit={["movie page opened", "movie pages opened"]}
-          />
-        </Paper>
-      </SimpleGrid>
-    </Stack>
+    <Text size="sm" c="dimmed" aria-hidden>
+      {SAVE_ANNOUNCEMENTS[status]}
+    </Text>
   );
 }

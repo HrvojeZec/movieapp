@@ -50,3 +50,10 @@ export const DEFAULT_LAYOUT: LayoutItem[] = [
   { type: "watchedMonthly", x: 6, y: 2, w: 6, h: 5 },
   { type: "viewsTrend", x: 0, y: 7, w: 12, h: 5 },
 ];
+
+// Board widths (not viewport widths) where the grid switches column counts; the sidebar can
+// take a quarter of a laptop screen
+export const GRID_DESKTOP_MIN_WIDTH = 900;
+export const GRID_TABLET_MIN_WIDTH = 600;
+/** Wait after the last change before the layout is saved. */
+export const DASHBOARD_SAVE_DEBOUNCE_MS = 800;

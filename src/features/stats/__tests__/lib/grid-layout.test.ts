@@ -6,8 +6,10 @@ import {
   hasOverlap,
   moveWidget,
   removeWidget,
+  reorderWidget,
   resizeWidget,
   sanitizeLayout,
+  stepWidget,
   toColumns,
 } from "@/features/stats/lib/grid-layout";
 import type { LayoutItem, WidgetType } from "@/features/stats/types";
@@ -224,6 +226,67 @@ describe("far-away positions", () => {
   }, 1000);
 });
 
+describe("stepWidget", () => {
+  const position = (layout: LayoutItem[], type: WidgetType) => {
+    const { x, y } = layout.find(byType(type))!;
+    return { x, y };
+  };
+
+  it("moving down jumps below the widget underneath", () => {
+    // One row down would just fall back up into the empty cell, so the step goes past genreBars
+    const moved = stepWidget(DEFAULT_LAYOUT, "tileWatched", "down");
+    expect(position(moved, "tileWatched")).toEqual({ x: 0, y: 7 });
+    expect(hasOverlap(moved)).toBe(false);
+  });
+
+  it("moving up rises above the widget overhead", () => {
+    const moved = stepWidget(DEFAULT_LAYOUT, "genreBars", "up");
+    expect(position(moved, "genreBars")).toEqual({ x: 0, y: 0 });
+    expect(position(moved, "tileWatched").y).toBeGreaterThanOrEqual(5);
+  });
+
+  it("moves sideways one column", () => {
+    const moved = stepWidget(DEFAULT_LAYOUT, "tileWatched", "right");
+    expect(position(moved, "tileWatched")).toEqual({ x: 1, y: 0 });
+    expect(hasOverlap(moved)).toBe(false);
+  });
+
+  it("at the edge of the grid nothing changes", () => {
+    expect(stepWidget(DEFAULT_LAYOUT, "tileLists", "right")).toEqual(compact(DEFAULT_LAYOUT));
+    expect(stepWidget(DEFAULT_LAYOUT, "tileWatched", "up")).toEqual(compact(DEFAULT_LAYOUT));
+  });
+});
+
+describe("reorderWidget", () => {
+  const readingOrder = (layout: LayoutItem[]) => toColumns(layout, 1).map((item) => item.type);
+
+  it("swaps a widget with its neighbour in reading order", () => {
+    const moved = reorderWidget(DEFAULT_LAYOUT, "genreBars", -1);
+    expect(readingOrder(moved)).toEqual([
+      "tileWatched",
+      "tileFavorites",
+      "tileWatchlist",
+      "genreBars",
+      "tileLists",
+      "watchedMonthly",
+      "viewsTrend",
+    ]);
+    expect(hasOverlap(moved)).toBe(false);
+    // Packing on save keeps that order
+    expect(readingOrder(compact(moved))).toEqual(readingOrder(moved));
+  });
+
+  it("keeps sizes and lays the default board out as it was", () => {
+    const there = reorderWidget(DEFAULT_LAYOUT, "tileFavorites", -1);
+    expect(reorderWidget(there, "tileFavorites", 1)).toEqual(compact(DEFAULT_LAYOUT));
+  });
+
+  it("the first widget can't go up and the last can't go down", () => {
+    expect(reorderWidget(DEFAULT_LAYOUT, "tileWatched", -1)).toEqual(compact(DEFAULT_LAYOUT));
+    expect(reorderWidget(DEFAULT_LAYOUT, "viewsTrend", 1)).toEqual(compact(DEFAULT_LAYOUT));
+  });
+});
+
 describe("immutability", () => {
   it("never mutates its input", () => {
     const layout = freeze(DEFAULT_LAYOUT);
@@ -234,6 +297,8 @@ describe("immutability", () => {
       resizeWidget(layout, "genreBars", 8, 6);
       addWidget(freeze(removeWidget(layout, "tileLists")), "tileLists");
       removeWidget(layout, "genreBars");
+      stepWidget(layout, "tileWatched", "down");
+      reorderWidget(layout, "genreBars", -1);
       toColumns(layout, 6);
       toColumns(layout, 1);
       sanitizeLayout(layout);

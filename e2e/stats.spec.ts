@@ -31,7 +31,7 @@ test("a pro user sees their stats", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Your Stats" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Favorite genres" })).toBeVisible();
   await expect(page.getByRole("rowheader", { name: "Drama" })).toBeAttached();
-  await expect(page.getByRole("heading", { name: "Movies watched" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Watched per month" })).toBeVisible();
 });
 
 test("stats are locked below pro", async ({ page }) => {

@@ -160,3 +160,69 @@ export function sanitizeLayout(items: readonly LayoutItem[]): LayoutItem[] {
   }
   return compact(valid);
 }
+
+export type StepDirection = "up" | "down" | "left" | "right";
+
+const STEPS: Record<StepDirection, { dx: number; dy: number }> = {
+  up: { dx: 0, dy: -1 },
+  down: { dx: 0, dy: 1 },
+  left: { dx: -1, dy: 0 },
+  right: { dx: 1, dy: 0 },
+};
+
+/**
+ * One keyboard step. Packing pulls a widget moved one row down straight back up, so the step
+ * keeps going until the widget actually lands somewhere new (past its neighbour).
+ */
+export function stepWidget(
+  layout: readonly LayoutItem[],
+  type: WidgetType,
+  direction: StepDirection,
+): LayoutItem[] {
+  const packed = compact(layout);
+  const item = packed.find((candidate) => candidate.type === type);
+  if (!item) return packed;
+  const { dx, dy } = STEPS[direction];
+  const reach = Math.max(GRID_COLUMNS, ...packed.map((other) => other.y + other.h)) + 1;
+  for (let step = 1; step <= reach; step += 1) {
+    const moved = moveWidget(packed, type, item.x + dx * step, item.y + dy * step);
+    const landed = moved.find((candidate) => candidate.type === type)!;
+    if (landed.x !== item.x || landed.y !== item.y) return moved;
+  }
+  return packed;
+}
+
+// Lays widgets out in the given order, each at the first free spot after the previous one,
+// so reading the board row by row gives that order back
+function flow(ordered: readonly LayoutItem[]): LayoutItem[] {
+  const placed: LayoutItem[] = [];
+  let cursor = { x: -1, y: 0 };
+  for (const item of ordered) {
+    for (let y = cursor.y; ; y += 1) {
+      const startX = y === cursor.y ? cursor.x + 1 : 0;
+      const x = Array.from({ length: GRID_COLUMNS - item.w + 1 }, (_, column) => column)
+        .filter((column) => column >= startX)
+        .find((column) => !collidesWithAny({ ...item, x: column, y }, placed));
+      if (x !== undefined) {
+        placed.push({ ...item, x, y });
+        cursor = { x, y };
+        break;
+      }
+    }
+  }
+  return placed;
+}
+
+/** Moves a widget one place earlier (-1) or later (1) in reading order, for the one-column board. */
+export function reorderWidget(
+  layout: readonly LayoutItem[],
+  type: WidgetType,
+  offset: -1 | 1,
+): LayoutItem[] {
+  const ordered = compact(layout);
+  const index = ordered.findIndex((item) => item.type === type);
+  const target = index + offset;
+  if (index < 0 || target < 0 || target >= ordered.length) return ordered;
+  [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
+  return flow(ordered);
+}
