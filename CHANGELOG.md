@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Custom lists on Premium and Pro: "Add to list" on the movie page ticks the lists that hold the
+  movie and creates a new one with it; the Lists page (user menu and mobile drawer) shows each
+  list with its latest posters, and a list's page can rename it, remove movies or delete it. Up to
+  50 lists of 500 movies. Another user's list is a 404. After a downgrade, lists stay readable and
+  can still be trimmed or deleted, while creating and adding need Premium again
 - Movie page visits of logged-in users are recorded as `view` activity with the movie's genres
   (looked up on the server), at most once an hour per movie, for upcoming stats and
   recommendations. Anonymous visits send nothing
@@ -151,6 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The movie page shows the watchlist, watched and list buttons in their own row under the title
 - End-to-end tests run with reduced motion, which stops the login pages' WebGL background from
   slowing the run down
 - End-to-end tests run two workers locally and share one database connection per worker
