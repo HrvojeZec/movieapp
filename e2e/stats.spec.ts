@@ -30,7 +30,9 @@ test("a pro user sees their stats", async ({ page }) => {
   await page.goto("/stats");
   await expect(page.getByRole("heading", { name: "Your Stats" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Favorite genres" })).toBeVisible();
-  await expect(page.getByRole("rowheader", { name: "Drama" })).toBeAttached();
+  await expect(
+    page.locator('[data-widget="genreBars"]').getByRole("rowheader", { name: "Drama" }),
+  ).toBeAttached();
   await expect(page.getByRole("heading", { name: "Watched per month" })).toBeVisible();
 });
 
@@ -59,4 +61,53 @@ test("stats include daily activity, the streak and recently watched", async ({ p
   expect(stats.activityByDay).toEqual([{ date: today, watched: 1, views: 0 }]);
   expect(stats.streak).toEqual({ current: 1, longest: 1 });
   expect(stats.recentWatched).toEqual(["680"]);
+});
+
+test("the new widgets show the user's data", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, plan("pro"));
+  await page.request.post("/api/user/watched", { data: { movieId: "680" } });
+  const today = new Date().toLocaleDateString("en-US", {
+    timeZone: "UTC",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  await page.goto("/stats");
+  const calendar = page.locator('[data-widget="activityHeatmap"]');
+  await expect(calendar.getByRole("rowheader", { name: today })).toBeAttached();
+  await expect(calendar.getByText("1 active day in the last year")).toBeVisible();
+
+  const streak = page.locator('[data-widget="streak"]');
+  await expect(streak.getByText("day in a row")).toBeVisible();
+  await expect(streak.getByText("Your longest streak yet")).toBeVisible();
+
+  const recent = page.locator('[data-widget="recentWatched"]');
+  await expect(recent.getByRole("link", { name: "Pulp Fiction" })).toHaveAttribute(
+    "href",
+    "/movie/680",
+  );
+  await expect(
+    page.locator('[data-widget="genreDonut"]').getByRole("rowheader", { name: "Crime" }),
+  ).toBeAttached();
+});
+
+test("an empty account shows empty widgets, not errors", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, plan("pro"));
+
+  await page.goto("/stats");
+  await expect(page.locator("[data-widget]")).toHaveCount(11);
+  const calendar = page.locator('[data-widget="activityHeatmap"]');
+  await expect(calendar.getByText("No activity in the last year yet.")).toBeVisible();
+  // Every day of the year is drawn, just empty
+  expect(await calendar.locator('rect[data-level="0"]').count()).toBeGreaterThan(360);
+  await expect(
+    page.getByText("Open a movie or mark one as watched to start a streak"),
+  ).toBeVisible();
+  await expect(page.getByText("Movies you mark as watched show up here.")).toBeVisible();
+  await expect(page.getByText("see your mix of genres")).toBeVisible();
+  await expect(page.getByText("show up here as a trend")).toBeVisible();
+  await expect(page.getByText("couldn't be loaded")).toHaveCount(0);
 });

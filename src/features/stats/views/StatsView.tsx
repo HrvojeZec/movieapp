@@ -110,7 +110,13 @@ function StatsContent() {
           <Loader size="sm" />
         </Center>
       ) : (
-        <DashboardGrid layout={layout} stats={stats.data} editing={editing} onChange={setLayout} />
+        <DashboardGrid
+          layout={layout}
+          stats={stats.data}
+          editing={editing}
+          onChange={setLayout}
+          now={stats.dataUpdatedAt}
+        />
       )}
 
       {layout && (

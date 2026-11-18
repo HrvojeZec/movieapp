@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Stats widgets: an activity calendar (a year of days, brighter for busier days), a genre mix
+  ring (top 5 genres and Other, colors validated for color-blind readers), a trend line of movie
+  pages opened, a streak ring of active days in a row and the latest watched movies as posters.
+  "Watched per month" switches between 6 and 12 months, and a larger "Movies watched" tile adds a
+  trend line. Bars, columns, lines and rings grow in as they come into view (static with reduced
+  motion); every chart has an empty state, hover details and a table for screen readers
 - The Pro stats page is a customizable dashboard: drag widgets by their header, resize them by
   the corner, remove them and add them back from a palette, or reset to the default board. It
   works by keyboard too (Enter picks a widget up, arrows move it, Shift + arrows resize it) with

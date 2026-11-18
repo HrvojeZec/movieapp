@@ -1,5 +1,6 @@
 "use client";
 import { Box, Text, Tooltip, VisuallyHidden } from "@mantine/core";
+import { Sprout } from "@/shared/ui/motion/Sprout";
 import classes from "./BarList.module.scss";
 
 interface BarListProps {
@@ -26,7 +27,7 @@ export function BarList({ label, items, unit, limit }: BarListProps) {
   return (
     <div>
       <div className={classes.list} aria-hidden>
-        {visible.map((item) => (
+        {visible.map((item, index) => (
           <Tooltip key={item.key} label={`${item.label}: ${describe(item.value, unit)}`}>
             {/* The whole row is the hover target, not just the bar */}
             <div className={classes.row}>
@@ -34,7 +35,12 @@ export function BarList({ label, items, unit, limit }: BarListProps) {
                 {item.label}
               </Text>
               <Box className={classes.track}>
-                <div className={classes.bar} style={{ width: `${(item.value / max) * 100}%` }} />
+                <Sprout
+                  direction="right"
+                  index={index}
+                  className={classes.bar}
+                  style={{ width: `${(item.value / max) * 100}%` }}
+                />
               </Box>
               <Text size="sm" c="dimmed" ta="right" className={classes.value}>
                 {item.value}
