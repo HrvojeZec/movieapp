@@ -181,6 +181,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The profile's favorites count rolls its digits into place like an odometer instead of counting
+  up; screen readers and text search get the plain number. Shared springs, a magnetic hover and a
+  growing bar wrapper are ready for the upcoming dashboard and buttons. The vendored CountUp
+  component is gone
 - The movie page shows the watchlist, watched and list buttons in their own row under the title
 - End-to-end tests run with reduced motion, which stops the login pages' WebGL background from
   slowing the run down
