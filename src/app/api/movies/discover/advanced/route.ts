@@ -1,0 +1,30 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { requireSession } from "@/features/auth/server/session";
+import { fetchDiscover } from "@/features/movies/server/movies";
+import {
+  limitTmdbRequest,
+  searchParamsToObject,
+  tmdbErrorResponse,
+} from "@/features/movies/server/route-helpers";
+import { advancedDiscoverQuerySchema } from "@/features/movies/validations/movies.schema";
+import { requireFeature } from "@/features/subscription/server/entitlements";
+
+// Unlike the basic discover route, the answer depends on who asks: a shared cache could hand a
+// Premium response to anyone, so nothing here may be cached
+const NO_STORE = "private, no-store";
+
+// GET /api/movies/discover/advanced?yearFrom=1990&genres=18,53&sortBy=vote_average.desc&page=1
+export async function GET(request: NextRequest) {
+  let response: NextResponse;
+  try {
+    const { userId } = requireSession(request);
+    await limitTmdbRequest(request);
+    const filters = advancedDiscoverQuerySchema.parse(searchParamsToObject(request.url));
+    await requireFeature(userId, "advancedFilters");
+    response = NextResponse.json(await fetchDiscover(filters));
+  } catch (error) {
+    response = tmdbErrorResponse(error, "Advanced movie discover");
+  }
+  response.headers.set("Cache-Control", NO_STORE);
+  return response;
+}

@@ -1,7 +1,11 @@
 import { z } from "zod";
 import {
+  DISCOVER_SORTS,
+  MAX_GENRE_FILTERS,
+  MAX_MIN_VOTES,
   MAX_RATING,
   MAX_RELEASE_YEAR,
+  MAX_RUNTIME_MINUTES,
   MIN_RELEASE_YEAR,
   SEARCH_QUERY_MAX_LENGTH,
   TMDB_MAX_PAGE,
@@ -26,12 +30,49 @@ export const movieSearchQuerySchema = z.object({
   page: pageSchema,
 });
 
+const releaseYearSchema = z.coerce.number().int().min(MIN_RELEASE_YEAR).max(MAX_RELEASE_YEAR);
+const runtimeSchema = z.coerce.number().int().min(0).max(MAX_RUNTIME_MINUTES);
+
 export const movieDiscoverQuerySchema = z.object({
-  year: z.coerce.number().int().min(MIN_RELEASE_YEAR).max(MAX_RELEASE_YEAR).optional(),
+  year: releaseYearSchema.optional(),
   genre: z.coerce.number().int().positive().optional(),
   minRating: z.coerce.number().min(0).max(MAX_RATING).optional(),
   page: pageSchema,
 });
+
+// "18,53": TMDB genre IDs, each counted once
+const genreListSchema = z
+  .string()
+  .regex(/^\d+(,\d+)*$/, "Genres must be a comma-separated list of genre IDs")
+  .transform((value) => [...new Set(value.split(",").map(Number))])
+  .pipe(z.array(z.number().int().positive()).max(MAX_GENRE_FILTERS));
+
+const isOrdered = (from?: number, to?: number) =>
+  from === undefined || to === undefined || from <= to;
+
+/** The Premium discover filters, on top of the basic ones. */
+export const advancedDiscoverQuerySchema = movieDiscoverQuerySchema
+  .extend({
+    yearFrom: releaseYearSchema.optional(),
+    yearTo: releaseYearSchema.optional(),
+    genres: genreListSchema.optional(),
+    runtimeMin: runtimeSchema.optional(),
+    runtimeMax: runtimeSchema.optional(),
+    language: z
+      .string()
+      .regex(/^[a-z]{2}$/, "Language must be a two-letter ISO 639-1 code")
+      .optional(),
+    sortBy: z.enum(DISCOVER_SORTS).optional(),
+    minVotes: z.coerce.number().int().min(0).max(MAX_MIN_VOTES).optional(),
+  })
+  .refine((filters) => isOrdered(filters.yearFrom, filters.yearTo), {
+    message: "The start year must not be after the end year",
+    path: ["yearFrom"],
+  })
+  .refine((filters) => isOrdered(filters.runtimeMin, filters.runtimeMax), {
+    message: "The minimum runtime must not be above the maximum",
+    path: ["runtimeMin"],
+  });
 
 export const movieIdSchema = z.coerce.number().int().positive();
 

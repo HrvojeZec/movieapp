@@ -1,5 +1,7 @@
 import { cache } from "react";
+import { buildDiscoverParams } from "@/features/movies/lib/discover";
 import type {
+  AdvancedDiscoverFilters,
   DiscoverFilters,
   Genre,
   Movie,
@@ -13,8 +15,6 @@ import { tmdbFetch } from "./tmdb";
 // Every TMDB endpoint the app uses, shared by the API routes and the server-rendered pages.
 // The return types match the client fetchers in api/movies.api.ts, so server-prefetched data
 // can go straight into the same query cache entries.
-
-const DISCOVER_SORT = "popularity.desc";
 
 export const fetchMovieList = (list: MovieList, page = 1) =>
   tmdbFetch<TMDBResponse<Movie>>(`/movie/${list}`, { page });
@@ -33,16 +33,7 @@ export const fetchGenres = async (): Promise<Genre[]> =>
 export const fetchSearchResults = (query: string, page = 1) =>
   tmdbFetch<TMDBResponse<Movie>>("/search/movie", { query, page, include_adult: false });
 
-export const fetchDiscover = ({
-  page = 1,
-  year,
-  genre,
-  minRating,
-}: DiscoverFilters & { page?: number }) =>
-  tmdbFetch<TMDBResponse<Movie>>("/discover/movie", {
-    page,
-    sort_by: DISCOVER_SORT,
-    primary_release_year: year,
-    with_genres: genre,
-    "vote_average.gte": minRating,
-  });
+/** Discover with the basic filters (public route) or the advanced ones too (Premium route). */
+export const fetchDiscover = (
+  filters: DiscoverFilters & AdvancedDiscoverFilters & { page?: number },
+) => tmdbFetch<TMDBResponse<Movie>>("/discover/movie", buildDiscoverParams(filters));
