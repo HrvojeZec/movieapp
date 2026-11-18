@@ -1,7 +1,8 @@
 "use client";
-import { Box, Card, Group, Image, Text } from "@mantine/core";
+import { Box, Card, Group, Image, Stack, Text } from "@mantine/core";
 import { Star } from "lucide-react";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
+import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
 import { MOVIE_CARD_SIZES, PLACEHOLDER_POSTER } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating } from "@/features/movies/lib/movies";
@@ -50,8 +51,10 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => (
       </Box>
     </IntentPrefetchLink>
 
-    <Box className={classes.favorite}>
+    {/* The heart for everyone; the bookmark only on plans with a watchlist */}
+    <Stack gap={6} className={classes.favorite}>
       <FavoriteButton movieId={movie.id} />
-    </Box>
+      <WatchlistButton movieId={movie.id} />
+    </Stack>
   </Card>
 );

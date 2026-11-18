@@ -10,6 +10,7 @@ export interface IUser extends Document {
   password: string;
   name: string;
   favorites: string[];
+  watchlist: string[];
   preferences: {
     genres: string[];
     language: string;
@@ -63,6 +64,8 @@ const UserSchema = new Schema<IUser>(
         trim: true,
       },
     ],
+    // Movies to watch later (Premium and Pro), kept after a downgrade
+    watchlist: [{ type: String, trim: true }],
     preferences: {
       genres: [
         {

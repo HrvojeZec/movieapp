@@ -10,6 +10,7 @@ const user: AuthUser = {
   email: "ana@example.com",
   name: "Ana",
   favorites: [],
+  watchlist: [],
   createdAt: new Date("2026-01-01"),
 };
 

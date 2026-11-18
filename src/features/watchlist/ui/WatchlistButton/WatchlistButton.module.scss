@@ -1,0 +1,14 @@
+// Floating over a poster, like the favorite button
+.overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &[aria-pressed="true"] {
+    background-color: var(--success-500);
+  }
+}

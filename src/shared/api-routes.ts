@@ -18,6 +18,8 @@ export const API_ROUTES = {
     profile: `${USER}/profile`,
     favorites: `${USER}/favorites`,
     favorite: (movieId: string) => `${USER}/favorites/${movieId}`,
+    watchlist: `${USER}/watchlist`,
+    watchlistItem: (movieId: string) => `${USER}/watchlist/${movieId}`,
   },
   movies: {
     list: MOVIES,
