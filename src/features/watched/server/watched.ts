@@ -3,11 +3,9 @@ import User from "@/server/models/User";
 import WatchedMovie from "@/server/models/WatchedMovie";
 import { logUserActivity } from "@/server/activity";
 import { notFound } from "@/server/http/route-error";
-import { fetchMovieDetails } from "@/features/movies/server/movies";
-import { TmdbError } from "@/features/movies/server/tmdb";
+import { fetchGenreIds } from "@/features/movies/server/genre-ids";
 import { WATCHED_PAGE_SIZE } from "@/features/watched/constants";
 import type { WatchedPage } from "@/features/watched/types";
-import { HTTP_STATUS } from "@/shared/lib/http-status";
 
 const DUPLICATE_KEY_ERROR = 11000;
 
@@ -17,23 +15,10 @@ const isDuplicateKeyError = (error: unknown) =>
   "code" in error &&
   error.code === DUPLICATE_KEY_ERROR;
 
-async function getGenreIds(movieId: string): Promise<number[]> {
-  try {
-    const movie = await fetchMovieDetails(Number(movieId));
-    return movie.genres.map((genre) => genre.id);
-  } catch (error) {
-    if (error instanceof TmdbError && error.status === HTTP_STATUS.NOT_FOUND) {
-      throw notFound("Movie");
-    }
-    // Genres only feed recommendations and stats, so a TMDB outage shouldn't stop the user
-    console.error("Could not load genres for a watched movie:", error);
-    return [];
-  }
-}
-
 /** Marks a movie as watched (once; the first date is kept) and takes it off the watchlist. */
 export async function markWatched(userId: string, movieId: string): Promise<void> {
-  const genreIds = await getGenreIds(movieId);
+  const genreIds = await fetchGenreIds(movieId);
+  if (genreIds === null) throw notFound("Movie");
   await connectDB();
 
   // Watched means there's nothing left to watch later
