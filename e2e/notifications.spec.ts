@@ -1,15 +1,23 @@
 import { expect, test } from "./fixtures";
-import { registerViaApi, seedNotifications } from "./helpers";
+import { getLastEmail } from "./emails";
+import { registerViaApi, seedNotifications, type TestUser } from "./helpers";
+
+// Every new account also gets a welcome notification, so seeded ones come on top of it
+const WELCOME = 1;
+
+// The welcome notification is stored right after the sign-up response, before its email is sent
+const waitForWelcome = (user: TestUser) => getLastEmail(user.email);
 
 test("the bell shows the unread count and marks all as read", async ({ page }) => {
   const user = await registerViaApi(page);
+  await waitForWelcome(user);
   await seedNotifications(user, [
     { title: "Premium is active", body: "Your Premium subscription is active." },
     { title: "Payment failed", body: "We couldn't charge your card." },
   ]);
 
   await page.goto("/");
-  const bell = page.getByRole("button", { name: "Notifications, 2 unread" });
+  const bell = page.getByRole("button", { name: `Notifications, ${2 + WELCOME} unread` });
   await expect(bell).toBeVisible();
 
   await bell.click();
@@ -25,23 +33,17 @@ test("the bell shows the unread count and marks all as read", async ({ page }) =
 
 test("a notification links to its page", async ({ page }) => {
   const user = await registerViaApi(page);
+  await waitForWelcome(user);
   await seedNotifications(user, [
     { title: "Subscription canceled", body: "You keep Premium until …", link: "/profile" },
   ]);
 
   await page.goto("/");
-  await page.getByRole("button", { name: "Notifications, 1 unread" }).click();
+  await page.getByRole("button", { name: `Notifications, ${1 + WELCOME} unread` }).click();
   await page.getByRole("menuitem", { name: /Subscription canceled/ }).click();
 
   await expect(page).toHaveURL("/profile");
-  await expect(page.getByRole("button", { name: "Notifications", exact: true })).toBeVisible();
-});
-
-test("someone without notifications sees an empty bell", async ({ page }) => {
-  await registerViaApi(page);
-
-  await page.goto("/");
-  await page.getByRole("button", { name: "Notifications", exact: true }).click();
-
-  await expect(page.getByText("No notifications yet")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: `Notifications, ${WELCOME} unread` }),
+  ).toBeVisible();
 });

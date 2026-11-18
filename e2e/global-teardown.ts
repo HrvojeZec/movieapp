@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { E2E_EMAIL_PATTERN } from "./helpers";
 
-// Removes the users (with their activity and notifications) created by the tests from the E2E
-// database.
+// Removes the users (with their activity, notifications and captured emails) created by the tests
+// from the E2E database.
 export default async function globalTeardown() {
   const uri = process.env.E2E_MONGODB_URI;
   if (!uri) return;
@@ -20,6 +20,7 @@ export default async function globalTeardown() {
       await connection.collection("notifications").deleteMany({ userId: { $in: ids } });
       await users.deleteMany({ _id: { $in: ids } });
     }
+    await connection.collection("capturedemails").deleteMany({ to: E2E_EMAIL_PATTERN });
     console.log(`E2E teardown: removed ${ids.length} test user(s)`);
   } finally {
     await connection.close();

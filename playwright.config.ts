@@ -26,7 +26,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // Two locally: every test signs up a user (bcrypt, several writes), and more parallel workers
+  // queue those on the one server and the free database tier until logins time out
+  workers: process.env.CI ? 1 : 2,
   reporter: process.env.CI
     ? [["github"], ["html", { open: "never" }]]
     : [["list"], ["html", { open: "never" }]],
@@ -44,6 +46,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     // Takes precedence over MONGODB_URI from .env.local
-    env: { MONGODB_URI: e2eMongoUri },
+    // Emails go to a collection the tests can read, never to real inboxes
+    env: { MONGODB_URI: e2eMongoUri, EMAIL_TRANSPORT: "capture" },
   },
 });
