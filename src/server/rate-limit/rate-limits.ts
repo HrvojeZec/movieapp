@@ -15,6 +15,14 @@ export const RATE_LIMITS = {
   },
   // Per IP: stops scripted sign-ups
   register: { requests: 5, windowMs: HOUR_MS, message: "Too many sign-ups from this network." },
+  // Per IP and email: each request may send an email, so an address can't be flooded with them
+  forgotPassword: {
+    requests: 3,
+    windowMs: HOUR_MS,
+    message: "Too many reset requests for this email.",
+  },
+  // Per IP: slows down guessing reset tokens (they are long and random anyway)
+  resetPassword: { requests: 10, windowMs: HOUR_MS, message: "Too many password reset attempts." },
   // Per IP: protects the TMDB API quota shared by all users
   tmdb: { requests: 60, windowMs: MINUTE_MS, message: "Too many requests." },
   // Per user: every attempt creates a Stripe Checkout Session

@@ -3,6 +3,8 @@ export const ROUTES = {
   home: "/",
   login: "/auth/login",
   register: "/auth/register",
+  forgotPassword: "/auth/forgot-password",
+  resetPassword: (token: string) => `/auth/reset-password?token=${encodeURIComponent(token)}`,
   favorites: "/favorites",
   profile: "/profile",
   pricing: "/subscription/pricing",

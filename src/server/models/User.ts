@@ -27,6 +27,8 @@ export interface IUser extends Document {
   cancelAt?: Date | null;
   trialEnd?: Date | null;
   hasUsedTrial: boolean;
+  passwordResetTokenHash?: string;
+  passwordResetExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -118,6 +120,9 @@ const UserSchema = new Schema<IUser>(
     trialEnd: { type: Date, default: null },
     // One free trial per account, even after canceling
     hasUsedTrial: { type: Boolean, default: false },
+    // Only a hash of the emailed token; never loaded unless a query asks for it
+    passwordResetTokenHash: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false },
   },
   {
     timestamps: true,

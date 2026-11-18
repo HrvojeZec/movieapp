@@ -10,6 +10,8 @@ export const API_ROUTES = {
   auth: {
     login: `${AUTH}/login`,
     register: `${AUTH}/register`,
+    forgotPassword: `${AUTH}/forgot-password`,
+    resetPassword: `${AUTH}/reset-password`,
     logout: `${AUTH}/logout`,
   },
   user: {

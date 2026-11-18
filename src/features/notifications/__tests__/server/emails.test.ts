@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NOTIFICATION_TYPES } from "@/features/notifications/constants";
-import { buildNotificationEmail } from "@/features/notifications/server/emails";
+import {
+  buildNotificationEmail,
+  buildPasswordResetEmail,
+} from "@/features/notifications/server/emails";
 import type { NotificationInput, NotificationType } from "@/features/notifications/types";
 
 const notification = (type: NotificationType): NotificationInput => ({
@@ -49,5 +52,17 @@ describe("buildNotificationEmail", () => {
     // The footer still links to the profile; only the button (labelled per type) is gone
     expect(email.html).not.toContain("Start browsing");
     expect(email.text).not.toContain("Start browsing");
+  });
+});
+
+describe("buildPasswordResetEmail", () => {
+  it("sends the one-time link and says it expires", () => {
+    const url = "https://movies.example.com/auth/reset-password?token=abc";
+    const email = buildPasswordResetEmail(recipient, url);
+
+    expect(email.subject).toBe("Reset your MovieHub password");
+    expect(email.html).toContain(`href="${url}"`);
+    expect(email.text).toContain(url);
+    expect(email.text).toContain("expires in 1 hour");
   });
 });
