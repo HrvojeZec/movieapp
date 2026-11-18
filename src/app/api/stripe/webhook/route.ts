@@ -84,7 +84,7 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
   }
 }
 
-/** Stores the latest subscription state, then tells the owner what changed, if anything. */
+/** Stores the latest subscription state, then tells the owner what changed (bell and email). */
 async function syncAndNotify(subscriptionId: string, event: Stripe.Event): Promise<void> {
   const user = await syncSubscription(subscriptionId);
   if (!user) {
@@ -96,7 +96,7 @@ async function syncAndNotify(subscriptionId: string, event: Stripe.Event): Promi
   const notification = getSubscriptionNotification(event);
   if (!notification) return;
   try {
-    await notifyUser(user._id.toString(), notification);
+    await notifyUser(user._id.toString(), notification, { email: true });
   } catch (error) {
     // The subscription is already synced; a missing notification isn't worth a Stripe retry
     console.error(`Notification failed for ${event.type} (${event.id}):`, error);

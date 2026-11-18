@@ -1,4 +1,4 @@
-import { HOUR_MS, MINUTE_MS } from "@/shared/lib/time";
+import { DAY_MS, HOUR_MS, MINUTE_MS } from "@/shared/lib/time";
 import type { RateLimitRule } from "./types";
 
 interface NamedRule extends RateLimitRule {
@@ -21,6 +21,8 @@ export const RATE_LIMITS = {
   checkout: { requests: 10, windowMs: MINUTE_MS, message: "Too many checkout attempts." },
   // Per user: cancel, resume and billing portal each call Stripe
   subscription: { requests: 10, windowMs: MINUTE_MS, message: "Too many subscription changes." },
+  // One key for the whole app: stays under Gmail's ~500 emails a day with room to spare
+  email: { requests: 400, windowMs: DAY_MS, message: "Daily email limit reached." },
 } as const satisfies Record<string, NamedRule>;
 
 export type RateLimitName = keyof typeof RATE_LIMITS;

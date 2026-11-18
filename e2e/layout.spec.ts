@@ -55,7 +55,11 @@ test("the favorites count badge in the navbar is a whole circle", async ({ page 
   expect(response.ok(), await response.text()).toBeTruthy();
 
   await page.goto("/");
-  const badge = page.locator("header .mantine-Indicator-indicator");
+  // The badge next to the favorites button (the bell has its own)
+  const badge = page
+    .locator("header .mantine-Indicator-root")
+    .filter({ has: page.getByRole("button", { name: "Favorites", exact: true }) })
+    .locator(".mantine-Indicator-indicator");
   await expect(badge).toHaveText("1");
 
   const box = (await badge.boundingBox())!;
