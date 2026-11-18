@@ -8,6 +8,7 @@ const GMAIL_SMTP = { host: "smtp.gmail.com", port: 465, secure: true } as const;
  * recipient really gets the email. Gmail allows about 500 a day (see the "email" rate limit).
  */
 export class GmailSender implements EmailSender {
+  readonly countsTowardDailyLimit = true;
   private readonly transporter: Transporter;
 
   constructor(

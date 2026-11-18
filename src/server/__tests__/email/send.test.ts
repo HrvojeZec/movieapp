@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const send = vi.fn();
 const limit = vi.fn();
-vi.mock("@/server/email/sender", () => ({ getEmailSender: () => ({ send }) }));
+// Gmail counts toward the daily limit; the E2E capture and the local log don't
+let countsTowardDailyLimit = true;
+vi.mock("@/server/email/sender", () => ({
+  getEmailSender: () => ({ send, countsTowardDailyLimit }),
+}));
 vi.mock("@/server/rate-limit/limiters", () => ({ getRateLimiter: () => ({ limit }) }));
 
 const { sendEmail } = await import("@/server/email/send");
@@ -17,6 +21,7 @@ const allowed = { success: true, limit: 400, remaining: 399, reset: 0 };
 
 describe("sendEmail", () => {
   beforeEach(() => {
+    countsTowardDailyLimit = true;
     send.mockReset().mockResolvedValue(undefined);
     limit.mockReset().mockResolvedValue(allowed);
     vi.spyOn(console, "error").mockImplementation(() => {});
@@ -49,5 +54,14 @@ describe("sendEmail", () => {
     });
 
     await expect(sendEmail(message)).resolves.toBe(true);
+  });
+
+  it("doesn't count emails that aren't really sent", async () => {
+    countsTowardDailyLimit = false;
+    limit.mockResolvedValue({ ...allowed, success: false, remaining: 0 });
+
+    await expect(sendEmail(message)).resolves.toBe(true);
+    expect(limit).not.toHaveBeenCalled();
+    expect(send).toHaveBeenCalledWith(message);
   });
 });

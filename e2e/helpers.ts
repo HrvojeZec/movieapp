@@ -82,3 +82,11 @@ export async function seedNotifications(user: TestUser, notifications: SeededNot
     })),
   );
 }
+
+/** Replaces the user's favorites in the E2E database (movie IDs as strings, as the app stores them). */
+export async function seedFavorites(user: TestUser, movieIds: string[]) {
+  const connection = await getE2EDatabase();
+  await connection
+    .collection("users")
+    .updateOne({ email: user.email }, { $set: { favorites: movieIds } });
+}

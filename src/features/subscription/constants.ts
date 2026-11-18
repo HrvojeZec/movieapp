@@ -47,7 +47,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
       { label: "Browse and search movies" },
       { label: "Filter by year, genre and rating" },
       { label: "Watch trailers" },
-      { label: "Save favorites" },
+      { label: `Save up to ${FAVORITES_LIMIT} favorites` },
     ],
   },
   {
@@ -58,6 +58,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     popular: true,
     features: [
       { label: "Everything in Basic" },
+      { label: "Unlimited favorites" },
       { label: "Watchlist", comingSoon: true },
       { label: "Custom movie lists", comingSoon: true },
     ],
