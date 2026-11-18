@@ -1,6 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import { NAME_MAX_LENGTH } from "@/features/auth/constants";
+import { WIDGET_TYPES } from "@/features/stats/constants";
+import type { LayoutItem } from "@/features/stats/types";
 
 // Each extra round doubles the hashing time; 12 keeps brute force expensive and logins fast enough
 const BCRYPT_SALT_ROUNDS = 12;
@@ -11,6 +13,7 @@ export interface IUser extends Document {
   name: string;
   favorites: string[];
   watchlist: string[];
+  dashboardLayout: LayoutItem[];
   preferences: {
     genres: string[];
     language: string;
@@ -34,6 +37,18 @@ export interface IUser extends Document {
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
+
+// "type" is a field here, so it needs the long form to not read as the item's own type
+const DashboardItemSchema = new Schema<LayoutItem>(
+  {
+    type: { type: String, enum: WIDGET_TYPES, required: true },
+    x: { type: Number, required: true, min: 0 },
+    y: { type: Number, required: true, min: 0 },
+    w: { type: Number, required: true, min: 1 },
+    h: { type: Number, required: true, min: 1 },
+  },
+  { _id: false },
+);
 
 const UserSchema = new Schema<IUser>(
   {
@@ -66,6 +81,8 @@ const UserSchema = new Schema<IUser>(
     ],
     // Movies to watch later (Premium and Pro), kept after a downgrade
     watchlist: [{ type: String, trim: true }],
+    // The Pro stats board; empty means the default one
+    dashboardLayout: { type: [DashboardItemSchema], default: [] },
     preferences: {
       genres: [
         {
