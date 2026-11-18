@@ -24,7 +24,7 @@ export function clearAuthCookie(response: NextResponse): void {
 }
 
 /** Returns the verified token payload of the current request, or null if not logged in. */
-function getSessionUser(request: NextRequest): AuthToken | null {
+export function getSessionUser(request: NextRequest): AuthToken | null {
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
   return token ? verifyToken(token) : null;
 }
