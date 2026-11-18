@@ -8,6 +8,8 @@ export const ACTIVITY_ACTIONS = [
   "search",
   "watchlist_add",
   "watchlist_remove",
+  "watched",
+  "unwatched",
 ] as const;
 
 export type ActivityAction = (typeof ACTIVITY_ACTIONS)[number];

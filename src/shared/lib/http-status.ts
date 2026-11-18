@@ -1,6 +1,7 @@
 // HTTP status codes used by the API routes and checked by the client
 export const HTTP_STATUS = {
   OK: 200,
+  NO_CONTENT: 204,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
