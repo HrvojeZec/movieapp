@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Watchlist on Premium and Pro: a bookmark on movie cards and an "Add to watchlist" button on the
+  movie page save a movie for later, and the new Watchlist page (user menu and mobile drawer)
+  shows them newest first. Free accounts see the button and the page locked with a link to
+  pricing; the server refuses adding without the plan, but removing always works, so a list kept
+  after a downgrade can be trimmed
 - The free plan keeps up to 20 favorites, checked in the same atomic update that adds one, so
   parallel requests can't exceed it; Premium and Pro have no limit. Over the limit after a
   downgrade, favorites are kept and can be removed. The favorites page shows "12 / 20 on the free
