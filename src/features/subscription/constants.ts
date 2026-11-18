@@ -75,3 +75,6 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     ],
   },
 ];
+
+// The first subscription starts with a free trial; Checkout still takes a card up front
+export const TRIAL_DAYS = 14;

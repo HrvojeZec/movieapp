@@ -4,7 +4,9 @@ import { RouteError, notFound } from "@/server/http/route-error";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { findUserById } from "@/features/auth/server/users";
 import type { AuthUser } from "@/features/auth/types";
+import { TRIAL_DAYS } from "@/features/subscription/constants";
 import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/lib/plans";
+import { isTrialAvailable } from "@/features/subscription/lib/trial";
 import type { BillingInterval, PaidPlan } from "@/features/subscription/types";
 import { getStripe } from "./stripe";
 import {
@@ -62,6 +64,8 @@ export async function createSubscriptionCheckout(
     success_url: `${origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/subscription/pricing`,
     integration_identifier: STRIPE_INTEGRATION_IDENTIFIER,
+    // hasUsedTrial is set by the subscription sync once Stripe reports the trial
+    ...(isTrialAvailable(user) ? { subscription_data: { trial_period_days: TRIAL_DAYS } } : {}),
   });
 
   if (!session.url) {
