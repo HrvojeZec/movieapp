@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Recommendations on Pro: a "Recommended for you" row on the home page and a page with up to 20
+  picks, each saying why ("Because you liked Fight Club", "Because you like Drama"). Candidates
+  come from TMDB's recommendations for the latest favorites and watched movies and from top-rated
+  movies in the user's strongest genres; they're ranked by how many of those suggest them, how
+  well their genres fit a profile built from favorites, watched movies and the watchlist (recent
+  ones count more) and their rating. Movies the user already has are left out. Without any
+  history, popular movies are shown with a hint. Other plans see the row locked
 - Advanced filters on Most Watched for Premium and Pro: a year range, several genres at once
   (movies must have all of them), minimum and maximum runtime, original language, sorting (most
   popular, top rated, newest, title) and a minimum number of votes. They live in the URL like the
