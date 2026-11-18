@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Movie page visits of logged-in users are recorded as `view` activity with the movie's genres
+  (looked up on the server), at most once an hour per movie, for upcoming stats and
+  recommendations. Anonymous visits send nothing
 - Watched movies on every plan: an eye on movie cards and a "Mark as watched" button on the movie
   page keep a history with dates, shown newest first on the new Watched page (user menu and mobile
   drawer). Marking a movie as watched takes it off the watchlist, and each movie is stored once
