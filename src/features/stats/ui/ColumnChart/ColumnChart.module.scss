@@ -35,6 +35,8 @@
 // Thin column anchored to the baseline, rounded only at its data end
 .bar {
   width: min(60%, 24px);
+  // Switching the range morphs the columns to their new heights
+  transition: height 300ms ease;
   background-color: var(--primary-500);
   border-radius: 4px 4px 0 0;
 }

@@ -1,8 +1,9 @@
 "use client";
 import { Text, Tooltip, VisuallyHidden } from "@mantine/core";
+import { Sprout } from "@/shared/ui/motion/Sprout";
 import classes from "./ColumnChart.module.scss";
 
-interface ColumnChartProps {
+export interface ColumnChartProps {
   /** Names the chart for screen readers; the visible title sits above it. */
   label: string;
   columns: { key: string; shortLabel: string; fullLabel: string; value: number }[];
@@ -28,13 +29,14 @@ export function ColumnChart({ label, columns, unit }: ColumnChartProps) {
           {max > 0 ? max : ""}
         </Text>
         <div className={classes.plot}>
-          {columns.map((column) => (
+          {columns.map((column, index) => (
             <Tooltip
               key={column.key}
               label={`${column.fullLabel}: ${describe(column.value, unit)}`}
             >
               <div className={classes.column}>
-                <div
+                <Sprout
+                  index={index}
                   className={classes.bar}
                   style={{ height: max > 0 ? `${(column.value / max) * 100}%` : 0 }}
                 />
