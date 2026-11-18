@@ -25,6 +25,10 @@ export const API_ROUTES = {
     videos: (movieId: number) => `${MOVIES}/${movieId}/videos`,
   },
   genres: `${API}/genres`,
+  notifications: {
+    list: `${API}/notifications`,
+    read: `${API}/notifications/read`,
+  },
   health: `${API}/health`,
   subscription: {
     cancel: `${SUBSCRIPTION}/cancel`,
