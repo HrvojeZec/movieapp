@@ -5,7 +5,7 @@ import type { AuthUser } from "@/features/auth/types";
 import { formatDate, pluralize } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
-import CountUp from "@/shared/vendor/react-bits/CountUp/CountUp";
+import { RollingNumber } from "@/shared/ui/motion/RollingNumber/RollingNumber";
 
 export function ProfileHeader({ user }: { user: AuthUser }) {
   const favoriteCount = user.favorites.length;
@@ -33,7 +33,7 @@ export function ProfileHeader({ user }: { user: AuthUser }) {
           <Group gap="xs">
             <Heart size={16} color={COLORS.danger} />
             <Text c="gray.4">
-              <CountUp to={favoriteCount} /> {pluralize(favoriteCount, "favorite")}
+              <RollingNumber value={favoriteCount} /> {pluralize(favoriteCount, "favorite")}
             </Text>
             {favoriteCount > 0 && (
               <Anchor component={Link} href={ROUTES.favorites} size="sm">

@@ -6,7 +6,7 @@ listed files instead of this project's MIT license.
 ## React Bits
 
 - Source: https://reactbits.dev (https://github.com/DavidHDev/react-bits)
-- Files: `src/shared/vendor/react-bits/` (BlurText, ClickSpark, CountUp, DarkVeil, GlareHover,
+- Files: `src/shared/vendor/react-bits/` (BlurText, ClickSpark, DarkVeil, GlareHover,
   GradualBlur, ShinyText, SpotlightCard, StarBorder, TiltedCard)
 - Used as published, wrapped by this app's own components. The components may be used as part of
   this application, but not sold or redistributed on their own.
