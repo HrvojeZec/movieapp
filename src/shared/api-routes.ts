@@ -5,6 +5,7 @@ const USER = `${API}/user`;
 const MOVIES = `${API}/movies`;
 const STRIPE = `${API}/stripe`;
 const SUBSCRIPTION = `${API}/subscription`;
+const LISTS = `${API}/lists`;
 
 export const API_ROUTES = {
   auth: {
@@ -31,6 +32,12 @@ export const API_ROUTES = {
     discover: `${MOVIES}/discover`,
     details: (movieId: number) => `${MOVIES}/${movieId}`,
     videos: (movieId: number) => `${MOVIES}/${movieId}/videos`,
+  },
+  lists: {
+    all: LISTS,
+    item: (listId: string) => `${LISTS}/${listId}`,
+    movies: (listId: string) => `${LISTS}/${listId}/movies`,
+    movie: (listId: string, movieId: string) => `${LISTS}/${listId}/movies/${movieId}`,
   },
   genres: `${API}/genres`,
   notifications: {
