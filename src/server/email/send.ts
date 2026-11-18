@@ -20,12 +20,15 @@ async function withinDailyLimit(): Promise<boolean> {
  * the request (or the Stripe webhook) that triggered it.
  */
 export async function sendEmail(message: EmailMessage): Promise<boolean> {
-  if (!(await withinDailyLimit())) {
+  const sender = getEmailSender();
+  // Only real sends count: captured test emails and skipped ones would otherwise use up the
+  // shared daily budget (the counter lives in Upstash, which local runs and tests share)
+  if (sender.countsTowardDailyLimit && !(await withinDailyLimit())) {
     console.warn(`Daily email limit reached; not sending "${message.subject}"`);
     return false;
   }
   try {
-    await getEmailSender().send(message);
+    await sender.send(message);
     return true;
   } catch (error) {
     console.error(`Sending "${message.subject}" failed:`, error);
