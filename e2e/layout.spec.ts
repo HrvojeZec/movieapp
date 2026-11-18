@@ -49,28 +49,20 @@ test("movie rows scroll sideways only, and a hovered card isn't cut off", async 
   expect(await findClipping(card)).toBeNull();
 });
 
-test("the favorites count badge in the navbar is a whole circle", async ({ page }) => {
+test("the favorites count badge in the sidebar is a whole circle", async ({ page }) => {
   await registerViaApi(page);
   const response = await page.request.post("/api/user/favorites", { data: { movieId: "550" } });
   expect(response.ok(), await response.text()).toBeTruthy();
 
   await page.goto("/");
-  // The badge next to the favorites button (the bell has its own)
-  const badge = page
-    .locator("header .mantine-Indicator-root")
-    .filter({ has: page.getByRole("button", { name: "Favorites", exact: true }) })
-    .locator(".mantine-Indicator-indicator");
+  const nav = page.getByRole("navigation", { name: "Main" });
+  const badge = nav.getByRole("link", { name: "Favorites" }).locator("[data-count]");
   await expect(badge).toHaveText("1");
 
   const box = (await badge.boundingBox())!;
   expect(Math.abs(box.width - box.height)).toBeLessThan(1);
-  // It used to sit inside the button, whose rounded corners clip their overflow
-  const clippingParent = await badge.evaluate((element) => {
-    for (let parent = element.parentElement; parent; parent = parent.parentElement) {
-      if (parent.tagName === "HEADER") return null;
-      if (getComputedStyle(parent).overflow !== "visible") return parent.tagName;
-    }
-    return null;
-  });
-  expect(clippingParent).toBeNull();
+  // The rail is narrow; the badge must stay inside it, not get cut off at its edge
+  const navBox = (await nav.boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(navBox.x);
+  expect(box.x + box.width).toBeLessThanOrEqual(navBox.x + navBox.width);
 });
