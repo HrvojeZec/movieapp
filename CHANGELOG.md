@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Transactional email through Gmail SMTP (Nodemailer): every new notification is also emailed, and
+  new accounts get a welcome notification and email after sign-up. Emails share one layout with
+  an HTML and a plain-text version, stay under a daily limit of 400, and never fail the request
+  that sent them. Without SMTP settings emails are only logged; E2E tests capture them in the
+  database. New `SMTP_USER`, `SMTP_APP_PASSWORD`, `EMAIL_FROM_NAME` and `EMAIL_TRANSPORT`
 - Notifications: a bell in the navbar lists the latest notifications with an unread count, opens
   their page and marks them as read (one by one or all at once); it refreshes every minute and on
   focus. Stripe webhooks create them for plan activation, trial start, cancellation, resume, plan
@@ -119,6 +124,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- End-to-end tests run two workers locally and share one database connection per worker
 - On phones the favorites menu moves from the header to the navigation drawer, so the header stays
   on one line
 - Require Node 26 LTS and npm >= 11.10 (#8, #9)
