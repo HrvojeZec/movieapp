@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Watched movies on every plan: an eye on movie cards and a "Mark as watched" button on the movie
+  page keep a history with dates, shown newest first on the new Watched page (user menu and mobile
+  drawer). Marking a movie as watched takes it off the watchlist, and each movie is stored once
+  with its genres for later recommendations and stats. The history lives in its own collection, so
+  a long one doesn't grow the session
 - Watchlist on Premium and Pro: a bookmark on movie cards and an "Add to watchlist" button on the
   movie page save a movie for later, and the new Watchlist page (user menu and mobile drawer)
   shows them newest first. Free accounts see the button and the page locked with a link to
