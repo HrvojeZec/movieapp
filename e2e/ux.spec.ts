@@ -70,7 +70,7 @@ test("the profile describes a free account in plain words", async ({ page }) => 
   await page.goto("/profile");
 
   await expect(page.getByText("Free plan")).toBeVisible();
-  await expect(page.getByText("0 favorites")).toBeVisible();
+  await expect(page.getByText("0 favorites", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "See plans" })).toBeVisible();
   // A free account has no subscription, so it isn't "inactive"
   await expect(page.getByText("Inactive")).toHaveCount(0);
