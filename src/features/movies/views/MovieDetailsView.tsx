@@ -15,7 +15,9 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Calendar, Clock, MapPin, PlayCircle, Star } from "lucide-react";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
+import { AddToListMenu } from "@/features/lists/ui/AddToListMenu/AddToListMenu";
 import { WatchedButton } from "@/features/watched/ui/WatchedButton/WatchedButton";
 import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
 import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
@@ -46,6 +48,7 @@ export function MovieDetailsView() {
   const { data: movie, isPending, error, refetch } = useMovieDetails(movieId);
   useTrackRecentlyViewed(movie);
   useTrackMovieView(movie?.id);
+  const { user } = useAuth();
 
   if (isPending) {
     return (
@@ -117,9 +120,16 @@ export function MovieDetailsView() {
                   {movie.title}
                 </Title>
                 <FavoriteButton movieId={movie.id} variant="inline" hideWhenLoggedOut />
-                <WatchlistButton movieId={movie.id} variant="inline" />
-                <WatchedButton movieId={movie.id} variant="inline" />
               </Group>
+
+              {/* Personal actions; every one of them needs an account */}
+              {user && (
+                <Group gap="sm">
+                  <WatchlistButton movieId={movie.id} variant="inline" />
+                  <WatchedButton movieId={movie.id} variant="inline" />
+                  <AddToListMenu movieId={movie.id} />
+                </Group>
+              )}
 
               <Group gap="md">
                 <Badge leftSection={<Star size={14} />} size="lg" variant="filled" color="yellow">

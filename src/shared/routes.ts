@@ -8,6 +8,8 @@ export const ROUTES = {
   favorites: "/favorites",
   watchlist: "/watchlist",
   watched: "/watched",
+  lists: "/lists",
+  list: (id: string) => `/lists/${id}`,
   profile: "/profile",
   pricing: "/subscription/pricing",
   mostWatched: "/most-watched",

@@ -1,4 +1,13 @@
-import { Bookmark, CreditCard, Eye, Flame, Heart, Home, type LucideIcon } from "lucide-react";
+import {
+  Bookmark,
+  CreditCard,
+  Eye,
+  Flame,
+  ListVideo,
+  Heart,
+  Home,
+  type LucideIcon,
+} from "lucide-react";
 import { ROUTES } from "@/shared/routes";
 
 export interface NavLink {
@@ -15,7 +24,7 @@ export const PRIMARY_LINKS: NavLink[] = [
   { label: "Pricing", href: ROUTES.pricing, icon: CreditCard },
 ];
 
-// The mobile drawer also has Home, Favorites, Watchlist and Watched, which desktop reaches via the logo, the
+// The mobile drawer also has Home, Favorites, Watchlist, Watched and Lists, which desktop reaches via the logo, the
 // heart menu and the account menu
 export const DRAWER_LINKS: NavLink[] = [
   { label: "Home", href: ROUTES.home, icon: Home },
@@ -23,4 +32,5 @@ export const DRAWER_LINKS: NavLink[] = [
   { label: "Favorites", href: ROUTES.favorites, icon: Heart, requiresAuth: true },
   { label: "Watchlist", href: ROUTES.watchlist, icon: Bookmark, requiresAuth: true },
   { label: "Watched", href: ROUTES.watched, icon: Eye, requiresAuth: true },
+  { label: "Lists", href: ROUTES.lists, icon: ListVideo, requiresAuth: true },
 ];

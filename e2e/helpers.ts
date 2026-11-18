@@ -110,3 +110,15 @@ export async function getActivities(user: TestUser, action: string) {
     .sort({ createdAt: 1 })
     .toArray();
 }
+
+/** Inserts a list for the user straight into the E2E database (e.g. one kept after a downgrade). */
+export async function seedList(user: TestUser, list: { name: string; movieIds: string[] }) {
+  const connection = await getE2EDatabase();
+  const record = await connection.collection("users").findOne({ email: user.email });
+  if (!record) throw new Error(`No E2E user ${user.email}`);
+  const now = new Date();
+  const { insertedId } = await connection
+    .collection("movielists")
+    .insertOne({ userId: record._id, ...list, createdAt: now, updatedAt: now });
+  return insertedId.toString();
+}
