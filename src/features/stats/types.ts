@@ -13,11 +13,29 @@ export interface MonthActivity {
   views: number;
 }
 
+export interface DayActivity {
+  /** "YYYY-MM-DD" in UTC */
+  date: string;
+  watched: number;
+  views: number;
+}
+
+/** Consecutive days with at least one watched movie or page view. */
+export interface Streak {
+  current: number;
+  longest: number;
+}
+
 export interface UserStats {
   totals: { watched: number; favorites: number; watchlist: number; lists: number };
   topGenres: GenreCount[];
   /** The last STATS_MONTHS months, oldest first, empty months included. */
   activityByMonth: MonthActivity[];
+  /** The last STATS_DAYS days, oldest first, only days with activity. */
+  activityByDay: DayActivity[];
+  streak: Streak;
+  /** IDs of the most recently watched movies, newest first. */
+  recentWatched: string[];
 }
 
 export type WidgetType = (typeof WIDGET_TYPES)[number];

@@ -1,5 +1,6 @@
-import { STATS_MONTHS, TOP_GENRES_LIMIT } from "@/features/stats/constants";
-import type { GenreCount, MonthActivity } from "@/features/stats/types";
+import { STATS_DAYS, STATS_MONTHS, TOP_GENRES_LIMIT } from "@/features/stats/constants";
+import { DAY_MS } from "@/shared/lib/time";
+import type { DayActivity, GenreCount, MonthActivity, Streak } from "@/features/stats/types";
 
 /**
  * How many of the user's movies have each genre, most first (ties by name). A movie that is both
@@ -53,3 +54,48 @@ export function groupByMonth(
 /** The first moment of the oldest month `groupByMonth` shows, for querying the window. */
 export const statsWindowStart = (now: Date, months = STATS_MONTHS) =>
   new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (months - 1), 1));
+
+type ActivityEvent = { kind: "watched" | "views"; at: Date };
+
+const dayKey = (date: Date) => date.toISOString().slice(0, "YYYY-MM-DD".length);
+
+const startOfUtcDay = (date: Date) =>
+  new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+
+/** The first moment of the oldest day `groupByDay` keeps, for querying the window. */
+export const statsDayWindowStart = (now: Date, days = STATS_DAYS) =>
+  new Date(startOfUtcDay(now).getTime() - (days - 1) * DAY_MS);
+
+/** Counts per UTC day over the last `days` days; only days with activity, oldest first. */
+export function groupByDay(events: ActivityEvent[], now: Date, days = STATS_DAYS): DayActivity[] {
+  const start = statsDayWindowStart(now, days);
+  const byDay = new Map<string, DayActivity>();
+  for (const { kind, at } of events) {
+    if (at < start || at > now) continue;
+    const date = dayKey(at);
+    const entry = byDay.get(date) ?? { date, watched: 0, views: 0 };
+    entry[kind] += 1;
+    byDay.set(date, entry);
+  }
+  return [...byDay.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * Runs of consecutive active days ("YYYY-MM-DD", UTC). The current run is still alive while its
+ * last day is today or yesterday, so it doesn't drop to zero before today's first activity.
+ */
+export function computeStreak(activeDays: string[], now: Date): Streak {
+  const days = [...new Set(activeDays)].sort();
+  let longest = 0;
+  let run = 0;
+  let previous: number | null = null;
+  for (const day of days) {
+    const time = Date.parse(`${day}T00:00:00Z`);
+    run = previous !== null && time - previous === DAY_MS ? run + 1 : 1;
+    longest = Math.max(longest, run);
+    previous = time;
+  }
+  const today = startOfUtcDay(now).getTime();
+  const alive = previous !== null && today - previous <= DAY_MS;
+  return { current: alive ? run : 0, longest };
+}

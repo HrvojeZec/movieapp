@@ -6,11 +6,20 @@ import WatchedMovie from "@/server/models/WatchedMovie";
 import { notFound } from "@/server/http/route-error";
 import { fetchGenreIds } from "@/features/movies/server/genre-ids";
 import { fetchGenres } from "@/features/movies/server/movies";
-import { MAX_FAVORITES_FOR_GENRES } from "@/features/stats/constants";
-import { countTopGenres, groupByMonth, statsWindowStart } from "@/features/stats/lib/stats";
+import { MAX_FAVORITES_FOR_GENRES, RECENT_WATCHED_LIMIT } from "@/features/stats/constants";
+import {
+  computeStreak,
+  countTopGenres,
+  groupByDay,
+  groupByMonth,
+  statsDayWindowStart,
+} from "@/features/stats/lib/stats";
 import type { UserStats } from "@/features/stats/types";
 
-/** The user's own numbers: totals, favorite genres and the last 12 months of activity. */
+/**
+ * The user's own numbers: totals, favorite genres, the last 12 months and the last year of days
+ * of activity, streaks and the latest watched movies.
+ */
 export async function getUserStats(userId: string, now = new Date()): Promise<UserStats> {
   await connectDB();
   const user = await User.findById(userId).select({ favorites: 1, watchlist: 1 }).lean();
@@ -19,7 +28,7 @@ export async function getUserStats(userId: string, now = new Date()): Promise<Us
   const [watched, views, lists] = await Promise.all([
     // Watched movies carry their genres, so the whole history costs no TMDB call
     WatchedMovie.find({ userId }).select({ movieId: 1, genreIds: 1, watchedAt: 1 }).lean(),
-    UserActivity.find({ userId, action: "view", createdAt: { $gte: statsWindowStart(now) } })
+    UserActivity.find({ userId, action: "view", createdAt: { $gte: statsDayWindowStart(now) } })
       .select({ createdAt: 1 })
       .lean(),
     MovieList.countDocuments({ userId }),
@@ -33,6 +42,12 @@ export async function getUserStats(userId: string, now = new Date()): Promise<Us
     Promise.all(favoritesToLookUp.map((movieId) => fetchGenreIds(movieId))),
     fetchGenres().catch(() => []),
   ]);
+
+  const activity = [
+    ...watched.map((entry) => ({ kind: "watched" as const, at: entry.watchedAt })),
+    ...views.map((view) => ({ kind: "views" as const, at: view.createdAt })),
+  ];
+  const activityByDay = groupByDay(activity, now);
 
   return {
     totals: {
@@ -51,12 +66,15 @@ export async function getUserStats(userId: string, now = new Date()): Promise<Us
       ],
       new Map(genres.map((genre) => [genre.id, genre.name])),
     ),
-    activityByMonth: groupByMonth(
-      [
-        ...watched.map((entry) => ({ kind: "watched" as const, at: entry.watchedAt })),
-        ...views.map((view) => ({ kind: "views" as const, at: view.createdAt })),
-      ],
+    activityByMonth: groupByMonth(activity, now),
+    activityByDay,
+    streak: computeStreak(
+      activityByDay.map((day) => day.date),
       now,
     ),
+    recentWatched: [...watched]
+      .sort((a, b) => b.watchedAt.getTime() - a.watchedAt.getTime())
+      .slice(0, RECENT_WATCHED_LIMIT)
+      .map((entry) => entry.movieId),
   };
 }

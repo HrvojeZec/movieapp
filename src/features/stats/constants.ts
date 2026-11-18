@@ -1,6 +1,9 @@
 import type { LayoutItem, WidgetSize, WidgetType } from "./types";
 
 export const STATS_MONTHS = 12;
+/** Days of daily activity (the calendar widget and streaks). */
+export const STATS_DAYS = 365;
+export const RECENT_WATCHED_LIMIT = 8;
 export const TOP_GENRES_LIMIT = 8;
 // Favorites have no stored genres, so each one is a (cached) TMDB lookup; only the newest count
 export const MAX_FAVORITES_FOR_GENRES = 100;
