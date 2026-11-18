@@ -65,3 +65,34 @@ export async function seedSubscription(user: TestUser, subscription: SeededSubsc
     await connection.close();
   }
 }
+
+export interface SeededNotification {
+  title: string;
+  body: string;
+  link?: string;
+}
+
+/** Stores unread notifications for the user, as the webhook would, newest last. */
+export async function seedNotifications(user: TestUser, notifications: SeededNotification[]) {
+  const uri = process.env.E2E_MONGODB_URI;
+  if (!uri) throw new Error("E2E_MONGODB_URI is required to seed notifications");
+
+  const connection = await mongoose.createConnection(uri).asPromise();
+  try {
+    const owner = await connection.collection("users").findOne({ email: user.email });
+    if (!owner) throw new Error(`Test user ${user.email} not found`);
+    const start = Date.now();
+    await connection.collection("notifications").insertMany(
+      notifications.map((notification, index) => ({
+        userId: owner._id,
+        type: "payment_failed",
+        ...notification,
+        dedupeKey: `e2e:${index}`,
+        readAt: null,
+        createdAt: new Date(start + index),
+      })),
+    );
+  } finally {
+    await connection.close();
+  }
+}
