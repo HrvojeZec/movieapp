@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   formatDate,
   formatPrice,
+  formatRelativeTime,
   formatRuntime,
   formatWait,
   formatYear,
@@ -82,5 +83,18 @@ describe("formatPrice", () => {
     expect(formatPrice(99.9)).toBe("$99.90");
     expect(formatPrice(9.99)).toBe("$9.99");
     expect(formatPrice(0)).toBe("$0.00");
+  });
+});
+
+describe("formatRelativeTime", () => {
+  const now = new Date("2026-11-18T12:00:00Z");
+
+  it("says how long ago something happened", () => {
+    expect(formatRelativeTime("2026-11-18T10:00:00Z", now)).toBe("2 hours ago");
+    expect(formatRelativeTime("2026-11-15T12:00:00Z", now)).toBe("3 days ago");
+  });
+
+  it("says a few seconds for just now", () => {
+    expect(formatRelativeTime("2026-11-18T11:59:50Z", now)).toBe("a few seconds ago");
   });
 });

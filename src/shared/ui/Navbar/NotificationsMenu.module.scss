@@ -1,0 +1,20 @@
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  // The badge only decorates the button; clicks go to the button underneath
+  pointer-events: none;
+}
+
+// Marks unread notifications; read ones keep the space so the text stays aligned
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.unread {
+  background: var(--primary-500);
+}

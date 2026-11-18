@@ -23,3 +23,11 @@ export interface NotificationDto {
   /** ISO date */
   createdAt: string;
 }
+
+export interface NotificationsResponse {
+  notifications: NotificationDto[];
+  /** All unread notifications, including ones older than the latest few. */
+  unreadCount: number;
+}
+
+export type ReadSelection = { ids: string[] } | { all: true };

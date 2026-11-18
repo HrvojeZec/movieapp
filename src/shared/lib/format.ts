@@ -1,4 +1,7 @@
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 const MINUTES_PER_HOUR = 60;
 const NOT_AVAILABLE = "N/A";
@@ -7,6 +10,10 @@ export const formatYear = (dateString: string): string => {
   if (!dateString) return NOT_AVAILABLE;
   return dayjs(dateString).format("YYYY");
 };
+
+/** e.g. "2 hours ago", for things like notifications. */
+export const formatRelativeTime = (date: string | Date, now: Date = new Date()): string =>
+  dayjs(date).from(now);
 
 /** e.g. "November 17, 2026" */
 export const formatDate = (date: string | Date): string => dayjs(date).format("MMMM D, YYYY");
