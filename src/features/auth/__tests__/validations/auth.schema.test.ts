@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { loginSchema, registerSchema } from "@/features/auth/validations/auth.schema";
+import {
+  loginSchema,
+  registerSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "@/features/auth/validations/auth.schema";
 
 const validUser = { email: "ana@example.com", password: "Secret123", name: "Ana Horvat" };
 
@@ -58,5 +63,36 @@ describe("email normalization", () => {
   it.each([registerSchema, loginSchema])("trims and lowercases the email", (schema) => {
     const parsed = schema.parse({ ...validUser, email: "  Ana@Example.COM " });
     expect(parsed.email).toBe("ana@example.com");
+  });
+});
+
+describe("forgotPasswordSchema", () => {
+  it("normalizes the email like login does", () => {
+    expect(forgotPasswordSchema.parse({ email: " Ana@Example.com " })).toEqual({
+      email: "ana@example.com",
+    });
+  });
+
+  it("rejects a missing email", () => {
+    expect(forgotPasswordSchema.safeParse({ email: "" }).success).toBe(false);
+  });
+});
+
+describe("resetPasswordSchema", () => {
+  const token = "a1".repeat(32);
+
+  it("accepts a reset token and a strong password", () => {
+    expect(resetPasswordSchema.safeParse({ token, password: "NewPass123" }).success).toBe(true);
+  });
+
+  it("uses the same password rules as registration", () => {
+    expect(resetPasswordSchema.safeParse({ token, password: "weak" }).success).toBe(false);
+    expect(resetPasswordSchema.safeParse({ token, password: "alllowercase1" }).success).toBe(false);
+  });
+
+  it.each(["", "abc", "z".repeat(64)])("rejects a malformed token (%j)", (bad) => {
+    expect(resetPasswordSchema.safeParse({ token: bad, password: "NewPass123" }).success).toBe(
+      false,
+    );
   });
 });

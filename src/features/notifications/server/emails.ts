@@ -35,3 +35,21 @@ export function buildNotificationEmail(
 
   return { to: recipient.email, subject: notification.title, html, text };
 }
+
+/** The email with a one-time link for choosing a new password. */
+export function buildPasswordResetEmail(recipient: EmailRecipient, resetUrl: string): EmailMessage {
+  const appUrl = getAppUrl();
+  const subject = "Reset your MovieHub password";
+  const { html, text } = renderEmail({
+    preview: "Choose a new password with the link inside. It works once, for 1 hour.",
+    heading: "Reset your password",
+    greeting: `Hi ${recipient.name},`,
+    paragraphs: [
+      "Someone asked to reset the password of your MovieHub account. If it was you, choose a new one with the button below. The link works once and expires in 1 hour.",
+      "If you didn't ask for this, ignore this email: your password stays the same.",
+    ],
+    action: { label: "Choose a new password", url: resetUrl },
+    profileUrl: `${appUrl}${ROUTES.profile}`,
+  });
+  return { to: recipient.email, subject, html, text };
+}

@@ -86,7 +86,8 @@ test("repeated logins to one account are blocked with a retry time", async ({ pa
   await page.getByLabel("Email").fill(user.email);
   await page.getByRole("textbox", { name: "Password" }).fill(user.password);
   await page.getByRole("button", { name: "Sign In" }).click();
+  // Seconds or minutes: Upstash counts in 15-minute windows, so near a window's end the wait is short
   await expect(
-    page.getByText(/Too many login attempts\. Try again in \d+ minutes?\./).first(),
+    page.getByText(/Too many login attempts\. Try again in \d+ (seconds?|minutes?)\./).first(),
   ).toBeVisible();
 });

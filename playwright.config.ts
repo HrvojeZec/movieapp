@@ -36,6 +36,9 @@ export default defineConfig({
   globalTeardown: "./e2e/global-teardown.ts",
   use: {
     baseURL,
+    // Tests check behavior, not animation: the login pages' WebGL background, drawn in software by
+    // headless Chromium, otherwise kept the CPU busy enough to delay responses past the timeouts
+    reducedMotion: "reduce",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },

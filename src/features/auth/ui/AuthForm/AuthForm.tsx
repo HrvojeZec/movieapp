@@ -1,28 +1,14 @@
 "use client";
 import Link from "next/link";
-import {
-  Alert,
-  Anchor,
-  Button,
-  Container,
-  Paper,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Alert, Anchor, Button, Group, PasswordInput, Stack, Text, TextInput } from "@mantine/core";
 import { useMounted } from "@mantine/hooks";
 import { AlertCircle } from "lucide-react";
 import { useAuthForm, type AuthFormType } from "@/features/auth/hooks/useAuthForm";
-import { AuthBackground } from "@/features/auth/ui/AuthBackground/AuthBackground";
+import { AuthLayout } from "@/features/auth/ui/AuthLayout/AuthLayout";
 import { ROUTES } from "@/shared/routes";
-import BlurText from "@/shared/vendor/react-bits/BlurText/BlurText";
 import classes from "./AuthForm.module.scss";
 
-const inputClassNames = { input: classes.input, label: classes.label };
-// Words of the subtitle come into focus one after another
-const SUBTITLE_WORD_DELAY_MS = 60;
+export const authInputClassNames = { input: classes.input, label: classes.label };
 
 const COPY = {
   login: {
@@ -51,82 +37,69 @@ export const AuthForm = ({ type }: { type: AuthFormType }) => {
   const copy = COPY[type];
 
   return (
-    <div className={classes.stage}>
-      <AuthBackground />
-      <Container size="xs" py="xl" className={classes.content}>
-        <Title ta="center" c="white" mb="xs">
-          {copy.title}
-        </Title>
-        <BlurText
-          key={type}
-          text={copy.subtitle}
-          className={classes.subtitle}
-          delay={SUBTITLE_WORD_DELAY_MS}
-          trigger="load"
-        />
+    <AuthLayout title={copy.title} subtitle={copy.subtitle}>
+      <form onSubmit={handleSubmit}>
+        <Stack gap="md">
+          {error && (
+            <Alert icon={<AlertCircle size={16} />} color="red" variant="light" title="Error">
+              {error.message}
+            </Alert>
+          )}
 
-        <Paper shadow="md" p="xl" radius="md">
-          <form onSubmit={handleSubmit}>
-            <Stack gap="md">
-              {error && (
-                <Alert icon={<AlertCircle size={16} />} color="red" variant="light" title="Error">
-                  {error.message}
-                </Alert>
-              )}
+          {type === "register" && (
+            <TextInput
+              label="Full Name"
+              placeholder="Your name"
+              value={values.name}
+              onChange={(e) => setField("name")(e.target.value)}
+              required
+              error={fieldErrors.name}
+              classNames={authInputClassNames}
+            />
+          )}
 
-              {type === "register" && (
-                <TextInput
-                  label="Full Name"
-                  placeholder="Your name"
-                  value={values.name}
-                  onChange={(e) => setField("name")(e.target.value)}
-                  required
-                  error={fieldErrors.name}
-                  classNames={inputClassNames}
-                />
-              )}
+          <TextInput
+            label="Email"
+            type="email"
+            placeholder="your@email.com"
+            value={values.email}
+            onChange={(e) => setField("email")(e.target.value)}
+            required
+            error={fieldErrors.email}
+            classNames={authInputClassNames}
+          />
 
-              <TextInput
-                label="Email"
-                type="email"
-                placeholder="your@email.com"
-                value={values.email}
-                onChange={(e) => setField("email")(e.target.value)}
-                required
-                error={fieldErrors.email}
-                classNames={inputClassNames}
-              />
+          <Stack gap={6}>
+            <PasswordInput
+              label="Password"
+              placeholder="Password"
+              value={values.password}
+              onChange={(e) => setField("password")(e.target.value)}
+              required
+              error={fieldErrors.password}
+              classNames={authInputClassNames}
+            />
+            {type === "login" && (
+              <Group justify="flex-end">
+                <Anchor component={Link} href={ROUTES.forgotPassword} size="sm" c="blue">
+                  Forgot password?
+                </Anchor>
+              </Group>
+            )}
+          </Stack>
 
-              <PasswordInput
-                label="Password"
-                placeholder="Password"
-                value={values.password}
-                onChange={(e) => setField("password")(e.target.value)}
-                required
-                error={fieldErrors.password}
-                classNames={inputClassNames}
-              />
+          <Button type="submit" fullWidth loading={submitting} disabled={!interactive} size="md">
+            {copy.submit}
+          </Button>
+        </Stack>
+      </form>
 
-              <Button
-                type="submit"
-                fullWidth
-                loading={submitting}
-                disabled={!interactive}
-                size="md"
-              >
-                {copy.submit}
-              </Button>
-            </Stack>
-          </form>
-
-          <Text ta="center" mt="md" c="dimmed">
-            {copy.switchPrompt}
-            <Anchor component={Link} href={copy.switchHref} c="blue">
-              {copy.switchLabel}
-            </Anchor>
-          </Text>
-        </Paper>
-      </Container>
-    </div>
+      <Text ta="center" mt="md" c="dimmed">
+        {copy.switchPrompt}
+        <Anchor component={Link} href={copy.switchHref} c="blue">
+          {copy.switchLabel}
+        </Anchor>
+      </Text>
+    </AuthLayout>
   );
 };

@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Password reset: "Forgot password?" on the login page emails a one-time link that works for 1 hour
+  (only a SHA-256 hash of the token is stored); the reset page sets a new password with the same
+  rules as sign-up, and the owner gets a "Your password was changed" notification and email. The
+  request answers the same, equally fast, whether or not the email has an account. Limited to 3
+  requests an hour per address and 10 reset attempts an hour per IP
 - Subscription reminders: a daily Vercel Cron job (`GET /api/cron/subscription-reminders`, 07:00
   UTC, protected by `CRON_SECRET`) notifies and emails subscribers 3 days before a renewal (with
   the price), a scheduled end (with what they lose) or the end of a trial. A missed or repeated run
@@ -129,6 +134,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- End-to-end tests run with reduced motion, which stops the login pages' WebGL background from
+  slowing the run down
 - End-to-end tests run two workers locally and share one database connection per worker
 - On phones the favorites menu moves from the header to the navigation drawer, so the header stays
   on one line
