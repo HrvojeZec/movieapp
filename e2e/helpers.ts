@@ -90,3 +90,11 @@ export async function seedFavorites(user: TestUser, movieIds: string[]) {
     .collection("users")
     .updateOne({ email: user.email }, { $set: { favorites: movieIds } });
 }
+
+/** Replaces the user's watchlist in the E2E database. */
+export async function seedWatchlist(user: TestUser, movieIds: string[]) {
+  const connection = await getE2EDatabase();
+  await connection
+    .collection("users")
+    .updateOne({ email: user.email }, { $set: { watchlist: movieIds } });
+}
