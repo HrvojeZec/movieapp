@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import { getAppUrl } from "@/server/app-url";
 import { APP_NAME } from "@/shared/constants";
+import { SIDEBAR_INIT_SCRIPT } from "@/shared/lib/sidebar-script";
 import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -29,6 +30,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" {...mantineHtmlProps}>
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
+        {/* Before the first paint, so a collapsed sidebar never flashes wide */}
+        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
       </head>
       <body className={inter.className}>
         <Providers>{children}</Providers>

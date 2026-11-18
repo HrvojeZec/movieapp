@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A sidebar for navigation and the library: Browse (Home, Most Watched, Search, Pricing),
+  Library (Favorites with their count, Watchlist, Watched, Lists) and For you (Recommendations,
+  Stats), with the account at the bottom. Features the plan doesn't include show a lock and the
+  plan they need. On desktop it is wide or a narrow rail (button or Ctrl+B), remembered and applied
+  before the first paint; on tablets the rail opens over the page. Visitors get a sign-in card.
+  A "Skip to content" link comes first for keyboard users
 - Stats widgets: an activity calendar (a year of days, brighter for busier days), a genre mix
   ring (top 5 genres and Other, colors validated for color-blind readers), a trend line of movie
   pages opened, a streak ring of active days in a row and the latest watched movies as posters.
@@ -194,6 +200,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The header is slimmer: search and notifications only, turning to glass once the page scrolls.
+  Phones keep the menu button; its drawer now also has the account and Logout
 - The profile's favorites count rolls its digits into place like an odometer instead of counting
   up; screen readers and text search get the plain number. Shared springs, a magnetic hover and a
   growing bar wrapper are ready for the upcoming dashboard and buttons. The vendored CountUp
@@ -331,6 +339,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- The account menu and the favorites preview menu in the header; both moved to the sidebar
 - Unused `test-db` route file and commented-out webhook code (#11)
 - `@stripe/stripe-js` and `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, no longer needed with hosted Checkout (#21)
 - `js-cookie` and the client-side `verifyTokenClient`, which decoded the JWT without verifying it

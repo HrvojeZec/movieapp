@@ -31,7 +31,7 @@ export function NotificationsMenu() {
 
   return (
     <Menu shadow="md" width={MENU_WIDTH} position="bottom-end">
-      {/* Around the button, not inside it: ActionIcon clips its overflow (see FavoritesMenu) */}
+      {/* Around the button, not inside it: ActionIcon clips its overflow, which cut the badge */}
       <Indicator
         inline
         size={BADGE.size}

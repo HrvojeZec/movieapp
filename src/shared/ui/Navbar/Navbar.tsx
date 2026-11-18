@@ -1,67 +1,59 @@
 "use client";
 import Link from "next/link";
 import { ActionIcon, Box, Burger, Group, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useWindowScroll } from "@mantine/hooks";
 import { Film, Search } from "lucide-react";
 import { useCommandPaletteStore } from "@/features/movies/store/command-palette.store";
 import { ShortcutHint } from "@/features/movies/ui/CommandPalette/ShortcutHint";
 import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchBox";
+import { APP_NAME } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
 import { AccountArea } from "./AccountArea";
 import { NavDrawer } from "./NavDrawer";
-import { PRIMARY_LINKS } from "./nav-links";
 import classes from "./Navbar.module.scss";
 
-const BAR_HEIGHT = 60;
-const SEARCH_WIDTH = 300;
+const BAR_HEIGHT = 48;
+const SEARCH_WIDTH = 320;
 
+/**
+ * The top bar: search and notifications (navigation lives in the sidebar). On phones it also has
+ * the menu button and the logo. It turns to glass once the page scrolls under it.
+ */
 export function Navbar() {
   const [drawerOpened, drawer] = useDisclosure(false);
   const openPalette = useCommandPaletteStore((state) => state.open);
+  const [scroll] = useWindowScroll();
 
   return (
-    <header className={classes.header}>
+    <header className={classes.header} data-scrolled={scroll.y > 0 || undefined}>
       <Group justify="space-between" h={BAR_HEIGHT} wrap="nowrap">
-        <Group gap="sm" wrap="nowrap">
+        <Group gap="sm" wrap="nowrap" hiddenFrom="sm">
           <Burger
             opened={drawerOpened}
             onClick={drawer.toggle}
-            hiddenFrom="md"
             size="sm"
             aria-label={drawerOpened ? "Close navigation" : "Open navigation"}
           />
-
           <Link href={ROUTES.home} className={classes.link}>
-            <Group gap="sm" wrap="nowrap">
-              <Film size={32} color={COLORS.primary} />
-              <Text size="xl" fw={700} c="white">
-                MovieHub
+            <Group gap="xs" wrap="nowrap">
+              <Film size={28} color={COLORS.primary} />
+              <Text size="lg" fw={700} c="white">
+                {APP_NAME}
               </Text>
             </Group>
           </Link>
-
-          <Box component="nav" aria-label="Main" ml="xl" visibleFrom="md">
-            <Group gap="lg" wrap="nowrap">
-              {PRIMARY_LINKS.map(({ label, href, icon: Icon }) => (
-                <Link key={href} href={href} className={classes.navLink}>
-                  <Icon size={18} />
-                  {label}
-                </Link>
-              ))}
-            </Group>
-          </Box>
         </Group>
 
-        <Group gap="sm" wrap="nowrap">
-          <Box w={SEARCH_WIDTH} visibleFrom="sm">
-            <MovieSearchBox
-              placeholder="Search movies..."
-              clearOnSubmit
-              rightSection={<ShortcutHint />}
-            />
-          </Box>
+        <Box w={SEARCH_WIDTH} maw="100%" visibleFrom="sm">
+          <MovieSearchBox
+            placeholder="Search movies..."
+            clearOnSubmit
+            rightSection={<ShortcutHint />}
+          />
+        </Box>
 
+        <Group gap="sm" wrap="nowrap">
           {/* On phones the search opens as a full-screen palette */}
           <ActionIcon
             onClick={openPalette}
@@ -73,7 +65,6 @@ export function Navbar() {
           >
             <Search size={20} />
           </ActionIcon>
-
           <AccountArea />
         </Group>
       </Group>

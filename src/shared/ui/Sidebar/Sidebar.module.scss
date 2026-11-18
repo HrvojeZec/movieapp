@@ -1,0 +1,268 @@
+// Mantine's lg breakpoint: from here the sidebar can be wide in the layout
+$desktop: 75em;
+
+// Rules for the wide sidebar: on desktop when the saved choice is "expanded" (set on <html>
+// before the first paint), and on tablets while it is opened over the page
+@mixin wide {
+  @media (min-width: $desktop) {
+    :global(:root[data-sidebar="expanded"]) & {
+      @content;
+    }
+  }
+
+  .panel[data-overlay] & {
+    @content;
+  }
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  width: 100%;
+  height: 100%;
+  padding: 12px 8px;
+  overflow: hidden auto;
+  // Glass with a faint primary tint
+  background: linear-gradient(180deg, var(--primary-glow-soft), transparent 40%), var(--sidebar-bg);
+  backdrop-filter: blur(20px);
+
+  // On tablets the rail opens wide on top of the page instead of pushing it
+  &[data-overlay] {
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: 2;
+    width: var(--sidebar-wide);
+    background-color: var(--sidebar-bg-solid);
+    border-right: 1px solid var(--surface-border);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+// Labels stay in the page (links keep their names) and just fade in when there is room
+.label {
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 120ms ease;
+
+  @include wide {
+    opacity: 1;
+    transition-delay: 80ms;
+  }
+}
+
+.wideOnly {
+  display: none;
+
+  @include wide {
+    display: block;
+  }
+}
+
+.railOnly {
+  display: flex;
+  margin: 0 auto;
+
+  @include wide {
+    display: none;
+  }
+}
+
+.brand {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+  padding: 0 15px;
+  margin-bottom: var(--mantine-spacing-xs);
+  text-decoration: none;
+}
+
+.icon {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  transition: transform 150ms ease;
+}
+
+.groups {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+  min-height: 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+// A heading on the wide sidebar, a thin divider on the rail
+.groupLabel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 18px;
+  color: var(--mantine-color-dimmed);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    left: 18px;
+    height: 1px;
+    background-color: var(--surface-border);
+    transition: opacity 120ms ease;
+
+    @include wide {
+      opacity: 0;
+    }
+  }
+}
+
+.item {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  color: var(--mantine-color-gray-4);
+  font-size: var(--mantine-font-size-sm);
+  text-decoration: none;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+
+  &:hover {
+    color: var(--mantine-color-white);
+    background-color: var(--input-bg);
+
+    // A small nudge, the same as HOVER_NUDGE_PX elsewhere
+    .icon {
+      transform: translateX(2px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-400);
+    outline-offset: -2px;
+  }
+
+  &[aria-current="page"] {
+    color: var(--mantine-color-white);
+
+    // A bright edge at the sidebar's border marks the page
+    &::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: -8px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background-color: var(--primary-400);
+    }
+  }
+}
+
+.pill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--primary-500) 18%, transparent);
+}
+
+.count {
+  position: absolute;
+  top: -7px;
+  right: -10px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background-color: var(--accent-500);
+  color: var(--mantine-color-white);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.lock {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  box-sizing: content-box;
+  padding: 1px;
+  border-radius: 50%;
+  background-color: var(--mantine-color-dark-6);
+  color: var(--mantine-color-gray-4);
+}
+
+.footer {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  padding-top: var(--mantine-spacing-xs);
+  border-top: 1px solid var(--surface-border);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  transition: background-color 150ms ease;
+
+  &:hover {
+    background-color: var(--input-bg);
+
+    .chevron {
+      transform: translateX(2px);
+    }
+  }
+}
+
+.profileText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chevron {
+  flex: none;
+  color: var(--mantine-color-dimmed);
+  transition:
+    opacity 120ms ease,
+    transform 150ms ease;
+}
+
+.authCard {
+  .wideOnly {
+    padding: var(--mantine-spacing-sm);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    background-color: var(--input-bg);
+  }
+}

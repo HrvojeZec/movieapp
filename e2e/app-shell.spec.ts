@@ -73,12 +73,12 @@ test("the logged-in header fits on a phone", async ({ page }) => {
 
   await page.goto("/");
 
-  const accountMenu = page.getByRole("button", { name: "Account menu" });
+  // The account lives in the navigation menu on phones; the header keeps the menu and the bell
+  const menu = page.getByRole("button", { name: "Open navigation" });
   const bell = page.getByRole("button", { name: /Notifications/ });
-  await expect(accountMenu).toBeInViewport({ ratio: 1 });
+  await expect(menu).toBeInViewport({ ratio: 1 });
   await expect(bell).toBeInViewport({ ratio: 1 });
-  // One row: the icons used to wrap and push the account menu below the bell
-  const [menuBox, bellBox] = [await accountMenu.boundingBox(), await bell.boundingBox()];
+  const [menuBox, bellBox] = [await menu.boundingBox(), await bell.boundingBox()];
   expect(
     Math.abs(menuBox!.y + menuBox!.height / 2 - (bellBox!.y + bellBox!.height / 2)),
   ).toBeLessThan(2);
@@ -86,4 +86,17 @@ test("the logged-in header fits on a phone", async ({ page }) => {
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBe(0);
+});
+
+test("on a phone the menu has the account and logs out", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await registerViaApi(page);
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  const drawer = page.getByRole("dialog");
+  await expect(drawer.getByRole("link", { name: "Watchlist" })).toBeVisible();
+  await drawer.getByRole("button", { name: "Logout" }).click();
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  await expect(page.getByRole("dialog").getByRole("button", { name: "Login" })).toBeVisible();
 });

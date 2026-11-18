@@ -5,21 +5,38 @@ import { CommandPalette } from "@/features/movies/ui/CommandPalette/CommandPalet
 import { Footer } from "@/shared/ui/Footer/Footer";
 import { NavigationProgress } from "@/shared/ui/NavigationProgress/NavigationProgress";
 import { Navbar } from "@/shared/ui/Navbar/Navbar";
+import { Sidebar } from "@/shared/ui/Sidebar/Sidebar";
 import classes from "./Layout.module.scss";
 
-const HEADER_HEIGHT = 76;
+const HEADER_HEIGHT = 64;
+export const MAIN_CONTENT_ID = "main";
 
 // Pages render right away; the session loads in the background and each view handles its own
 // loading state, so a slow profile request no longer blocks the whole app.
 export const Layout = ({ children }: { children: ReactNode }) => (
   <AppShell
+    // "alt": the sidebar runs the full height and the header sits beside it
+    layout="alt"
     header={{ height: HEADER_HEIGHT }}
-    classNames={{ root: classes.root, main: classes.main, header: classes.header }}
+    // The width is a CSS variable, so the saved wide/rail choice applies before React loads
+    navbar={{ width: "var(--sidebar-width)", breakpoint: "sm", collapsed: { mobile: true } }}
+    classNames={{
+      root: classes.root,
+      main: classes.main,
+      header: classes.header,
+      navbar: classes.navbar,
+    }}
   >
+    <a href={`#${MAIN_CONTENT_ID}`} className={classes.skipLink}>
+      Skip to content
+    </a>
     <AppShell.Header>
       <Navbar />
     </AppShell.Header>
-    <AppShell.Main>
+    <AppShell.Navbar aria-label="Main">
+      <Sidebar />
+    </AppShell.Navbar>
+    <AppShell.Main id={MAIN_CONTENT_ID} tabIndex={-1}>
       <div className={classes.page}>{children}</div>
       <Footer />
     </AppShell.Main>
