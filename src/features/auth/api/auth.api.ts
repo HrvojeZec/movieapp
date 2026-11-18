@@ -28,3 +28,9 @@ export const register = (registration: Registration) =>
   postJson<{ user: AuthUser }>(API_ROUTES.auth.register, registration);
 
 export const logout = () => postJson<unknown>(API_ROUTES.auth.logout);
+
+export const requestPasswordReset = (email: string) =>
+  postJson<{ message: string }>(API_ROUTES.auth.forgotPassword, { email });
+
+export const resetPassword = (reset: { token: string; password: string }) =>
+  postJson<{ message: string }>(API_ROUTES.auth.resetPassword, reset);
