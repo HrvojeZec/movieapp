@@ -42,6 +42,8 @@ interface PlanCardProps {
   disabled: boolean;
   /** This plan's checkout is starting. */
   pending: boolean;
+  /** Days of free trial a checkout would start with; none when the user can't get one. */
+  trialDays?: number;
   onSubscribe: () => void;
 }
 
@@ -52,6 +54,7 @@ export function PlanCard({
   buttonLabel,
   disabled,
   pending,
+  trialDays,
   onSubscribe,
 }: PlanCardProps) {
   const price = interval === "year" ? plan.yearlyPrice : plan.price;
@@ -112,6 +115,12 @@ export function PlanCard({
             </Text>
             {price > 0 && <Text c="dimmed">{interval === "year" ? "/year" : "/month"}</Text>}
           </Group>
+
+          {trialDays && price > 0 ? (
+            <Badge variant="light" color="teal" size="lg">
+              {trialDays}-day free trial
+            </Badge>
+          ) : null}
         </Stack>
 
         <List
