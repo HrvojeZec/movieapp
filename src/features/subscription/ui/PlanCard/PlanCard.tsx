@@ -131,15 +131,8 @@ export function PlanCard({
           mb="xl"
         >
           {plan.features.map((feature) => (
-            <List.Item key={feature.label} c={feature.comingSoon ? "dimmed" : "gray.3"}>
-              <Group gap={6}>
-                {feature.label}
-                {feature.comingSoon && (
-                  <Badge size="xs" variant="light" color="gray">
-                    Coming soon
-                  </Badge>
-                )}
-              </Group>
+            <List.Item key={feature.label} c="gray.3">
+              {feature.label}
             </List.Item>
           ))}
         </List>

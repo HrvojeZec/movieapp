@@ -256,6 +256,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The pricing page listed the watchlist, custom lists, recommendations and statistics as "Coming
+  soon" after they shipped, and left out advanced filters and the watched history. Paid plan
+  features now come from the same list the server checks access with, so the two can't drift
+  apart again
 - Captured (E2E) and skipped emails no longer count toward the daily email limit, which they could
   use up for real emails
 - The pricing page briefly marked Basic as the current plan for subscribers on every load; no

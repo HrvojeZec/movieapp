@@ -36,6 +36,11 @@ export const FEATURE_LABELS: Record<Feature, string> = {
   stats: "Viewing statistics",
 };
 
+// The paid features on the cards come from PLAN_FEATURES, so the pricing page can't promise
+// something the server doesn't unlock, or miss something it does
+const toPlanFeatures = (features: readonly Feature[]) =>
+  features.map((feature) => ({ label: FEATURE_LABELS[feature] }));
+
 // Display data only: Stripe price IDs are resolved on the server (src/features/subscription/lib/plans.ts).
 export const SUBSCRIPTION_PLANS: PlanDetails[] = [
   {
@@ -47,6 +52,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
       { label: "Browse and search movies" },
       { label: "Filter by year, genre and rating" },
       { label: "Watch trailers" },
+      { label: "Track the movies you've watched" },
       { label: `Save up to ${FAVORITES_LIMIT} favorites` },
     ],
   },
@@ -59,8 +65,7 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     features: [
       { label: "Everything in Basic" },
       { label: "Unlimited favorites" },
-      { label: "Watchlist", comingSoon: true },
-      { label: "Custom movie lists", comingSoon: true },
+      ...toPlanFeatures(PLAN_FEATURES.premium),
     ],
   },
   {
@@ -70,8 +75,9 @@ export const SUBSCRIPTION_PLANS: PlanDetails[] = [
     yearlyPrice: 199.9,
     features: [
       { label: "Everything in Premium" },
-      { label: "Personalized recommendations", comingSoon: true },
-      { label: "Viewing statistics", comingSoon: true },
+      ...toPlanFeatures(
+        PLAN_FEATURES.pro.filter((feature) => !PLAN_FEATURES.premium.includes(feature)),
+      ),
     ],
   },
 ];
