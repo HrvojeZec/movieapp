@@ -75,6 +75,7 @@ describe("getUserStats", () => {
   });
 
   it("groups the last 12 months of watched movies and page views", async () => {
+    // Views are read for a year of days; the monthly chart still shows 12 calendar months
     const { activityByMonth } = await getUserStats(USER_ID, NOW);
 
     expect(activityByMonth).toHaveLength(12);
@@ -83,8 +84,38 @@ describe("getUserStats", () => {
     expect(activityFind).toHaveBeenCalledWith({
       userId: USER_ID,
       action: "view",
-      createdAt: { $gte: new Date("2025-12-01T00:00:00Z") },
+      createdAt: { $gte: new Date("2025-11-19T00:00:00Z") },
     });
+  });
+
+  it("returns daily activity, streaks and recently watched", async () => {
+    db.watched = [
+      { movieId: "550", genreIds: [18], watchedAt: new Date("2026-11-16T10:00:00Z") },
+      { movieId: "807", genreIds: [53], watchedAt: new Date("2026-11-17T10:00:00Z") },
+      { movieId: "1", genreIds: [35], watchedAt: new Date("2024-01-01T10:00:00Z") },
+      ...Array.from({ length: 8 }, (_, index) => ({
+        movieId: String(100 + index),
+        genreIds: [],
+        watchedAt: new Date(Date.UTC(2026, 5, index + 1, 10)),
+      })),
+    ];
+    db.views = [
+      { createdAt: new Date("2026-11-17T20:00:00Z") },
+      { createdAt: new Date("2026-11-18T08:00:00Z") },
+    ];
+
+    const stats = await getUserStats(USER_ID, NOW);
+
+    expect(stats.activityByDay.slice(-3)).toEqual([
+      { date: "2026-11-16", watched: 1, views: 0 },
+      { date: "2026-11-17", watched: 1, views: 1 },
+      { date: "2026-11-18", watched: 0, views: 1 },
+    ]);
+    // 2024 is outside the year of days
+    expect(stats.activityByDay.some((day) => day.date.startsWith("2024"))).toBe(false);
+    // June 1–8 are eight days in a row
+    expect(stats.streak).toEqual({ current: 3, longest: 8 });
+    expect(stats.recentWatched).toEqual(["807", "550", "107", "106", "105", "104", "103", "102"]);
   });
 
   it("only looks up the genres of favorites that aren't watched", async () => {

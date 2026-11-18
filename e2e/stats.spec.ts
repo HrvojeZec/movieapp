@@ -48,3 +48,15 @@ test("stats are locked below pro", async ({ page }) => {
   await page.goto("/stats");
   await expect(page.getByText("Available on the Pro plan")).toBeVisible();
 });
+
+test("stats include daily activity, the streak and recently watched", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, plan("pro"));
+  await page.request.post("/api/user/watched", { data: { movieId: "680" } });
+
+  const stats = await (await page.request.get(ROUTE)).json();
+  const today = new Date().toISOString().slice(0, 10);
+  expect(stats.activityByDay).toEqual([{ date: today, watched: 1, views: 0 }]);
+  expect(stats.streak).toEqual({ current: 1, longest: 1 });
+  expect(stats.recentWatched).toEqual(["680"]);
+});
