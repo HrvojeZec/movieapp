@@ -16,13 +16,14 @@ const describe = (value: number, [singular, plural]: [string, string]) =>
 /**
  * Vertical columns over time with one series: one color, no legend. The top of the scale is
  * written above the plot; hovering a column (its full height is the target) shows its value.
+ * It fills the height it is given.
  */
 export function ColumnChart({ label, columns, unit }: ColumnChartProps) {
   const max = Math.max(...columns.map((column) => column.value));
 
   return (
-    <div>
-      <div aria-hidden>
+    <div className={classes.chart}>
+      <div aria-hidden className={classes.figure}>
         <Text size="xs" c="dimmed" className={classes.scale}>
           {max > 0 ? max : ""}
         </Text>

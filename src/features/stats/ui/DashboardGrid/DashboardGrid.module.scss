@@ -1,0 +1,19 @@
+.board {
+  position: relative;
+}
+
+.cell {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+// Where the dragged widget lands when it's let go
+.placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 2px dashed var(--primary-500);
+  border-radius: var(--mantine-radius-sm);
+  background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+}

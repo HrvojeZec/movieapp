@@ -8,6 +8,8 @@ interface BarListProps {
   items: { key: string | number; label: string; value: number }[];
   /** e.g. ["movie", "movies"] for the tooltip and the table */
   unit: [string, string];
+  /** Rows that fit the space; the table for screen readers keeps all of them. */
+  limit?: number;
 }
 
 const describe = (value: number, [singular, plural]: [string, string]) =>
@@ -17,13 +19,14 @@ const describe = (value: number, [singular, plural]: [string, string]) =>
  * Horizontal bars, one row per item, longest first: a single series, so one color and no legend.
  * Names and values are text beside the bar; hovering a row shows it in full.
  */
-export function BarList({ label, items, unit }: BarListProps) {
+export function BarList({ label, items, unit, limit }: BarListProps) {
   const max = Math.max(1, ...items.map((item) => item.value));
+  const visible = limit === undefined ? items : items.slice(0, limit);
 
   return (
     <div>
       <div className={classes.list} aria-hidden>
-        {items.map((item) => (
+        {visible.map((item) => (
           <Tooltip key={item.key} label={`${item.label}: ${describe(item.value, unit)}`}>
             {/* The whole row is the hover target, not just the bar */}
             <div className={classes.row}>

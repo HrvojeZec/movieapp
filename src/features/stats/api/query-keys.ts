@@ -2,4 +2,5 @@
 export const statsKeys = {
   all: ["stats"] as const,
   forUser: (userId: string) => [...statsKeys.all, userId] as const,
+  dashboard: (userId: string) => [...statsKeys.forUser(userId), "dashboard"] as const,
 };

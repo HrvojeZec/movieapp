@@ -47,3 +47,7 @@ export const postJson = <T>(input: string, body?: unknown) =>
   });
 
 export const deleteJson = <T>(input: string) => fetchJson<T>(input, { method: "DELETE" });
+
+/** PUT with a JSON body. */
+export const putJson = <T>(input: string, body: unknown) =>
+  fetchJson<T>(input, { method: "PUT", body: JSON.stringify(body) });

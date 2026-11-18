@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The Pro stats page is a customizable dashboard: drag widgets by their header, resize them by
+  the corner, remove them and add them back from a palette, or reset to the default board. It
+  works by keyboard too (Enter picks a widget up, arrows move it, Shift + arrows resize it) with
+  screen reader announcements; narrow screens move widgets with up and down buttons. The layout
+  saves itself shortly after each change and follows the user across devices
+  (`GET`/`PUT /api/user/dashboard`); the stats API also returns daily activity, streaks and the
+  latest watched movies for the upcoming widgets
 - A 14-day free trial for a first subscription on either paid plan and billing period: Checkout
   still takes the card and charges when the trial ends. It isn't offered again after a trial, or
   to anyone who already subscribed (including subscriptions from before trials existed). The
