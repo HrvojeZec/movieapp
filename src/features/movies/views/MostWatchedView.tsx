@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import {
   Button,
   Center,
+  Collapse,
   Container,
   Group,
   Loader,
@@ -11,7 +12,8 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { Flame, FunnelX } from "lucide-react";
+import { useDisclosure } from "@mantine/hooks";
+import { Flame, FunnelX, Lock, SlidersHorizontal } from "lucide-react";
 import {
   FILTER_WIDTHS,
   INFINITE_SCROLL_MARGIN,
@@ -23,7 +25,10 @@ import { useGenres } from "@/features/movies/hooks/useGenres";
 import { useInfiniteDiscoverMovies } from "@/features/movies/hooks/useInfiniteDiscoverMovies";
 import { buildYearOptions } from "@/features/movies/lib/filters";
 import { dedupeMovies } from "@/features/movies/lib/movies";
+import { AdvancedFilters } from "@/features/movies/ui/AdvancedFilters/AdvancedFilters";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
+import { LockedFeature } from "@/features/subscription/ui/LockedFeature/LockedFeature";
 import { useInfiniteScroll } from "@/shared/hooks/useInfiniteScroll";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
@@ -35,10 +40,24 @@ const EMPTY_STATE_HEIGHT = 200;
 const filterClassNames = { input: classes.filterInput, dropdown: classes.filterDropdown };
 
 export function MostWatchedView() {
-  const { filters, values, hasFilters, setFilter, clearFilters } = useDiscoverFilters();
+  const {
+    filters,
+    advanced,
+    values,
+    advancedValues,
+    hasFilters,
+    hasAdvanced,
+    setFilter,
+    setAdvancedFilter,
+    clearFilters,
+  } = useDiscoverFilters();
+  const { can } = useEntitlements();
+  const canFilterMore = can("advancedFilters");
+  const [advancedOpened, advancedPanel] = useDisclosure(hasAdvanced);
   const genres = useGenres();
+  // Advanced filters in a shared link are ignored for plans without them
   const { data, isPending, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteDiscoverMovies(filters);
+    useInfiniteDiscoverMovies(filters, canFilterMore && hasAdvanced ? advanced : null);
 
   const movies = useMemo(() => dedupeMovies(data?.pages ?? []), [data]);
   const sentinelRef = useInfiniteScroll({
@@ -92,6 +111,15 @@ export function MostWatchedView() {
             classNames={{ input: classes.filterInput }}
           />
 
+          <Button
+            variant={advancedOpened ? "light" : "default"}
+            leftSection={canFilterMore ? <SlidersHorizontal size={16} /> : <Lock size={16} />}
+            onClick={advancedPanel.toggle}
+            aria-expanded={advancedOpened}
+          >
+            Advanced filters
+          </Button>
+
           {hasFilters && (
             <Button
               variant="subtle"
@@ -103,6 +131,16 @@ export function MostWatchedView() {
             </Button>
           )}
         </Group>
+
+        <Collapse expanded={advancedOpened}>
+          <LockedFeature feature="advancedFilters" title="Advanced filters">
+            <AdvancedFilters
+              values={advancedValues}
+              genreOptions={genreOptions}
+              onChange={setAdvancedFilter}
+            />
+          </LockedFeature>
+        </Collapse>
 
         {isError ? (
           <QueryError onRetry={() => refetch()} />

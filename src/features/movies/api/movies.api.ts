@@ -1,4 +1,5 @@
 import type {
+  AdvancedDiscoverFilters,
   DiscoverFilters,
   Genre,
   Movie,
@@ -29,6 +30,16 @@ export const getGenres = async (): Promise<Genre[]> => {
 
 export const discoverMovies = ({ page = 1, ...filters }: DiscoverFilters & { page?: number }) =>
   fetchJson<TMDBResponse<Movie>>(withQuery(API_ROUTES.movies.discover, { ...filters, page }));
+
+/** Premium: the basic and advanced filters together. */
+export const discoverMoviesAdvanced = ({
+  page = 1,
+  genres,
+  ...filters
+}: DiscoverFilters & AdvancedDiscoverFilters & { page?: number }) =>
+  fetchJson<TMDBResponse<Movie>>(
+    withQuery(API_ROUTES.movies.advancedDiscover, { ...filters, genres: genres?.join(","), page }),
+  );
 
 export const getMovieVideos = async (movieId: number): Promise<Video[]> => {
   const data = await fetchJson<{ results: Video[] }>(API_ROUTES.movies.videos(movieId));

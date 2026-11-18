@@ -30,6 +30,7 @@ export const API_ROUTES = {
     list: MOVIES,
     search: `${MOVIES}/search`,
     discover: `${MOVIES}/discover`,
+    advancedDiscover: `${MOVIES}/discover/advanced`,
     details: (movieId: number) => `${MOVIES}/${movieId}`,
     videos: (movieId: number) => `${MOVIES}/${movieId}/videos`,
   },
