@@ -25,7 +25,6 @@ export type Feature = "watchlist" | "customLists" | "advancedFilters" | "recomme
 
 export interface PlanFeature {
   label: string;
-  comingSoon?: boolean;
 }
 
 export interface PlanDetails {

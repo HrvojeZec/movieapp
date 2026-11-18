@@ -27,13 +27,7 @@ export function SubscriptionTicket({ plan }: { plan: PlanDetails }) {
           icon={<Check size={CHECK_SIZE} className={classes.check} />}
         >
           {plan.features.map((feature) => (
-            <List.Item
-              key={feature.label}
-              className={feature.comingSoon ? classes.soon : undefined}
-            >
-              {feature.label}
-              {feature.comingSoon && <span className={classes.soonNote}> (coming soon)</span>}
-            </List.Item>
+            <List.Item key={feature.label}>{feature.label}</List.Item>
           ))}
         </List>
       </div>

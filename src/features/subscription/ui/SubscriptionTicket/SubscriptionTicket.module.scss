@@ -44,19 +44,6 @@ $notch: 20px;
   color: var(--ticket-accent);
 }
 
-.soon {
-  color: var(--mantine-color-dimmed);
-
-  // Included in the plan but not built yet, so its check is muted too
-  .check {
-    color: var(--mantine-color-dimmed);
-  }
-}
-
-.soonNote {
-  font-size: var(--mantine-font-size-xs);
-}
-
 .stub {
   position: relative;
   display: flex;
