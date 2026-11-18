@@ -25,6 +25,8 @@ export function toAuthUser(user: IUser): AuthUser {
     email: user.email,
     name: user.name,
     favorites: user.favorites,
+    // Accounts created before the watchlist existed have no field yet
+    watchlist: user.watchlist ?? [],
     stripeCustomerId: user.stripeCustomerId,
     subscriptionStatus: user.subscriptionStatus,
     subscriptionPlan: user.subscriptionPlan,

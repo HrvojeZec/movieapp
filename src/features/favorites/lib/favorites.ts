@@ -1,11 +1,9 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { authKeys } from "@/features/auth/api/query-keys";
 import type { AuthUser } from "@/features/auth/types";
+import { toggleId } from "@/shared/lib/id-list";
 
-export function applyFavoriteChange(favorites: string[], movieId: string, add: boolean): string[] {
-  const without = favorites.filter((id) => id !== movieId);
-  return add ? [...without, movieId] : without;
-}
+export const applyFavoriteChange = toggleId;
 
 /** Favorites live on the cached session user, so only that list is replaced. */
 export function updateFavorites(

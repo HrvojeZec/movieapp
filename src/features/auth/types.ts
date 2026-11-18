@@ -3,6 +3,7 @@ export interface AuthUser {
   email: string;
   name: string;
   favorites: string[];
+  watchlist: string[];
   stripeCustomerId?: string;
   subscriptionStatus?: string;
   subscriptionPlan?: string;
