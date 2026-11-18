@@ -4,6 +4,7 @@ const AUTH = `${API}/auth`;
 const USER = `${API}/user`;
 const MOVIES = `${API}/movies`;
 const STRIPE = `${API}/stripe`;
+const SUBSCRIPTION = `${API}/subscription`;
 
 export const API_ROUTES = {
   auth: {
@@ -25,6 +26,11 @@ export const API_ROUTES = {
   },
   genres: `${API}/genres`,
   health: `${API}/health`,
+  subscription: {
+    cancel: `${SUBSCRIPTION}/cancel`,
+    resume: `${SUBSCRIPTION}/resume`,
+    portal: `${SUBSCRIPTION}/portal`,
+  },
   stripe: {
     createCheckoutSession: `${STRIPE}/create-checkout-session`,
     checkoutSuccess: `${STRIPE}/checkout-success`,

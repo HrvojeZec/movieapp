@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Cancel and resume a subscription from the profile: a confirmation lists what the plan loses and
+  until when it stays; cancellation takes effect at the end of the paid period. "Manage billing"
+  and "Update payment method" open the Stripe Customer Portal (card, invoices, plan changes), and
+  subscribers switch plans on the pricing page through it. `POST /api/subscription/cancel`,
+  `/resume` and `/portal`, limited to 10 requests a minute per user
 - Yearly billing: the pricing page switches between monthly and yearly prices ($99.90 and $199.90
   a year, two months free), checkout takes the interval, and webhooks map yearly prices back to
   their plan. New `STRIPE_PREMIUM_YEARLY_PRICE_ID` and `STRIPE_PRO_YEARLY_PRICE_ID`

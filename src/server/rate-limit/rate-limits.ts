@@ -19,6 +19,8 @@ export const RATE_LIMITS = {
   tmdb: { requests: 60, windowMs: MINUTE_MS, message: "Too many requests." },
   // Per user: every attempt creates a Stripe Checkout Session
   checkout: { requests: 10, windowMs: MINUTE_MS, message: "Too many checkout attempts." },
+  // Per user: cancel, resume and billing portal each call Stripe
+  subscription: { requests: 10, windowMs: MINUTE_MS, message: "Too many subscription changes." },
 } as const satisfies Record<string, NamedRule>;
 
 export type RateLimitName = keyof typeof RATE_LIMITS;
