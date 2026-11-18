@@ -42,6 +42,26 @@
   --heat-2: color-mix(in srgb, var(--primary-500) 55%, transparent);
   --heat-3: var(--primary-500);
   --heat-4: var(--primary-400);
+  // Sidebar: hidden on phones (the menu button opens navigation), a 72px rail on tablets, and
+  // wide or a rail on desktop by the choice the inline script puts on <html>
+  --sidebar-rail: 72px;
+  --sidebar-wide: 260px;
+  --sidebar-width: 0px;
+  --sidebar-bg: rgba(17, 24, 39, 0.72);
+  --sidebar-bg-solid: rgba(17, 24, 39, 0.96);
+}
+
+// Mantine's sm and lg breakpoints
+@media (min-width: 48em) {
+  :root {
+    --sidebar-width: var(--sidebar-rail);
+  }
+}
+
+@media (min-width: 75em) {
+  :root[data-sidebar="expanded"] {
+    --sidebar-width: var(--sidebar-wide);
+  }
 }
 
 body {
