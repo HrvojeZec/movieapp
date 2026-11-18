@@ -40,6 +40,7 @@ export const API_ROUTES = {
     movies: (listId: string) => `${LISTS}/${listId}/movies`,
     movie: (listId: string, movieId: string) => `${LISTS}/${listId}/movies/${movieId}`,
   },
+  recommendations: `${API}/recommendations`,
   genres: `${API}/genres`,
   notifications: {
     list: `${API}/notifications`,
