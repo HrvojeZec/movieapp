@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Subscription reminders: a daily Vercel Cron job (`GET /api/cron/subscription-reminders`, 07:00
+  UTC, protected by `CRON_SECRET`) notifies and emails subscribers 3 days before a renewal (with
+  the price), a scheduled end (with what they lose) or the end of a trial. A missed or repeated run
+  never sends a reminder twice, and the trial warning shares its key with Stripe's
+  `trial_will_end` webhook so it arrives once
 - Transactional email through Gmail SMTP (Nodemailer): every new notification is also emailed, and
   new accounts get a welcome notification and email after sign-up. Emails share one layout with
   an HTML and a plain-text version, stay under a daily limit of 400, and never fail the request
