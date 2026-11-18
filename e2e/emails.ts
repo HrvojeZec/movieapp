@@ -9,21 +9,24 @@ export interface CapturedEmail {
   sentAt: Date;
 }
 
-async function findLastEmail(to: string): Promise<CapturedEmail | null> {
+async function findLastEmail(to: string, subject?: string): Promise<CapturedEmail | null> {
   const connection = await getE2EDatabase();
   return connection
     .collection<CapturedEmail>("capturedemails")
-    .findOne({ to }, { sort: { sentAt: -1 } });
+    .findOne({ to, ...(subject && { subject }) }, { sort: { sentAt: -1 } });
 }
 
 /**
- * The latest email the app "sent" to this address. The E2E server stores emails instead of
- * sending them (EMAIL_TRANSPORT=capture); some go out after the response, so this waits a little.
+ * The latest email the app "sent" to this address, optionally with this exact subject. The E2E
+ * server stores emails instead of sending them (EMAIL_TRANSPORT=capture); some go out after the
+ * response (the welcome email), so this waits a little.
  */
-export async function getLastEmail(to: string): Promise<CapturedEmail> {
+export async function getLastEmail(to: string, subject?: string): Promise<CapturedEmail> {
   let email: CapturedEmail | null = null;
   await expect
-    .poll(async () => (email = await findLastEmail(to)), { message: `an email to ${to}` })
+    .poll(async () => (email = await findLastEmail(to, subject)), {
+      message: `an email to ${to}${subject ? ` with the subject "${subject}"` : ""}`,
+    })
     .not.toBeNull();
   return email!;
 }
