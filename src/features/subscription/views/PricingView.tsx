@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Container, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { SUBSCRIPTION_PLANS, TRIAL_DAYS } from "@/features/subscription/constants";
 import { useCheckout } from "@/features/subscription/hooks/useCheckout";
 import { useManageSubscription } from "@/features/subscription/hooks/useManageSubscription";
 import { getEffectivePlan } from "@/features/subscription/lib/entitlements";
@@ -32,6 +32,9 @@ export function PricingView() {
   const currentPlan: SubscriptionPlan | null = authLoading ? null : getEffectivePlan(user ?? {});
   // Any live subscription blocks a second checkout, even one whose price we don't recognize
   const isSubscribed = hasActiveSubscription(user?.subscriptionStatus);
+  // Visitors are offered the trial too: signing up is the first step to it. Hidden while the
+  // session loads, so it doesn't flash for returning subscribers
+  const offersTrial = !authLoading && !isSubscribed && (user?.trialAvailable ?? true);
 
   const getButtonLabel = (plan: PlanDetails) => {
     if (plan.id === currentPlan) return "Current Plan";
@@ -85,6 +88,7 @@ export function PricingView() {
                   // The session decides between checkout and login, so wait for it
                   disabled={!canSubscribe || pendingPlan != null || openingPortal || authLoading}
                   pending={pendingPlan === plan.id}
+                  trialDays={offersTrial ? TRIAL_DAYS : undefined}
                   onSubscribe={() => {
                     if (canSwitch) openPortal();
                     else if (paidPlan) subscribe(paidPlan, interval);

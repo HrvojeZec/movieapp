@@ -5,6 +5,7 @@ import { RouteError } from "@/server/http/route-error";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import type { AuthUser } from "@/features/auth/types";
 import { isPaidPlan } from "@/features/subscription/lib/plans";
+import { isTrialAvailable } from "@/features/subscription/lib/trial";
 
 // Emails reach these functions already normalized (trimmed, lowercase) by the zod schemas.
 
@@ -31,6 +32,7 @@ export function toAuthUser(user: IUser): AuthUser {
     subscriptionStatus: user.subscriptionStatus,
     subscriptionPlan: user.subscriptionPlan,
     subscription: toSubscriptionDetails(user),
+    trialAvailable: isTrialAvailable(user),
     createdAt: user.createdAt,
     lastLogin: user.lastLogin,
   };

@@ -11,6 +11,7 @@ const user: AuthUser = {
   name: "Ana",
   favorites: [],
   watchlist: [],
+  trialAvailable: true,
   createdAt: new Date("2026-01-01"),
 };
 

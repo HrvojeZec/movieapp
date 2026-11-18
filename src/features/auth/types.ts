@@ -15,6 +15,8 @@ export interface AuthUser {
     cancelAt: string | null;
     trialEnd: string | null;
   };
+  /** Whether a first checkout would start with the free trial. */
+  trialAvailable: boolean;
   createdAt: Date;
   lastLogin?: Date;
 }

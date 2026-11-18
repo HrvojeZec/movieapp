@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A 14-day free trial for a first subscription on either paid plan and billing period: Checkout
+  still takes the card and charges when the trial ends. It isn't offered again after a trial, or
+  to anyone who already subscribed (including subscriptions from before trials existed). The
+  pricing page marks the paid plans with "14-day free trial" for visitors and new accounts; the
+  existing "Trial started" and "Trial ends soon" notifications, the reminder email and the
+  profile's "Trial ends on …" cover the rest. `.env.example` lists the `trial_will_end` webhook
+  event
 - Stats page on Pro: totals (watched movies, favorites, watchlist, lists), favorite genres as a
   bar list (a movie that is both watched and a favorite counts once) and two monthly charts for
   the last 12 months, movies watched and movie pages opened, each on its own scale. Charts are
