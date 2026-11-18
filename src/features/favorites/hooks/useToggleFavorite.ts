@@ -6,6 +6,9 @@ import { deleteFavorite, postFavorite } from "@/features/favorites/api/favorites
 import { favoriteKeys } from "@/features/favorites/api/query-keys";
 import { applyFavoriteChange, updateFavorites } from "@/features/favorites/lib/favorites";
 import type { FavoriteChange } from "@/features/favorites/types";
+import { toApiError } from "@/shared/lib/api-error";
+import { HttpError } from "@/shared/lib/http";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { notifyError } from "@/shared/lib/notify";
 
 /** Optimistically adds or removes a favorite; returns a no-op for logged-out users. */
@@ -28,9 +31,14 @@ export function useToggleFavorite() {
       }
     },
     // Undo only this movie instead of restoring a snapshot, so concurrent toggles are kept
-    onError: (_error, { movieId, add }) => {
+    onError: (error, { movieId, add }) => {
       updateFavorites(queryClient, (favorites) => applyFavoriteChange(favorites, movieId, !add));
-      notifyError("Could not update favorites", "Please try again");
+      // A full list on the free plan is a 403 that says how to get more; anything else is a retry
+      if (error instanceof HttpError && error.status === HTTP_STATUS.FORBIDDEN) {
+        notifyError("Favorites limit reached", toApiError(error).message);
+      } else {
+        notifyError("Could not update favorites", "Please try again");
+      }
     },
   });
 
