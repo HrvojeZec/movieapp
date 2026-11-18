@@ -1,6 +1,7 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import {
   discoverMovies,
+  discoverMoviesAdvanced,
   getGenres,
   getMovieDetails,
   getMovieList,
@@ -8,7 +9,12 @@ import {
 } from "@/features/movies/api/movies.api";
 import { movieKeys } from "@/features/movies/api/query-keys";
 import { TMDB_MAX_PAGE } from "@/features/movies/constants";
-import type { DiscoverFilters, Movie, TMDBResponse } from "@/features/movies/types";
+import type {
+  AdvancedDiscoverFilters,
+  DiscoverFilters,
+  Movie,
+  TMDBResponse,
+} from "@/features/movies/types";
 import type { MovieList } from "@/features/movies/validations/movies.schema";
 import { DAY_MS } from "@/shared/lib/time";
 
@@ -38,6 +44,14 @@ export const discoverInfiniteQuery = (filters: DiscoverFilters) =>
   infiniteQueryOptions({
     queryKey: movieKeys.discover(filters),
     queryFn: ({ pageParam }) => discoverMovies({ ...filters, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: getNextPage,
+  });
+
+export const advancedDiscoverInfiniteQuery = (filters: DiscoverFilters & AdvancedDiscoverFilters) =>
+  infiniteQueryOptions({
+    queryKey: movieKeys.advancedDiscover(filters),
+    queryFn: ({ pageParam }) => discoverMoviesAdvanced({ ...filters, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: getNextPage,
   });

@@ -59,3 +59,51 @@ export const MOVIE_CARD_SIZES = {
 // Height of the text block under a poster (padding, two title lines, rating row), so skeletons
 // match the cards they stand in for
 export const CARD_BODY_HEIGHT = 102;
+
+// Advanced filters (Premium): TMDB discover sorts, and bounds for the extra inputs
+export const DISCOVER_SORTS = [
+  "popularity.desc",
+  "vote_average.desc",
+  "primary_release_date.desc",
+  "title.asc",
+] as const;
+export const DEFAULT_DISCOVER_SORT = "popularity.desc";
+// Without a vote floor, sorting by rating puts movies with one 10/10 vote first
+export const RATING_SORT_MIN_VOTES = 200;
+export const MAX_RUNTIME_MINUTES = 600;
+export const MAX_MIN_VOTES = 100_000;
+export const MAX_GENRE_FILTERS = 10;
+
+// Options of the advanced filter inputs; picked from lists, so a half-typed value never goes out
+export const ADVANCED_YEAR_OPTIONS_COUNT = 100;
+export const SORT_OPTIONS = [
+  { value: "popularity.desc", label: "Most popular" },
+  { value: "vote_average.desc", label: "Top rated" },
+  { value: "primary_release_date.desc", label: "Newest" },
+  { value: "title.asc", label: "Title A-Z" },
+];
+export const RUNTIME_OPTIONS = [60, 90, 120, 150, 180];
+export const MIN_VOTES_OPTIONS = [50, 100, 500, 1000, 5000];
+// Original languages with the most movies on TMDB, as ISO 639-1 codes
+export const LANGUAGE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "fr", label: "French" },
+  { value: "es", label: "Spanish" },
+  { value: "de", label: "German" },
+  { value: "it", label: "Italian" },
+  { value: "ja", label: "Japanese" },
+  { value: "ko", label: "Korean" },
+  { value: "zh", label: "Chinese" },
+  { value: "hi", label: "Hindi" },
+  { value: "ru", label: "Russian" },
+  { value: "pt", label: "Portuguese" },
+  { value: "sv", label: "Swedish" },
+  { value: "da", label: "Danish" },
+  { value: "no", label: "Norwegian" },
+  { value: "nl", label: "Dutch" },
+  { value: "pl", label: "Polish" },
+  { value: "tr", label: "Turkish" },
+  { value: "fa", label: "Persian" },
+  { value: "hr", label: "Croatian" },
+  { value: "sr", label: "Serbian" },
+];

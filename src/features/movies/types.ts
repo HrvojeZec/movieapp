@@ -1,3 +1,4 @@
+import type { DISCOVER_SORTS } from "@/features/movies/constants";
 export interface Movie {
   id: number;
   title: string;
@@ -64,4 +65,21 @@ export interface DiscoverFilters {
   year?: number;
   genre?: number;
   minRating?: number;
+}
+
+export type DiscoverSort = (typeof DISCOVER_SORTS)[number];
+
+/** The Premium filters on top of the basic ones. */
+export interface AdvancedDiscoverFilters {
+  yearFrom?: number;
+  yearTo?: number;
+  /** Movies must have all of these genres. */
+  genres?: number[];
+  /** Minutes */
+  runtimeMin?: number;
+  runtimeMax?: number;
+  /** ISO 639-1 code of the original language, e.g. "fr" */
+  language?: string;
+  sortBy?: DiscoverSort;
+  minVotes?: number;
 }

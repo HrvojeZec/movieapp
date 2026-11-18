@@ -1,4 +1,4 @@
-import type { DiscoverFilters } from "@/features/movies/types";
+import type { AdvancedDiscoverFilters, DiscoverFilters } from "@/features/movies/types";
 import type { MovieList } from "@/features/movies/validations/movies.schema";
 
 // Every key starts with "movies", so all movie data can be invalidated at once
@@ -11,5 +11,8 @@ export const movieKeys = {
   discover: (filters: DiscoverFilters) => [...movieKeys.all, "discover", filters] as const,
   discoverFirstPage: (filters: DiscoverFilters) =>
     [...movieKeys.discover(filters), "first-page"] as const,
+  // Not under "discover": invalidating basic results shouldn't touch these, and the reverse
+  advancedDiscover: (filters: DiscoverFilters & AdvancedDiscoverFilters) =>
+    [...movieKeys.all, "advanced-discover", filters] as const,
   genres: () => [...movieKeys.all, "genres"] as const,
 };

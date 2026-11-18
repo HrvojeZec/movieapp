@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Advanced filters on Most Watched for Premium and Pro: a year range, several genres at once
+  (movies must have all of them), minimum and maximum runtime, original language, sorting (most
+  popular, top rated, newest, title) and a minimum number of votes. They live in the URL like the
+  basic filters, and "Clear filters" clears them too. Results come from a private route that
+  needs the plan and is never cached; the basic filters stay free on the public, cached route.
+  Free accounts see the panel locked, and advanced filters in a shared link are ignored for them
 - Custom lists on Premium and Pro: "Add to list" on the movie page ticks the lists that hold the
   movie and creates a new one with it; the Lists page (user menu and mobile drawer) shows each
   list with its latest posters, and a list's page can rename it, remove movies or delete it. Up to
