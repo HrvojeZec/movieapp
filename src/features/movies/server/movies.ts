@@ -27,6 +27,10 @@ export const fetchMovieDetails = cache((id: number) =>
 export const fetchMovieVideos = async (id: number): Promise<Video[]> =>
   (await tmdbFetch<{ results: Video[] }>(`/movie/${id}/videos`)).results;
 
+/** TMDB's "more like this" for one movie (first page). */
+export const fetchMovieRecommendations = async (id: number): Promise<Movie[]> =>
+  (await tmdbFetch<TMDBResponse<Movie>>(`/movie/${id}/recommendations`)).results;
+
 export const fetchGenres = async (): Promise<Genre[]> =>
   (await tmdbFetch<{ genres: Genre[] }>("/genre/movie/list")).genres;
 

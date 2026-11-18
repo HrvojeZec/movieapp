@@ -9,6 +9,7 @@ export const ROUTES = {
   watchlist: "/watchlist",
   watched: "/watched",
   lists: "/lists",
+  recommendations: "/recommendations",
   list: (id: string) => `/lists/${id}`,
   profile: "/profile",
   pricing: "/subscription/pricing",
