@@ -13,3 +13,18 @@ export const REVEAL_VIEWPORT_MARGIN = "0px 0px -60px 0px";
 
 // Ease-out quart: quick start, soft landing
 export const EASE_OUT = [0.25, 1, 0.5, 1] as const;
+
+/**
+ * Springs for everything that moves in response to the user or to data:
+ * snappy settles fast without overshoot, gentle glides into place, bouncy visibly overshoots.
+ */
+export const SPRINGS = {
+  snappy: { type: "spring", stiffness: 500, damping: 40 },
+  gentle: { type: "spring", stiffness: 220, damping: 28 },
+  bouncy: { type: "spring", stiffness: 400, damping: 15 },
+} as const;
+
+/** Pixels an icon shifts on hover. */
+export const HOVER_NUDGE_PX = 2;
+/** Furthest a magnetic element leans towards the pointer, in pixels. */
+export const MAGNET_MAX_PX = 6;
