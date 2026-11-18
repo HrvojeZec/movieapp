@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { E2E_CRON_SECRET } from "./e2e/cron";
 
 // Locally the settings come from .env.local (like Next.js); in CI they are provided as env vars.
 try {
@@ -47,6 +48,6 @@ export default defineConfig({
     timeout: 180_000,
     // Takes precedence over MONGODB_URI from .env.local
     // Emails go to a collection the tests can read, never to real inboxes
-    env: { MONGODB_URI: e2eMongoUri, EMAIL_TRANSPORT: "capture" },
+    env: { MONGODB_URI: e2eMongoUri, EMAIL_TRANSPORT: "capture", CRON_SECRET: E2E_CRON_SECRET },
   },
 });

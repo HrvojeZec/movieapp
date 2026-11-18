@@ -27,3 +27,9 @@ export async function getLastEmail(to: string): Promise<CapturedEmail> {
     .not.toBeNull();
   return email!;
 }
+
+/** Every email the app "sent" to this address so far. */
+export async function getEmails(to: string): Promise<CapturedEmail[]> {
+  const connection = await getE2EDatabase();
+  return connection.collection<CapturedEmail>("capturedemails").find({ to }).toArray();
+}
