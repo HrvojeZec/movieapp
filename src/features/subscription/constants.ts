@@ -21,6 +21,9 @@ export const PLAN_FEATURES: Record<SubscriptionPlan, readonly Feature[]> = {
   pro: [...PREMIUM_FEATURES, "recommendations", "stats"],
 };
 
+// Reminders go out this many days before a renewal, a scheduled end or the end of a trial
+export const REMINDER_DAYS_BEFORE = 3;
+
 // How many favorites the free plan can keep; paid plans have no limit
 export const FAVORITES_LIMIT = 20;
 
