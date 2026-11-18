@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Bookmark,
   CreditCard,
   Eye,
@@ -25,7 +26,7 @@ export const PRIMARY_LINKS: NavLink[] = [
   { label: "Pricing", href: ROUTES.pricing, icon: CreditCard },
 ];
 
-// The mobile drawer also has Home, Favorites, Watchlist, Watched, Lists and For you, which desktop reaches via the logo, the
+// The mobile drawer also has Home, Favorites, Watchlist, Watched, Lists, For you and Stats, which desktop reaches via the logo, the
 // heart menu and the account menu
 export const DRAWER_LINKS: NavLink[] = [
   { label: "Home", href: ROUTES.home, icon: Home },
@@ -35,4 +36,5 @@ export const DRAWER_LINKS: NavLink[] = [
   { label: "Watched", href: ROUTES.watched, icon: Eye, requiresAuth: true },
   { label: "Lists", href: ROUTES.lists, icon: ListVideo, requiresAuth: true },
   { label: "For you", href: ROUTES.recommendations, icon: Sparkles, requiresAuth: true },
+  { label: "Stats", href: ROUTES.stats, icon: BarChart3, requiresAuth: true },
 ];

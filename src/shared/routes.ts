@@ -10,6 +10,7 @@ export const ROUTES = {
   watched: "/watched",
   lists: "/lists",
   recommendations: "/recommendations",
+  stats: "/stats",
   list: (id: string) => `/lists/${id}`,
   profile: "/profile",
   pricing: "/subscription/pricing",
