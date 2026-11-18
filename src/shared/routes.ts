@@ -7,6 +7,7 @@ export const ROUTES = {
   resetPassword: (token: string) => `/auth/reset-password?token=${encodeURIComponent(token)}`,
   favorites: "/favorites",
   watchlist: "/watchlist",
+  watched: "/watched",
   profile: "/profile",
   pricing: "/subscription/pricing",
   mostWatched: "/most-watched",

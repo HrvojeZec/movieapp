@@ -16,6 +16,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { Calendar, Clock, MapPin, PlayCircle, Star } from "lucide-react";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
+import { WatchedButton } from "@/features/watched/ui/WatchedButton/WatchedButton";
 import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
 import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
 import { useTrackRecentlyViewed } from "@/features/movies/hooks/useRecentlyViewed";
@@ -115,6 +116,7 @@ export function MovieDetailsView() {
                 </Title>
                 <FavoriteButton movieId={movie.id} variant="inline" hideWhenLoggedOut />
                 <WatchlistButton movieId={movie.id} variant="inline" />
+                <WatchedButton movieId={movie.id} variant="inline" />
               </Group>
 
               <Group gap="md">

@@ -2,6 +2,7 @@
 import { Box, Card, Group, Image, Stack, Text } from "@mantine/core";
 import { Star } from "lucide-react";
 import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
+import { WatchedButton } from "@/features/watched/ui/WatchedButton/WatchedButton";
 import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
 import { MOVIE_CARD_SIZES, PLACEHOLDER_POSTER } from "@/features/movies/constants";
 import { getImageUrl } from "@/features/movies/lib/images";
@@ -51,9 +52,10 @@ export const MovieCard = ({ movie, size = "md" }: MovieCardProps) => (
       </Box>
     </IntentPrefetchLink>
 
-    {/* The heart for everyone; the bookmark only on plans with a watchlist */}
+    {/* The heart for everyone, the eye once logged in, the bookmark only on plans with a watchlist */}
     <Stack gap={6} className={classes.favorite}>
       <FavoriteButton movieId={movie.id} />
+      <WatchedButton movieId={movie.id} />
       <WatchlistButton movieId={movie.id} />
     </Stack>
   </Card>
