@@ -1,7 +1,16 @@
 "use client";
 import Link from "next/link";
 import { ActionIcon, Avatar, Menu } from "@mantine/core";
-import { Bookmark, CreditCard, Eye, ListVideo, LogOut, Sparkles, User } from "lucide-react";
+import {
+  BarChart3,
+  Bookmark,
+  CreditCard,
+  Eye,
+  ListVideo,
+  LogOut,
+  Sparkles,
+  User,
+} from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import type { AuthUser } from "@/features/auth/types";
 import { ROUTES } from "@/shared/routes";
@@ -40,6 +49,9 @@ export function UserMenu({ user }: { user: AuthUser }) {
           href={ROUTES.recommendations}
         >
           For you
+        </Menu.Item>
+        <Menu.Item leftSection={<BarChart3 size={16} />} component={Link} href={ROUTES.stats}>
+          Stats
         </Menu.Item>
         <Menu.Item leftSection={<CreditCard size={16} />} component={Link} href={ROUTES.pricing}>
           Subscription

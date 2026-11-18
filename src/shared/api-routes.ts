@@ -25,6 +25,7 @@ export const API_ROUTES = {
     watchedIds: `${USER}/watched/ids`,
     watchedItem: (movieId: string) => `${USER}/watched/${movieId}`,
     movieView: `${USER}/activity/view`,
+    stats: `${USER}/stats`,
   },
   movies: {
     list: MOVIES,

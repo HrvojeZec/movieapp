@@ -1,0 +1,45 @@
+.scale {
+  height: 18px;
+}
+
+// A recessive baseline under the columns; no other grid lines
+.plot {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  height: 160px;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.column {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  border-radius: 4px 4px 0 0;
+
+  &:hover {
+    background-color: var(--input-bg);
+  }
+}
+
+// Thin column anchored to the baseline, rounded only at its data end
+.bar {
+  width: min(60%, 24px);
+  background-color: var(--primary-500);
+  border-radius: 4px 4px 0 0;
+}
+
+.labels {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.label {
+  overflow: hidden;
+  white-space: nowrap;
+}

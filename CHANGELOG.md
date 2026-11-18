@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Stats page on Pro: totals (watched movies, favorites, watchlist, lists), favorite genres as a
+  bar list (a movie that is both watched and a favorite counts once) and two monthly charts for
+  the last 12 months, movies watched and movie pages opened, each on its own scale. Charts are
+  plain CSS bars with a tooltip per bar and a table for screen readers; no chart library. The API
+  is private and needs Pro; other plans see the page locked
 - Recommendations on Pro: a "Recommended for you" row on the home page and a page with up to 20
   picks, each saying why ("Because you liked Fight Club", "Because you like Drama"). Candidates
   come from TMDB's recommendations for the latest favorites and watched movies and from top-rated
