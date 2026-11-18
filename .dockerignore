@@ -7,7 +7,9 @@ node_modules
 out
 build
 coverage
+# End-to-end tests and their config aren't part of the image (the config imports from e2e/)
 e2e
+playwright.config.ts
 playwright-report
 test-results
 

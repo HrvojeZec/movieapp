@@ -30,6 +30,9 @@ export const API_ROUTES = {
     read: `${API}/notifications/read`,
   },
   health: `${API}/health`,
+  cron: {
+    subscriptionReminders: `${API}/cron/subscription-reminders`,
+  },
   subscription: {
     cancel: `${SUBSCRIPTION}/cancel`,
     resume: `${SUBSCRIPTION}/resume`,

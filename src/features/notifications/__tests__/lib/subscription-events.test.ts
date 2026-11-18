@@ -137,6 +137,8 @@ describe("getSubscriptionNotification", () => {
     );
     expect(notification?.type).toBe("trial_ending");
     expect(notification?.body).toContain("December 17, 2026");
+    // The same key as the daily reminder job, so the trial warning arrives once
+    expect(notification?.dedupeKey).toBe("trial_ending:sub_123:2026-12-17");
   });
 
   it("unrelated updates produce no notification", () => {

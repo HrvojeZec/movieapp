@@ -1,7 +1,9 @@
 import type Stripe from "stripe";
+import { trialEndingNotification } from "@/features/notifications/lib/reminder-events";
 import type { NotificationInput } from "@/features/notifications/types";
 import { getPlanName } from "@/features/subscription/lib/entitlements";
 import { getPlanForPriceId } from "@/features/subscription/lib/plans";
+import { reminderDedupeKey } from "@/features/subscription/lib/reminders";
 import { formatDate } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import { SECOND_MS } from "@/shared/lib/time";
@@ -98,13 +100,17 @@ export function getSubscriptionNotification(event: Stripe.Event): NotificationIn
         body: `Your ${planNameOf(event.data.object)} subscription has ended and your account is on the free Basic plan. Your favorites and lists are kept.`,
       };
 
-    case "customer.subscription.trial_will_end":
-      return {
-        ...fromStripe,
-        type: "trial_ending",
-        title: "Your free trial ends soon",
-        body: `Your ${planNameOf(event.data.object)} trial ends on ${toDate(event.data.object.trial_end)}, and the subscription starts then. Cancel before that date if you don't want to be charged.`,
-      };
+    case "customer.subscription.trial_will_end": {
+      const subscription = event.data.object;
+      if (!subscription.trial_end) return null;
+      const trialEnd = new Date(subscription.trial_end * SECOND_MS);
+      // The daily reminder job uses the same key, so whichever comes first is the only one sent
+      return trialEndingNotification(
+        planNameOf(subscription),
+        trialEnd,
+        reminderDedupeKey("trial_ending", subscription.id, trialEnd),
+      );
+    }
 
     case "invoice.payment_failed":
       return {
