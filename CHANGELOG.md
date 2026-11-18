@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Notifications: a bell in the navbar lists the latest notifications with an unread count, opens
+  their page and marks them as read (one by one or all at once); it refreshes every minute and on
+  focus. Stripe webhooks create them for plan activation, trial start, cancellation, resume, plan
+  changes, the end of a subscription, a trial about to end and failed payments, once per event.
+  `GET /api/notifications`, `POST /api/notifications/read`; notifications are deleted after 90 days
 - Cancel and resume a subscription from the profile: a confirmation lists what the plan loses and
   until when it stays; cancellation takes effect at the end of the paid period. "Manage billing"
   and "Update payment method" open the Stripe Customer Portal (card, invoices, plan changes), and
@@ -114,6 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- On phones the favorites menu moves from the header to the navigation drawer, so the header stays
+  on one line
 - Require Node 26 LTS and npm >= 11.10 (#8, #9)
 - Replace deprecated `next lint` with the ESLint CLI; lint fails on warnings (#9, #11)
 - Format the codebase with Prettier (#10)

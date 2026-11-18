@@ -1,4 +1,5 @@
 import { expect, test } from "./fixtures";
+import { registerViaApi } from "./helpers";
 
 test.describe("on a phone", () => {
   test.use({ viewport: { width: 390, height: 844 } });
@@ -64,4 +65,25 @@ test("a slow navigation shows a progress bar until the page arrives", async ({ p
   release();
   await expect(page).toHaveURL(/\/movie\/\d+$/);
   await expect(progress).toBeHidden();
+});
+
+test("the logged-in header fits on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await registerViaApi(page);
+
+  await page.goto("/");
+
+  const accountMenu = page.getByRole("button", { name: "Account menu" });
+  const bell = page.getByRole("button", { name: /Notifications/ });
+  await expect(accountMenu).toBeInViewport({ ratio: 1 });
+  await expect(bell).toBeInViewport({ ratio: 1 });
+  // One row: the icons used to wrap and push the account menu below the bell
+  const [menuBox, bellBox] = [await accountMenu.boundingBox(), await bell.boundingBox()];
+  expect(
+    Math.abs(menuBox!.y + menuBox!.height / 2 - (bellBox!.y + bellBox!.height / 2)),
+  ).toBeLessThan(2);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBe(0);
 });

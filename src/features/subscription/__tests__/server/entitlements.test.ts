@@ -13,7 +13,9 @@ const user = (subscriptionStatus?: string, subscriptionPlan?: string) => ({
 });
 
 describe("requireFeature", () => {
-  beforeEach(() => findById.mockReset());
+  beforeEach(() => {
+    findById.mockReset();
+  });
 
   it("returns the user when their plan includes the feature", async () => {
     const premium = user("active", "premium");
