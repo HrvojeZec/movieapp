@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { ActionIcon, Avatar, Menu } from "@mantine/core";
-import { Bookmark, CreditCard, Eye, ListVideo, LogOut, User } from "lucide-react";
+import { Bookmark, CreditCard, Eye, ListVideo, LogOut, Sparkles, User } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import type { AuthUser } from "@/features/auth/types";
 import { ROUTES } from "@/shared/routes";
@@ -33,6 +33,13 @@ export function UserMenu({ user }: { user: AuthUser }) {
         </Menu.Item>
         <Menu.Item leftSection={<ListVideo size={16} />} component={Link} href={ROUTES.lists}>
           Lists
+        </Menu.Item>
+        <Menu.Item
+          leftSection={<Sparkles size={16} />}
+          component={Link}
+          href={ROUTES.recommendations}
+        >
+          For you
         </Menu.Item>
         <Menu.Item leftSection={<CreditCard size={16} />} component={Link} href={ROUTES.pricing}>
           Subscription

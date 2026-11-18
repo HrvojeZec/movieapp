@@ -14,6 +14,8 @@ interface HorizontalMovieScrollProps {
   icon: ReactNode;
   movies: MovieSummary[];
   loading?: boolean;
+  /** Shown at the end of the title line, e.g. a "See all" link. */
+  action?: ReactNode;
 }
 
 export const HorizontalMovieScroll = ({
@@ -21,9 +23,13 @@ export const HorizontalMovieScroll = ({
   icon,
   movies,
   loading,
+  action,
 }: HorizontalMovieScrollProps) => (
   <Box mb="xl">
-    <SectionTitle icon={icon}>{title}</SectionTitle>
+    <Group justify="space-between" align="baseline" wrap="nowrap">
+      <SectionTitle icon={icon}>{title}</SectionTitle>
+      {action}
+    </Group>
     {/* Only horizontal: the hover lift and the reveal animation used to add a vertical scrollbar */}
     <ScrollArea scrollbars="x" className={classes.scroll}>
       <Group gap="md" wrap="nowrap" className={classes.track}>
