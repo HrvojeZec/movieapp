@@ -2,9 +2,12 @@ import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import { registerViaApi } from "./helpers";
 
-test("the pricing page only marks existing features as available", async ({ page }) => {
+test("the pricing page lists what each plan unlocks, all of it available", async ({ page }) => {
   await page.goto("/subscription/pricing");
-  await expect(page.getByText("Coming soon").first()).toBeVisible();
+  for (const feature of ["Watchlist", "Custom lists", "Advanced filters", "Viewing statistics"]) {
+    await expect(page.getByText(feature, { exact: true })).toBeVisible();
+  }
+  await expect(page.getByText(/coming soon/i)).toHaveCount(0);
   await expect(page.getByText("4242 4242 4242 4242")).toBeVisible();
 });
 
