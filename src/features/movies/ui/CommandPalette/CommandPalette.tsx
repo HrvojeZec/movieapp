@@ -92,6 +92,7 @@ function PaletteSearch({ recent }: { recent: MovieSummary[] }) {
       {hasResults ? (
         <ScrollArea.Autosize mah={LIST_MAX_HEIGHT}>
           <SuggestionList
+            query={search.query}
             id={listId}
             label={search.query.trim() ? "Suggestions" : "Recently viewed"}
             movies={search.suggestions}
