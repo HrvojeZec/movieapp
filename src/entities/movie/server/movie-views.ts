@@ -22,10 +22,10 @@ export async function recordMovieView(
   });
   if (recent) return false;
 
-  // Looked up here rather than sent by the page, so the stats can't be fed made-up genres
-  const genreIds = await fetchGenreIds(movieId);
-  if (genreIds === null) return false;
+  // Only views of movies TMDB knows count; their genres aren't kept (nothing reads them, and
+  // TMDB's terms limit how long its data may be stored)
+  if ((await fetchGenreIds(movieId)) === null) return false;
 
-  await logUserActivity(userId, "view", movieId, undefined, { genreIds });
+  await logUserActivity(userId, "view", movieId);
   return true;
 }

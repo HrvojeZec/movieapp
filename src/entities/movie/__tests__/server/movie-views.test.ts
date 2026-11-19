@@ -27,12 +27,10 @@ describe("recordMovieView", () => {
     logUserActivity.mockReset();
   });
 
-  it("logs a view with the movie's genres", async () => {
+  it("logs a view, without keeping TMDB's genres", async () => {
     await expect(recordMovieView(USER_ID, "550", NOW)).resolves.toBe(true);
 
-    expect(logUserActivity).toHaveBeenCalledWith(USER_ID, "view", "550", undefined, {
-      genreIds: [18, 53],
-    });
+    expect(logUserActivity).toHaveBeenCalledWith(USER_ID, "view", "550");
   });
 
   it("logs a view once per hour per movie", async () => {
