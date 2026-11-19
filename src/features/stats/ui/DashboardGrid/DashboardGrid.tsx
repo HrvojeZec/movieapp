@@ -3,6 +3,7 @@ import { useId, type CSSProperties } from "react";
 import { VisuallyHidden } from "@mantine/core";
 import { motion } from "motion/react";
 import { GRID_COLUMNS } from "@/features/stats/constants";
+import { Text } from "@mantine/core";
 import { useGridColumns } from "@/features/stats/hooks/useGridColumns";
 import { useGridDrag, type CellMotion } from "@/features/stats/hooks/useGridDrag";
 import { cellToPixels } from "@/features/stats/lib/grid-drag";
@@ -47,6 +48,10 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
   const drag = useGridDrag({ layout, metrics, titleOf, onCommit: onChange });
 
   const shown = wide ? (drag.preview ?? layout) : toColumns(layout, columns);
+  // Drawn in the saved order, with positions from the preview: reordering the DOM in the middle
+  // of a drag would make the browser drop the pointer (and the gesture with it)
+  const placed = new Map(shown.map((item) => [item.type, item]));
+  const cells = (wide ? layout : shown).map((item) => placed.get(item.type) ?? item);
   const order = toColumns(layout, 1).map((item) => item.type);
   const height = Math.max(
     0,
@@ -56,6 +61,16 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
     }),
   );
   const landing = drag.pointerType ? shown.find((item) => item.type === drag.pointerType) : null;
+  // Where the pointer aims when the widget can't go there, kept inside the grid
+  const refusedItem = drag.refused ? shown.find((item) => item.type === drag.refused?.type) : null;
+  const refused =
+    drag.refused && refusedItem
+      ? {
+          ...refusedItem,
+          x: Math.min(Math.max(drag.refused.x, 0), GRID_COLUMNS - refusedItem.w),
+          y: Math.max(drag.refused.y, 0),
+        }
+      : null;
 
   const editControls = (type: WidgetType, values: CellMotion): WidgetEditControls | undefined => {
     if (!editing) return undefined;
@@ -104,8 +119,22 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
         />
       )}
 
+      {refused && (
+        <motion.div
+          className={classes.refused}
+          aria-hidden
+          initial={false}
+          animate={toBox(cellToPixels(refused, metrics))}
+          transition={SPRINGS.snappy}
+        >
+          <Text size="xs" fw={600} className={classes.refusedLabel}>
+            Can&apos;t place here
+          </Text>
+        </motion.div>
+      )}
+
       {measured &&
-        shown.map((item) => {
+        cells.map((item) => {
           const widget = WIDGETS[item.type];
           const Icon = widget.icon;
           const view = item.view ?? "chart";
@@ -124,6 +153,8 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
                   bare={widget.bare}
                   edit={editControls(item.type, values)}
                   active={drag.activeType === item.type}
+                  blocked={drag.refused?.type === item.type}
+                  atLimit={drag.atLimit === item.type}
                   actions={
                     widget.renderTable && (
                       <ViewToggle

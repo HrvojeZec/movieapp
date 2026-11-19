@@ -16,6 +16,29 @@
     outline: 2px solid var(--primary-500);
     box-shadow: var(--shadow-lift);
   }
+
+  // Over a spot it can't take: a red edge (the shake comes from the drag handler)
+  &[data-blocked] {
+    outline-color: var(--danger-500);
+    box-shadow:
+      var(--shadow-lift),
+      0 0 0 4px color-mix(in srgb, var(--danger-500) 25%, transparent);
+  }
+
+  // Pulled past its size limit: the edge flashes red once, then stays tinted
+  &[data-limit] {
+    outline-color: color-mix(in srgb, var(--danger-500) 70%, transparent);
+    animation: limit-flash 360ms ease-out;
+  }
+}
+
+@keyframes limit-flash {
+  30% {
+    outline-color: var(--danger-500);
+    box-shadow:
+      var(--shadow-lift),
+      0 0 0 6px color-mix(in srgb, var(--danger-500) 35%, transparent);
+  }
 }
 
 .header {

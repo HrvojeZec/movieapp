@@ -306,6 +306,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Dashboard dragging is clearer: the grip (⠿) now drags the widget too; dragging down past the
+  middle of the widget underneath lands below it instead of floating back up; a spot a widget
+  can't take shows a red "Can't place here" outline and a short shake, and letting go there
+  puts it back with a shake and an announcement; resizing past a widget's limit gives a little
+  like rubber and flashes red. A drag that changed the widgets' order used to be cancelled
+  silently (the pointer was lost when the widgets were re-sorted); it no longer is
 - Dragging and resizing dashboard widgets no longer stutters: the widget follows the pointer
   through motion values and the board only redraws when the widget aims at another cell
   (JavaScript per drag went from about 730 ms to 60 ms; resizing from a 530 ms stall to none).
