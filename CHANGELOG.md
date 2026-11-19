@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Action buttons celebrate what they add: the watchlist bookmark drops in and swings, the
+  watched eye blinks and gets a check, the heart pops on a spring (removing stays quiet). Play
+  trailer, Subscribe and New list lean towards the pointer. Prices roll to the new amount when
+  switching between Monthly and Yearly, and the trial badge shines once
 - Phones get a full-screen menu instead of the drawer: it slides in from the left over the
   blurred page, rows come in one after another, the profile (or a sign-in card) sits on top, and
   a swipe to the left, the X or Escape closes it. Plan-locked links show the plan they need

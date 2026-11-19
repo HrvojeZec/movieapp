@@ -24,6 +24,22 @@ test("the pricing page switches between monthly and yearly prices", async ({ pag
   await expect(page.getByText("$9.99", { exact: true })).toHaveCount(0);
 });
 
+test("switching to yearly rolls the prices", async ({ page }) => {
+  await page.goto("/subscription/pricing");
+  // Each digit of a price is its own rolling column, the plain price is there for reading
+  const price = page.getByText("$9.99", { exact: true }).locator("..");
+  await expect(price.locator("[data-digit]")).toHaveCount(3);
+
+  await page.getByText("Yearly", { exact: true }).click();
+
+  const yearly = page.getByText("$99.90", { exact: true }).locator("..");
+  await expect(yearly.locator("[data-digit]")).toHaveCount(4);
+  const digits = await yearly
+    .locator("[data-digit]")
+    .evaluateAll((slots) => slots.map((slot) => slot.getAttribute("data-digit")));
+  expect(digits).toEqual(["9", "9", "9", "0"]);
+});
+
 test("anonymous users are sent to login before checkout", async ({ page }) => {
   await page.goto("/subscription/pricing");
   await page.getByRole("button", { name: "Subscribe to Premium" }).click();

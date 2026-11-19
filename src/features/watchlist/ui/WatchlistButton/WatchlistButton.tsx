@@ -2,7 +2,14 @@
 import type { MouseEvent } from "react";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
 import { Bookmark, BookmarkCheck, Lock } from "lucide-react";
+import { useAnimate, useReducedMotion } from "motion/react";
 import { useWatchlist } from "@/features/watchlist/hooks/useWatchlist";
+import {
+  BOOKMARK_DROP_PX,
+  BOOKMARK_SWING_DEGREES,
+  BOOKMARK_SWING_SECONDS,
+  SPRINGS,
+} from "@/shared/ui/motion/motion.constants";
 import classes from "./WatchlistButton.module.scss";
 
 interface WatchlistButtonProps {
@@ -17,6 +24,8 @@ interface WatchlistButtonProps {
  */
 export function WatchlistButton({ movieId, variant = "overlay" }: WatchlistButtonProps) {
   const { inWatchlist, isLoggedIn, canUse, disabled, toggle } = useWatchlist(movieId);
+  const [icon, animate] = useAnimate<HTMLSpanElement>();
+  const reduceMotion = useReducedMotion();
 
   if (!isLoggedIn) return null;
   if (variant === "overlay" && !canUse) return null;
@@ -24,9 +33,23 @@ export function WatchlistButton({ movieId, variant = "overlay" }: WatchlistButto
   const handleClick = (event: MouseEvent) => {
     // The overlay button sits inside a clickable card that opens the movie
     event.stopPropagation();
+    // Only saving is celebrated; taking a movie off is quiet
+    if (canUse && !inWatchlist && !reduceMotion && icon.current) {
+      animate(icon.current, { y: [-BOOKMARK_DROP_PX, 0] }, SPRINGS.bouncy);
+      animate(
+        icon.current,
+        { rotate: BOOKMARK_SWING_DEGREES },
+        { duration: BOOKMARK_SWING_SECONDS, ease: "easeOut" },
+      );
+    }
     toggle();
   };
   const Icon = inWatchlist ? BookmarkCheck : Bookmark;
+  const bookmark = (
+    <span ref={icon} className={classes.icon}>
+      <Icon size={16} />
+    </span>
+  );
 
   if (variant === "overlay") {
     return (
@@ -41,7 +64,7 @@ export function WatchlistButton({ movieId, variant = "overlay" }: WatchlistButto
         aria-pressed={inWatchlist}
         className={classes.overlay}
       >
-        <Icon size={16} />
+        {bookmark}
       </ActionIcon>
     );
   }
@@ -65,7 +88,7 @@ export function WatchlistButton({ movieId, variant = "overlay" }: WatchlistButto
     <Button
       variant={inWatchlist ? "light" : "default"}
       color={inWatchlist ? "teal" : undefined}
-      leftSection={<Icon size={16} />}
+      leftSection={bookmark}
       onClick={handleClick}
       disabled={disabled}
       aria-pressed={inWatchlist}
