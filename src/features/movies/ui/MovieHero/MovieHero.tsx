@@ -10,6 +10,7 @@ import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import GradualBlur from "@/shared/vendor/react-bits/GradualBlur/GradualBlur";
 import classes from "./MovieHero.module.scss";
+import { Magnetic } from "@/shared/ui/motion/Magnetic";
 
 // The hero blurs into the page instead of ending in a hard edge
 const EDGE_BLUR_HEIGHT = "6rem";
@@ -45,9 +46,11 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
             <Text c="gray.4">{formatYear(movie.release_date)}</Text>
           </Group>
           <Group className={classes.actions}>
-            <Button leftSection={<PlayCircle size={20} />} size="lg" onClick={onPlayTrailer}>
-              Play trailer
-            </Button>
+            <Magnetic>
+              <Button leftSection={<PlayCircle size={20} />} size="lg" onClick={onPlayTrailer}>
+                Play trailer
+              </Button>
+            </Magnetic>
             <Button
               variant="outline"
               size="lg"

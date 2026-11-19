@@ -1,8 +1,15 @@
 "use client";
-import type { MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import { ActionIcon, Button } from "@mantine/core";
-import { Eye, EyeOff } from "lucide-react";
+import { Check, Eye, EyeOff } from "lucide-react";
+import { motion, useAnimate, useReducedMotion } from "motion/react";
 import { useWatched } from "@/features/watched/hooks/useWatched";
+import {
+  BLINK_SCALE,
+  BLINK_SECONDS,
+  POP_FROM_SCALE,
+  SPRINGS,
+} from "@/shared/ui/motion/motion.constants";
 import classes from "./WatchedButton.module.scss";
 
 interface WatchedButtonProps {
@@ -17,14 +24,40 @@ interface WatchedButtonProps {
  */
 export function WatchedButton({ movieId, variant = "overlay" }: WatchedButtonProps) {
   const { isWatched, isLoggedIn, disabled, toggle } = useWatched(movieId);
+  const [eye, animate] = useAnimate<HTMLSpanElement>();
+  const reduceMotion = useReducedMotion();
+  // The check pops in only after a click, not for movies already watched when the page loads
+  const [marked, setMarked] = useState(false);
 
   if (!isLoggedIn) return null;
 
   const handleClick = (event: MouseEvent) => {
     // The overlay button sits inside a clickable card that opens the movie
     event.stopPropagation();
+    if (!isWatched) {
+      setMarked(true);
+      if (!reduceMotion && eye.current) {
+        animate(eye.current, { scaleY: BLINK_SCALE }, { duration: BLINK_SECONDS });
+      }
+    }
     toggle();
   };
+
+  const eyeIcon = (
+    <span ref={eye} className={classes.eye}>
+      {isWatched || variant === "overlay" ? <Eye size={16} /> : <EyeOff size={16} />}
+      {isWatched && (
+        <motion.span
+          className={classes.check}
+          initial={marked ? { scale: POP_FROM_SCALE, opacity: 0 } : false}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={SPRINGS.bouncy}
+        >
+          <Check size={8} strokeWidth={4} />
+        </motion.span>
+      )}
+    </span>
+  );
 
   if (variant === "overlay") {
     return (
@@ -39,7 +72,7 @@ export function WatchedButton({ movieId, variant = "overlay" }: WatchedButtonPro
         aria-pressed={isWatched}
         className={classes.overlay}
       >
-        <Eye size={16} />
+        {eyeIcon}
       </ActionIcon>
     );
   }
@@ -47,7 +80,7 @@ export function WatchedButton({ movieId, variant = "overlay" }: WatchedButtonPro
   return (
     <Button
       variant={isWatched ? "light" : "default"}
-      leftSection={isWatched ? <Eye size={16} /> : <EyeOff size={16} />}
+      leftSection={eyeIcon}
       onClick={handleClick}
       disabled={disabled}
       aria-pressed={isWatched}

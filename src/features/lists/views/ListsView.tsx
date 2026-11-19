@@ -15,6 +15,7 @@ import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
+import { Magnetic } from "@/shared/ui/motion/Magnetic";
 
 const LIST_COLUMNS = { base: 1, sm: 2, lg: 3 };
 
@@ -64,9 +65,11 @@ function ListsContent() {
           My Lists ({lists.length})
         </SectionTitle>
         {canEdit && (
-          <Button leftSection={<Plus size={16} />} onClick={modal.open}>
-            New list
-          </Button>
+          <Magnetic>
+            <Button leftSection={<Plus size={16} />} onClick={modal.open}>
+              New list
+            </Button>
+          </Magnetic>
         )}
       </Group>
 

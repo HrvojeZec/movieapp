@@ -28,3 +28,13 @@ export const SPRINGS = {
 export const HOVER_NUDGE_PX = 2;
 /** Furthest a magnetic element leans towards the pointer, in pixels. */
 export const MAGNET_MAX_PX = 6;
+
+// Saving to the watchlist: the bookmark drops in and swings from its top, the swing dying down
+export const BOOKMARK_DROP_PX = 8;
+export const BOOKMARK_SWING_DEGREES = [0, -14, 10, -6, 3, 0];
+export const BOOKMARK_SWING_SECONDS = 0.6;
+// Marking as watched: the eye shuts for a moment
+export const BLINK_SCALE = [1, 0.1, 1];
+export const BLINK_SECONDS = 0.3;
+// Added things pop from this scale on the bouncy spring
+export const POP_FROM_SCALE = 0.6;
