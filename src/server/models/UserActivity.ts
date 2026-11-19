@@ -1,4 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { STATS_DAYS } from "@/features/stats/constants";
+import { DAY_IN_SECONDS } from "@/shared/lib/time";
+
+// Kept a little past the year the stats read, then MongoDB deletes it (the free tier is small)
+const ACTIVITY_TTL_DAYS = STATS_DAYS + 35;
 
 export const ACTIVITY_ACTIONS = [
   "register",
@@ -29,7 +34,6 @@ const UserActivitySchema = new Schema<IUserActivity>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User is required"],
-      index: true,
     },
     action: {
       type: String,
@@ -51,6 +55,13 @@ const UserActivitySchema = new Schema<IUserActivity>(
   {
     timestamps: { createdAt: true, updatedAt: false },
   },
+);
+
+// Every read is one user's activity of some kinds, often within a time range (stats, views)
+UserActivitySchema.index({ userId: 1, action: 1, createdAt: -1 });
+UserActivitySchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: ACTIVITY_TTL_DAYS * DAY_IN_SECONDS },
 );
 
 const UserActivity =

@@ -158,6 +158,8 @@ const UserSchema = new Schema<IUser>(
 );
 
 UserSchema.index({ createdAt: -1 });
+// A reset link is looked up by its hash; only accounts with a pending reset have one
+UserSchema.index({ passwordResetTokenHash: 1 }, { sparse: true });
 
 // A rejected promise (e.g. bcrypt fails) aborts the save
 UserSchema.pre("save", async function () {
