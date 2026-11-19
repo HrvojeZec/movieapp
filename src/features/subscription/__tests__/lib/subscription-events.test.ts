@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getSubscriptionNotification } from "@/features/notifications/lib/subscription-events";
+import { getSubscriptionNotification } from "@/features/subscription/lib/subscription-events";
 
 const PREMIUM_PRICE = "price_premium_test";
 const PRO_PRICE = "price_pro_test";

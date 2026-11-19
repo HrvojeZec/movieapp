@@ -1,12 +1,9 @@
 import { z } from "zod";
 import { LIST_NAME_MAX_LENGTH, MAX_MOVIES_PER_LIST } from "@/features/lists/constants";
-import {
-  INVALID_MOVIE_ID,
-  favoriteMovieIdSchema,
-} from "@/features/favorites/validations/favorites.schema";
+import { INVALID_MOVIE_ID, movieIdStringSchema } from "@/features/movies/validations/movies.schema";
 
 export { INVALID_MOVIE_ID };
-export const listMovieIdSchema = favoriteMovieIdSchema;
+export const listMovieIdSchema = movieIdStringSchema;
 
 /** A MongoDB ObjectId; anything else can't be a list, so the routes answer 404. */
 export const LIST_ID_PATTERN = /^[a-f\d]{24}$/i;

@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { logUserActivity } from "@/server/activity";
@@ -61,6 +62,23 @@ export const findUserByEmail = async (email: string): Promise<IUser | null> => {
   await connectDB();
   return User.findOne({ email, isActive: true });
 };
+
+/**
+ * A bcrypt hash of no one's password, with the same cost as the stored ones. Checking a password
+ * against it for an unknown email makes that answer as slow as a wrong password, so response
+ * times don't tell which emails have an account.
+ */
+export const DUMMY_PASSWORD_HASH = "$2b$12$15irkA/RTHAnv1f0p199QOt5SioJmwaAqyZIo.btY0.LfN0d3weqC";
+
+/** The active account with this email and password, or null; unknown emails cost the same time. */
+export async function verifyCredentials(email: string, password: string): Promise<IUser | null> {
+  const user = await findUserByEmail(email);
+  if (!user) {
+    await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
+    return null;
+  }
+  return (await user.comparePassword(password)) ? user : null;
+}
 
 export const findUserById = async (id: string): Promise<AuthUser | null> => {
   await connectDB();

@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useRef,
   useState,
   type KeyboardEvent,
@@ -122,6 +123,17 @@ export function useGridDrag({ layout, metrics, titleOf, onCommit }: UseGridDragO
   const [announcement, setAnnouncement] = useState("");
   const reduceMotion = useReducedMotion();
   const pointer = useRef<PointerGesture | null>(null);
+
+  // The board can go away mid-drag (a link, a shortcut): the page-wide traces must go with it
+  useEffect(
+    () => () => {
+      const current = pointer.current;
+      if (!current) return;
+      window.removeEventListener("keydown", current.onKey);
+      delete document.documentElement.dataset.dragging;
+    },
+    [],
+  );
 
   const plan = planOf(layout, gesture);
   const preview = plan?.layout ?? null;

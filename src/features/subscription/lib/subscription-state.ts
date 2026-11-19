@@ -19,6 +19,27 @@ const isBillingInterval = (value: unknown): value is BillingInterval =>
   value === "month" || value === "year";
 
 /**
+ * The subscription that should decide the user's plan, out of all of the customer's: one that
+ * grants access beats one that ended, and the newest wins between equals. Webhooks can arrive late
+ * (Stripe retries for days), so an old subscription's event must not replace a newer one.
+ */
+export function pickCurrentSubscription(
+  subscriptions: Stripe.Subscription[],
+): Stripe.Subscription | null {
+  const rank = (subscription: Stripe.Subscription) =>
+    hasActiveSubscription(subscription.status) ? 1 : 0;
+  return subscriptions.reduce<Stripe.Subscription | null>(
+    (best, candidate) =>
+      !best ||
+      rank(candidate) > rank(best) ||
+      (rank(candidate) === rank(best) && candidate.created > best.created)
+        ? candidate
+        : best,
+    null,
+  );
+}
+
+/**
  * The user fields for a Stripe subscription. The paid plan only counts while Stripe entitles the
  * customer to it; a cancellation shows up either as `cancel_at_period_end` (our own cancel) or as
  * `cancel_at` (the Customer Portal schedules one), and both mean access ends on that date.

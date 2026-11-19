@@ -4,7 +4,10 @@ import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { getStripe } from "./stripe";
 import { getPlanForPriceId } from "@/features/subscription/lib/plans";
-import { toSubscriptionFields } from "@/features/subscription/lib/subscription-state";
+import {
+  pickCurrentSubscription,
+  toSubscriptionFields,
+} from "@/features/subscription/lib/subscription-state";
 
 function getId(value: string | { id: string } | null): string | null {
   if (!value) return null;
@@ -24,23 +27,37 @@ export async function linkStripeCustomer(userId: string, customerId: string): Pr
   );
 }
 
+// A customer has one subscription at a time, plus the ended ones; the newest come first
+const CUSTOMER_SUBSCRIPTIONS_LIMIT = 20;
+
 /**
- * Re-reads the subscription from Stripe and stores its status, plan, billing interval and dates
- * on the owning user.
- * Always fetching the latest state makes this safe for webhook events that arrive out of order
- * or are delivered more than once.
+ * Re-reads the customer's subscriptions from Stripe and stores the current one's status, plan,
+ * billing interval and dates on the owning user.
+ * Always fetching the latest state makes this safe for webhook events that arrive out of order,
+ * late or more than once: an event of an old subscription can't replace a newer one.
  */
 export async function syncSubscription(subscriptionId: string): Promise<IUser | null> {
-  const subscription: Stripe.Subscription =
-    await getStripe().subscriptions.retrieve(subscriptionId);
+  const stripe = getStripe();
+  const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
   const customerId = getId(subscription.customer);
   if (!customerId) return null;
 
+  const { data } = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "all",
+    limit: CUSTOMER_SUBSCRIPTIONS_LIMIT,
+  });
+  // A brand-new subscription can be missing from the list for a moment
+  const candidates = data.some((item) => item.id === subscription.id)
+    ? data
+    : [subscription, ...data];
+  const current = pickCurrentSubscription(candidates) ?? subscription;
+
   await connectDB();
   return User.findOneAndUpdate(
     { stripeCustomerId: customerId },
-    toSubscriptionFields(subscription, getPlanForPriceId),
+    toSubscriptionFields(current, getPlanForPriceId),
     { returnDocument: "after" },
   );
 }

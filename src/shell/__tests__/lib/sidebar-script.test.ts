@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SIDEBAR_INIT_SCRIPT, SIDEBAR_STORAGE_KEY } from "@/shared/lib/sidebar-script";
+import { SIDEBAR_INIT_SCRIPT, SIDEBAR_STORAGE_KEY } from "@/shell/lib/sidebar-script";
 
 // Runs the inline script against a stand-in window, as the browser does before the first paint
 function run({

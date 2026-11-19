@@ -10,10 +10,11 @@ import {
   SEARCH_QUERY_MAX_LENGTH,
   TMDB_MAX_PAGE,
 } from "@/features/movies/constants";
-import {
-  INVALID_MOVIE_ID,
-  favoriteMovieIdSchema,
-} from "@/features/favorites/validations/favorites.schema";
+
+export const INVALID_MOVIE_ID = "Invalid movie ID";
+
+// TMDB movie IDs are positive integers; favorites, lists and the rest store them as strings
+export const movieIdStringSchema = z.string().regex(/^[1-9]\d{0,9}$/, INVALID_MOVIE_ID);
 
 const pageSchema = z.coerce.number().int().min(1).max(TMDB_MAX_PAGE).default(1);
 
@@ -77,5 +78,4 @@ export const advancedDiscoverQuerySchema = movieDiscoverQuerySchema
 export const movieIdSchema = z.coerce.number().int().positive();
 
 // A movie page visit; the same string movie IDs as favorites
-export const movieViewSchema = z.object({ movieId: favoriteMovieIdSchema });
-export { INVALID_MOVIE_ID };
+export const movieViewSchema = z.object({ movieId: movieIdStringSchema });

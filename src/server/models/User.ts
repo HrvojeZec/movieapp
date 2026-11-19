@@ -5,7 +5,7 @@ import { WIDGET_TYPES, WIDGET_VIEWS } from "@/features/stats/constants";
 import type { LayoutItem } from "@/features/stats/types";
 
 // Each extra round doubles the hashing time; 12 keeps brute force expensive and logins fast enough
-const BCRYPT_SALT_ROUNDS = 12;
+export const BCRYPT_SALT_ROUNDS = 12;
 
 export interface IUser extends Document {
   email: string;
@@ -158,6 +158,8 @@ const UserSchema = new Schema<IUser>(
 );
 
 UserSchema.index({ createdAt: -1 });
+// A reset link is looked up by its hash; only accounts with a pending reset have one
+UserSchema.index({ passwordResetTokenHash: 1 }, { sparse: true });
 
 // A rejected promise (e.g. bcrypt fails) aborts the save
 UserSchema.pre("save", async function () {

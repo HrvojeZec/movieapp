@@ -7,7 +7,7 @@ import { LayoutGroup } from "motion/react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useCommandPaletteStore } from "@/features/movies/store/command-palette.store";
 import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
-import { useSidebarState } from "@/shared/hooks/useSidebarState";
+import { useSidebarState } from "@/shell/hooks/useSidebarState";
 import { ROUTES } from "@/shared/routes";
 import { lockedPlanName, visibleGroups, type SidebarLink } from "./sidebar-links";
 import { SidebarAuthCard } from "./SidebarAuthCard";

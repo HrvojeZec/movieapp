@@ -2,6 +2,11 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 
+const SERVER_ONLY = {
+  group: ["@/server/*", "@/features/*/server/*"],
+  message: "Server-only module: import it from route handlers or other server code.",
+};
+
 const eslintConfig = [
   {
     ignores: [
@@ -38,17 +43,25 @@ const eslintConfig = [
       "src/features/*/store/**",
       "src/features/*/constants.ts",
       "src/features/*/types.ts",
-      "src/shared/**",
+      "src/shell/**",
       "src/app/providers.tsx",
     ],
+    rules: {
+      "no-restricted-imports": ["error", { patterns: [SERVER_ONLY] }],
+    },
+  },
+  {
+    // The bottom layer: features and the app shell build on shared, never the other way round
+    files: ["src/shared/**"],
     rules: {
       "no-restricted-imports": [
         "error",
         {
           patterns: [
+            SERVER_ONLY,
             {
-              group: ["@/server/*", "@/features/*/server/*"],
-              message: "Server-only module: import it from route handlers or other server code.",
+              group: ["@/features/*", "@/shell/*"],
+              message: "shared must not depend on features or the app shell; move the code up.",
             },
           ],
         },

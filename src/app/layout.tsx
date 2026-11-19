@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import { getAppUrl } from "@/server/app-url";
 import { APP_NAME } from "@/shared/constants";
-import { SIDEBAR_INIT_SCRIPT } from "@/shared/lib/sidebar-script";
+import { SIDEBAR_INIT_SCRIPT } from "@/shell/lib/sidebar-script";
 import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });

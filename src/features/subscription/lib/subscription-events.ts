@@ -1,5 +1,5 @@
 import type Stripe from "stripe";
-import { trialEndingNotification } from "@/features/notifications/lib/reminder-events";
+import { trialEndingNotification } from "@/features/subscription/lib/reminder-events";
 import type { NotificationInput } from "@/features/notifications/types";
 import { getPlanName } from "@/features/subscription/lib/entitlements";
 import { getPlanForPriceId } from "@/features/subscription/lib/plans";

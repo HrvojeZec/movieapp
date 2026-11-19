@@ -222,6 +222,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The app shell (layout, header, sidebar, phone menu) lives in `src/shell` instead of
+  `src/shared`, and a lint rule keeps `shared` from importing features or the shell. The movie ID
+  schema moved to movies and the subscription notification texts to subscription, so lists,
+  watched and watchlist no longer depend on favorites and notifications on no feature at all
+- User activity older than 400 days is deleted by MongoDB (the stats read one year); activity
+  reads use one compound index, and reset links find their account through an index
 - The header runs the full width with the sidebar under it: the sidebar button and the full
   logo sit at its left and never move, so collapsing the sidebar no longer squeezes the logo
   under the button. Ctrl/⌘+B still toggles it; on tablets a click outside closes the open panel
@@ -308,6 +314,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- A late Stripe event of an ended subscription (Stripe retries for days) could overwrite a newer
+  active one and downgrade the user; the sync now stores the customer's subscription that grants
+  access, and such an event sends no notification
+- Two open checkouts (two tabs) could both be paid; starting a checkout now closes the
+  customer's other open ones, and two first checkouts at once share one Stripe customer
+- Dashboard saves run in order, so a slow save can't overwrite a newer layout, and a change made
+  right before closing or reloading the tab is still saved (keepalive on pagehide)
+- Following a link while holding a dashboard widget left the drag cursor on the whole page
+- Login answered an unknown email faster than a wrong password, which told whether an account
+  existed; both now take one bcrypt check
 - Dashboard dragging is clearer: the grip (⠿) now drags the widget too; dragging down past the
   middle of the widget underneath lands below it instead of floating back up; a spot a widget
   can't take shows a red "Can't place here" outline and a short shake, and letting go there

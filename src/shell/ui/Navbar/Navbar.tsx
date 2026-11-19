@@ -9,8 +9,8 @@ import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchB
 import { APP_NAME } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
-import { MobileMenu } from "@/shared/ui/MobileMenu/MobileMenu";
-import { SidebarToggle } from "@/shared/ui/Sidebar/SidebarToggle";
+import { MobileMenu } from "@/shell/ui/MobileMenu/MobileMenu";
+import { SidebarToggle } from "@/shell/ui/Sidebar/SidebarToggle";
 import { AccountArea } from "./AccountArea";
 import classes from "./Navbar.module.scss";
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getReminderNotification } from "@/features/notifications/lib/reminder-events";
+import { getReminderNotification } from "@/features/subscription/lib/reminder-events";
 import type { DueReminder } from "@/features/subscription/lib/reminders";
 
 const reminder = (overrides: Partial<DueReminder> = {}): DueReminder => ({

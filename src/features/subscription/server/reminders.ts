@@ -1,7 +1,7 @@
 import connectDB from "@/server/db/mongodb";
 import User from "@/server/models/User";
 import { DAY_MS } from "@/shared/lib/time";
-import { getReminderNotification } from "@/features/notifications/lib/reminder-events";
+import { getReminderNotification } from "@/features/subscription/lib/reminder-events";
 import { notifyUser } from "@/features/notifications/server/notify";
 import { ENTITLED_STATUSES, REMINDER_DAYS_BEFORE } from "@/features/subscription/constants";
 import { getDueReminders, type ReminderCandidate } from "@/features/subscription/lib/reminders";

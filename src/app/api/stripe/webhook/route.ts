@@ -9,7 +9,7 @@ import {
   linkStripeCustomer,
   syncSubscription,
 } from "@/features/subscription/server/subscriptions";
-import { getSubscriptionNotification } from "@/features/notifications/lib/subscription-events";
+import { getSubscriptionNotification } from "@/features/subscription/lib/subscription-events";
 import { notifyUser } from "@/features/notifications/server/notify";
 
 export async function POST(request: NextRequest) {
@@ -92,6 +92,9 @@ async function syncAndNotify(subscriptionId: string, event: Stripe.Event): Promi
     console.warn(`No user found for subscription ${subscriptionId} (${event.type}, ${event.id})`);
     return;
   }
+
+  // A late event of an older subscription mustn't tell the user their current one ended
+  if (user.subscriptionId !== subscriptionId) return;
 
   const notification = getSubscriptionNotification(event);
   if (!notification) return;
