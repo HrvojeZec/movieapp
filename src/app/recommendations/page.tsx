@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RecommendationsView } from "@/features/recommendations/views/RecommendationsView";
+import { RecommendationsView } from "@/views/recommendations/RecommendationsView";
 
 export const metadata: Metadata = { title: "Recommended for You" };
 

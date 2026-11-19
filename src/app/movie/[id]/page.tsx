@@ -3,7 +3,7 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { movieKeys } from "@/features/movies/api/query-keys";
 import { buildMovieMetadata } from "@/features/movies/lib/metadata";
 import { loadMoviePage } from "@/features/movies/server/movie-page";
-import { MovieDetailsView } from "@/features/movies/views/MovieDetailsView";
+import { MovieDetailsView } from "@/views/movie-details/MovieDetailsView";
 import { getServerQueryClient } from "@/server/query-client";
 
 interface PageProps {

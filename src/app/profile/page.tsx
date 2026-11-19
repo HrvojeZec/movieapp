@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProfileView } from "@/features/profile/views/ProfileView";
+import { ProfileView } from "@/views/profile/ProfileView";
 
 export const metadata: Metadata = { title: "Profile" };
 

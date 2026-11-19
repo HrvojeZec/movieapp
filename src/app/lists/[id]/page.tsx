@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ListView } from "@/features/lists/views/ListView";
+import { ListView } from "@/views/list/ListView";
 
 // Lists are private, so the server has no session-free way to name the page
 export const metadata: Metadata = { title: "Movie List" };

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WatchedView } from "@/features/watched/views/WatchedView";
+import { WatchedView } from "@/views/watched/WatchedView";
 
 export const metadata: Metadata = { title: "Watched" };
 

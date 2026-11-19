@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { MostWatchedView } from "@/features/movies/views/MostWatchedView";
+import { MostWatchedView } from "@/views/most-watched/MostWatchedView";
 
 export const metadata: Metadata = { title: "Most Watched" };
 

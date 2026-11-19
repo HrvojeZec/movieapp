@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ListsView } from "@/features/lists/views/ListsView";
+import { ListsView } from "@/views/lists/ListsView";
 
 export const metadata: Metadata = { title: "My Lists" };
 
