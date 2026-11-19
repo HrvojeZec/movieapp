@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LIST_NAME_MAX_LENGTH } from "@/features/lists/constants";
+import { LIST_NAME_MAX_LENGTH, MAX_MOVIES_PER_LIST } from "@/features/lists/constants";
 import {
   INVALID_MOVIE_ID,
   favoriteMovieIdSchema,
@@ -26,3 +26,12 @@ export const createListSchema = z.object({
 export const renameListSchema = z.object({ name: listNameSchema });
 
 export const addListMovieSchema = z.object({ movieId: listMovieIdSchema });
+
+/** A new order for a list: every movie once (the server checks they are the list's movies). */
+export const reorderListSchema = z.object({
+  movieIds: z
+    .array(listMovieIdSchema)
+    .min(1)
+    .max(MAX_MOVIES_PER_LIST)
+    .refine((ids) => new Set(ids).size === ids.length, "Each movie can only appear once"),
+});

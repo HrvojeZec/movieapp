@@ -5,8 +5,12 @@ import {
   deleteListRequest,
   removeListMovie,
   renameListRequest,
+  reorderListRequest,
 } from "@/features/lists/api/lists.api";
 import { listKeys } from "@/features/lists/api/query-keys";
+import type { MovieListDetails } from "@/features/lists/types";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { sameMembers } from "@/shared/lib/same-members";
 import { toApiError } from "@/shared/lib/api-error";
 import { notifyError } from "@/shared/lib/notify";
 
@@ -17,6 +21,7 @@ const showError = (title: string) => (error: unknown) =>
 /** Every change to lists; each refetches the lists afterwards, as counts and order change. */
 export function useListMutations() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const refresh = () => queryClient.invalidateQueries({ queryKey: listKeys.all });
 
   const create = useMutation({
@@ -45,5 +50,25 @@ export function useListMutations() {
     onError: showError("Could not update the list"),
   });
 
-  return { create, rename, remove, toggleMovie };
+  // Shown at once; the previous order comes back if the server refuses (e.g. the list changed)
+  const reorder = useMutation({
+    mutationFn: ({ listId, movieIds }: { listId: string; movieIds: string[] }) =>
+      reorderListRequest(listId, movieIds),
+    onMutate: async ({ listId, movieIds }) => {
+      const key = listKeys.detail(user?.id ?? "", listId);
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<MovieListDetails>(key);
+      if (previous && sameMembers(previous.movieIds, movieIds)) {
+        queryClient.setQueryData<MovieListDetails>(key, { ...previous, movieIds });
+      }
+      return { key, previous };
+    },
+    onError: (error, _variables, context) => {
+      if (context?.previous) queryClient.setQueryData(context.key, context.previous);
+      showError("Could not save the new order")(error);
+    },
+    onSettled: refresh,
+  });
+
+  return { create, rename, remove, toggleMovie, reorder };
 }

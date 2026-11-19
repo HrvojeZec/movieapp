@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Lists can be reordered: "Reorder" turns the list into rows that move by dragging their grip or
+  with up and down buttons, saved right away (`PATCH /api/lists/:id/order`, which only accepts
+  the list's own movies, each once). New movies now go to the top of a list
+- On touch screens, swiping a movie to the left removes it from the watchlist or a list, with
+  "Undo" in the notification (not offered when the plan no longer allows adding it back)
 - Opening a movie from a card makes its poster fly into the movie page (React `<ViewTransition>`;
   only the clicked card takes part, so a movie shown in two rows still animates). Going back is a
   plain navigation, and browsers without view transitions simply skip the animation
