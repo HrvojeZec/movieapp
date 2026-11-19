@@ -227,7 +227,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   types, rules, server services and the display of a movie, list or chart) lives in
   `src/entities` (user, subscription, notification, movie, favorites, watchlist, watched,
   movie-list, recommendation, stats). The movie card no longer imports the favorite, watched and
-  watchlist buttons; it takes them as `actions`
+  watchlist buttons; it takes them as `actions`. Features are the user's actions: auth,
+  toggle-favorite, toggle-watchlist, mark-watched, manage-lists, checkout, manage-subscription,
+  search-movies, discover-filters and customize-dashboard
 - The README describes the project instead of the create-next-app template: features by plan, how
   to try the paid plans with a test card, the stack, the architecture and its layers, running
   locally and in Docker, environment variables, tests, known limitations and what I would do

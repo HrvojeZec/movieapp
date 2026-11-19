@@ -19,6 +19,7 @@ import { useUserStats } from "@/entities/stats/hooks/useUserStats";
 import { addWidget } from "@/entities/stats/lib/grid-layout";
 import type { WidgetType } from "@/entities/stats/types";
 import { DashboardGrid } from "@/features/stats/ui/DashboardGrid/DashboardGrid";
+import { WIDGETS } from "@/features/stats/widgets/registry";
 import { WidgetPalette } from "@/features/customize-dashboard/ui/WidgetPalette/WidgetPalette";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";
@@ -120,7 +121,13 @@ function StatsContent() {
       )}
 
       {layout && (
-        <WidgetPalette opened={paletteOpened} onClose={palette.close} layout={layout} onAdd={add} />
+        <WidgetPalette
+          opened={paletteOpened}
+          onClose={palette.close}
+          layout={layout}
+          onAdd={add}
+          widgets={WIDGETS}
+        />
       )}
       <Modal opened={resetOpened} onClose={resetConfirm.close} title="Reset the layout?">
         <Stack gap="md">
