@@ -4,7 +4,7 @@ import { Bookmark } from "lucide-react";
 import { useAuth } from "@/entities/user/hooks/useAuth";
 import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
 import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
-import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { MovieGrid } from "@/widgets/movie-collections/ui/MovieGrid/MovieGrid";
 import { useToggleWatchlist } from "@/features/toggle-watchlist/hooks/useToggleWatchlist";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";

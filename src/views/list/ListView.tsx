@@ -24,8 +24,8 @@ import { ListsUpgradeNotice } from "@/features/manage-lists/ui/ListsUpgradeNotic
 import { ReorderList } from "@/features/manage-lists/ui/ReorderList/ReorderList";
 import { GRID_COLUMNS } from "@/entities/movie/constants";
 import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
-import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
-import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { ActionMovieCard } from "@/widgets/movie-collections/ui/ActionMovieCard/ActionMovieCard";
+import { MovieGrid } from "@/widgets/movie-collections/ui/MovieGrid/MovieGrid";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { pluralize } from "@/shared/lib/format";
