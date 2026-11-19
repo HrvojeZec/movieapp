@@ -318,6 +318,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Movie pages with a bright backdrop (white skies, pale walls) were hard to read: the backdrop now
+  has a dark veil that fades into the page, and the year, runtime and genre badges are solid
+  instead of see-through outlines. An end-to-end test measures the text contrast (WCAG AA, 4.5:1)
+  over a bright backdrop
 - A late Stripe event of an ended subscription (Stripe retries for days) could overwrite a newer
   active one and downgrade the user; the sync now stores the customer's subscription that grants
   access, and such an event sends no notification
