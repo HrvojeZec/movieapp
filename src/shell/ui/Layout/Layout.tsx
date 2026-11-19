@@ -4,8 +4,8 @@ import { AppShell } from "@mantine/core";
 import { CommandPalette } from "@/features/movies/ui/CommandPalette/CommandPalette";
 import { Footer } from "@/shared/ui/Footer/Footer";
 import { NavigationProgress } from "@/shared/ui/NavigationProgress/NavigationProgress";
-import { Navbar } from "@/shared/ui/Navbar/Navbar";
-import { Sidebar } from "@/shared/ui/Sidebar/Sidebar";
+import { Navbar } from "@/shell/ui/Navbar/Navbar";
+import { Sidebar } from "@/shell/ui/Sidebar/Sidebar";
 import classes from "./Layout.module.scss";
 
 const HEADER_HEIGHT = 64;

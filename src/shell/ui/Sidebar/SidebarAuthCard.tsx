@@ -3,7 +3,7 @@ import { ActionIcon, Text, Tooltip } from "@mantine/core";
 import { LogIn } from "lucide-react";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { ROUTES } from "@/shared/routes";
-import { AuthButtons } from "@/shared/ui/Navbar/AuthButtons";
+import { AuthButtons } from "@/shell/ui/Navbar/AuthButtons";
 import classes from "./Sidebar.module.scss";
 
 /** For visitors: a short pitch with Login and Sign Up, or a login icon when the sidebar is narrow. */

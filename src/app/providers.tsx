@@ -6,7 +6,7 @@ import { Notifications } from "@mantine/notifications";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { MotionConfig } from "motion/react";
-import { Layout } from "@/shared/ui/Layout/Layout";
+import { Layout } from "@/shell/ui/Layout/Layout";
 import { createQueryClient } from "@/shared/lib/query-client";
 import { theme } from "@/shared/theme/theme";
 

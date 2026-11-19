@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { AuthUser } from "@/features/auth/types";
-import { SIDEBAR_GROUPS, lockedPlanName, visibleGroups } from "@/shared/ui/Sidebar/sidebar-links";
+import { SIDEBAR_GROUPS, lockedPlanName, visibleGroups } from "@/shell/ui/Sidebar/sidebar-links";
 
 const user = { id: "1", name: "Test", email: "test@example.com" } as AuthUser;
 const link = (label: string) =>

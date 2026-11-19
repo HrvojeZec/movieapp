@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useSyncExternalStore } from "react";
-import { SIDEBAR_STORAGE_KEY, type SidebarMode } from "@/shared/lib/sidebar-script";
+import { SIDEBAR_STORAGE_KEY, type SidebarMode } from "@/shell/lib/sidebar-script";
 
 const readMode = (): SidebarMode =>
   document.documentElement.dataset.sidebar === "collapsed" ? "collapsed" : "expanded";

@@ -13,8 +13,8 @@ import { getPlanName } from "@/features/subscription/lib/entitlements";
 import { APP_NAME } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
 import { SPRINGS, STAGGER_STEP } from "@/shared/ui/motion/motion.constants";
-import { AuthButtons } from "@/shared/ui/Navbar/AuthButtons";
-import { lockedPlanName, visibleGroups } from "@/shared/ui/Sidebar/sidebar-links";
+import { AuthButtons } from "@/shell/ui/Navbar/AuthButtons";
+import { lockedPlanName, visibleGroups } from "@/shell/ui/Sidebar/sidebar-links";
 import classes from "./MobileMenu.module.scss";
 
 // The panel can be pulled this far left; past the threshold (or flicked fast enough) it closes

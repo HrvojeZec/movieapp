@@ -1,7 +1,7 @@
 "use client";
 import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useSidebarState } from "@/shared/hooks/useSidebarState";
+import { useSidebarState } from "@/shell/hooks/useSidebarState";
 import { useSidebarOverlayStore } from "./sidebar-overlay.store";
 
 /**
