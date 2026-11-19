@@ -5,7 +5,7 @@ import { Skeleton } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { LayoutGroup } from "motion/react";
 import { useAuth } from "@/entities/user/hooks/useAuth";
-import { useCommandPaletteStore } from "@/features/movies/store/command-palette.store";
+import { useCommandPaletteStore } from "@/features/search-movies/store/command-palette.store";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useSidebarState } from "@/shell/hooks/useSidebarState";
 import { ROUTES } from "@/shared/routes";

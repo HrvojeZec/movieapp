@@ -4,7 +4,7 @@ import { Container, Group, Stack, Text, Title, UnstyledButton } from "@mantine/c
 import { ArrowLeft } from "lucide-react";
 import { useMovieSearch } from "@/entities/movie/hooks/useMovieSearch";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
-import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchBox";
+import { MovieSearchBox } from "@/features/search-movies/ui/MovieSearchBox/MovieSearchBox";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 
 export function SearchView() {

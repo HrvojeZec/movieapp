@@ -1,0 +1,41 @@
+import { describe, expect, it } from "vitest";
+import {
+  checkoutSessionSchema,
+  checkoutSuccessSchema,
+} from "@/features/checkout/validations/checkout.schema";
+
+describe("checkoutSessionSchema", () => {
+  it.each(["premium", "pro"])("accepts the %s plan", (plan) => {
+    expect(checkoutSessionSchema.safeParse({ plan }).success).toBe(true);
+  });
+
+  it("does not accept a price ID, so clients can't pick an arbitrary price", () => {
+    expect(checkoutSessionSchema.safeParse({ plan: "price_123" }).success).toBe(false);
+  });
+
+  it.each(["basic", "", undefined])("rejects %j", (plan) => {
+    expect(checkoutSessionSchema.safeParse({ plan }).success).toBe(false);
+  });
+
+  it("bills monthly unless yearly is asked for", () => {
+    expect(checkoutSessionSchema.parse({ plan: "pro" })).toEqual({
+      plan: "pro",
+      interval: "month",
+    });
+    expect(checkoutSessionSchema.parse({ plan: "pro", interval: "year" }).interval).toBe("year");
+  });
+
+  it.each(["week", "yearly", ""])("rejects an unknown interval (%j)", (interval) => {
+    expect(checkoutSessionSchema.safeParse({ plan: "pro", interval }).success).toBe(false);
+  });
+});
+
+describe("checkoutSuccessSchema", () => {
+  it("accepts a Checkout Session ID", () => {
+    expect(checkoutSuccessSchema.safeParse({ sessionId: "cs_test_a1b2c3" }).success).toBe(true);
+  });
+
+  it.each(["", "pi_123", "sub_123"])("rejects %j", (sessionId) => {
+    expect(checkoutSuccessSchema.safeParse({ sessionId }).success).toBe(false);
+  });
+});

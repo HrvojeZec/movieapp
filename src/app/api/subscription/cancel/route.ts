@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/entities/user/server/session";
-import { cancelSubscription } from "@/features/subscription/server/manage";
+import { cancelSubscription } from "@/features/manage-subscription/server/manage";
 import { withRouteHandler } from "@/server/http/route-handler";
 import { enforceRateLimit } from "@/server/rate-limit/enforce";
 

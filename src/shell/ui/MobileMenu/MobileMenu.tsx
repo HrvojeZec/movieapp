@@ -7,7 +7,7 @@ import { CreditCard, LogOut, User, X } from "lucide-react";
 import { motion, type PanInfo } from "motion/react";
 import { useAuth } from "@/entities/user/hooks/useAuth";
 import { useLogout } from "@/features/auth/hooks/useLogout";
-import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchBox";
+import { MovieSearchBox } from "@/features/search-movies/ui/MovieSearchBox/MovieSearchBox";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { getPlanName } from "@/entities/subscription/lib/entitlements";
 import { APP_NAME } from "@/shared/constants";

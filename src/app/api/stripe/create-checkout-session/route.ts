@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/entities/user/server/session";
-import { createSubscriptionCheckout } from "@/features/subscription/server/checkout";
-import { checkoutSessionSchema } from "@/features/subscription/validations/subscription.schema";
+import { createSubscriptionCheckout } from "@/features/checkout/server/checkout";
+import { checkoutSessionSchema } from "@/features/checkout/validations/checkout.schema";
 import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 import { enforceRateLimit } from "@/server/rate-limit/enforce";

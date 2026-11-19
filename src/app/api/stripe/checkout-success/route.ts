@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/entities/user/server/session";
-import { confirmCheckoutSession } from "@/features/subscription/server/checkout";
-import { checkoutSuccessSchema } from "@/features/subscription/validations/subscription.schema";
+import { confirmCheckoutSession } from "@/features/checkout/server/checkout";
+import { checkoutSuccessSchema } from "@/features/checkout/validations/checkout.schema";
 import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 

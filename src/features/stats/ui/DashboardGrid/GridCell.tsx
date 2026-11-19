@@ -1,7 +1,7 @@
 "use client";
 import { useDeferredValue, useEffect, useRef, useState, type ReactNode } from "react";
 import { animate, motion, motionValue, useReducedMotion } from "motion/react";
-import type { CellMotion } from "@/features/stats/hooks/useGridDrag";
+import type { CellMotion } from "@/features/customize-dashboard/hooks/useGridDrag";
 import { cellToPixels, type GridMetrics } from "@/entities/stats/lib/grid-drag";
 import type { LayoutItem } from "@/entities/stats/types";
 import { SPRINGS } from "@/shared/ui/motion/motion.constants";

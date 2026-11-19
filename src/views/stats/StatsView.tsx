@@ -19,7 +19,7 @@ import { useUserStats } from "@/entities/stats/hooks/useUserStats";
 import { addWidget } from "@/entities/stats/lib/grid-layout";
 import type { WidgetType } from "@/entities/stats/types";
 import { DashboardGrid } from "@/features/stats/ui/DashboardGrid/DashboardGrid";
-import { WidgetPalette } from "@/features/stats/ui/WidgetPalette/WidgetPalette";
+import { WidgetPalette } from "@/features/customize-dashboard/ui/WidgetPalette/WidgetPalette";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";

@@ -5,7 +5,7 @@ import { useAuth } from "@/entities/user/hooks/useAuth";
 import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
 import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
-import { useToggleWatchlist } from "@/features/watchlist/hooks/useToggleWatchlist";
+import { useToggleWatchlist } from "@/features/toggle-watchlist/hooks/useToggleWatchlist";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
