@@ -6,8 +6,14 @@ import { GRID_COLUMNS } from "@/features/stats/constants";
 import { useGridColumns } from "@/features/stats/hooks/useGridColumns";
 import { useGridDrag, type CellMotion } from "@/features/stats/hooks/useGridDrag";
 import { cellToPixels } from "@/features/stats/lib/grid-drag";
-import { removeWidget, reorderWidget, toColumns } from "@/features/stats/lib/grid-layout";
+import {
+  removeWidget,
+  reorderWidget,
+  setWidgetView,
+  toColumns,
+} from "@/features/stats/lib/grid-layout";
 import type { LayoutItem, UserStats, WidgetType } from "@/features/stats/types";
+import { ViewToggle } from "@/features/stats/ui/ViewToggle/ViewToggle";
 import { WidgetBody } from "@/features/stats/ui/WidgetBody/WidgetBody";
 import type { WidgetEditControls } from "@/features/stats/ui/WidgetFrame/WidgetFrame";
 import { WidgetFrame } from "@/features/stats/ui/WidgetFrame/WidgetFrame";
@@ -102,6 +108,7 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
         shown.map((item) => {
           const widget = WIDGETS[item.type];
           const Icon = widget.icon;
+          const view = item.view ?? "chart";
           return (
             <GridCell
               key={item.type}
@@ -117,8 +124,23 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
                   bare={widget.bare}
                   edit={editControls(item.type, values)}
                   active={drag.activeType === item.type}
+                  actions={
+                    widget.renderTable && (
+                      <ViewToggle
+                        view={view}
+                        onChange={(next) => onChange(setWidgetView(layout, item.type, next))}
+                      />
+                    )
+                  }
                 >
-                  <WidgetBody type={item.type} w={size.w} h={size.h} stats={stats} now={now} />
+                  <WidgetBody
+                    type={item.type}
+                    w={size.w}
+                    h={size.h}
+                    view={view}
+                    stats={stats}
+                    now={now}
+                  />
                 </WidgetFrame>
               )}
             </GridCell>

@@ -1,0 +1,13 @@
+.scroll {
+  height: 100%;
+  overflow-y: auto;
+
+  // The sticky header covers the rows scrolling under it
+  thead {
+    background-color: var(--mantine-color-dark-7);
+  }
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+}

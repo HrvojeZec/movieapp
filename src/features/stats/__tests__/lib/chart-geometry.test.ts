@@ -3,6 +3,7 @@ import {
   donutArcs,
   heatmapWeeks,
   linePath,
+  monthlyActivity,
   topWithOther,
 } from "@/features/stats/lib/chart-geometry";
 
@@ -107,5 +108,21 @@ describe("topWithOther", () => {
 
   it("leaves Other out when nothing is left over", () => {
     expect(topWithOther([genre("Drama", 2)], 5)).toEqual([{ label: "Drama", count: 2 }]);
+  });
+});
+
+describe("monthlyActivity", () => {
+  it("sums active days and activity per month, newest first", () => {
+    expect(
+      monthlyActivity([
+        { date: "2026-10-03", watched: 1, views: 0 },
+        { date: "2026-11-17", watched: 1, views: 2 },
+        { date: "2026-11-18", watched: 0, views: 1 },
+      ]),
+    ).toEqual([
+      { month: "2026-11", activeDays: 2, activities: 4 },
+      { month: "2026-10", activeDays: 1, activities: 1 },
+    ]);
+    expect(monthlyActivity([])).toEqual([]);
   });
 });

@@ -25,10 +25,20 @@ interface WidgetFrameProps {
   /** Present while the board is being customized. */
   edit?: WidgetEditControls;
   active?: boolean;
+  /** Extra controls in the header, shown in and out of editing (e.g. chart or table). */
+  actions?: ReactNode;
   children: ReactNode;
 }
 
-export function WidgetFrame({ title, icon, bare, edit, active, children }: WidgetFrameProps) {
+export function WidgetFrame({
+  title,
+  icon,
+  bare,
+  edit,
+  active,
+  actions,
+  children,
+}: WidgetFrameProps) {
   const showHeader = !bare || Boolean(edit);
 
   return (
@@ -51,6 +61,7 @@ export function WidgetFrame({ title, icon, bare, edit, active, children }: Widge
               {title}
             </Title>
           </Group>
+          {actions}
           {edit && (
             // Buttons inside the header must not start a drag
             <Group

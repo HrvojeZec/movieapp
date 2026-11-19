@@ -15,7 +15,9 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { GRID_GAP, GRID_ROW_HEIGHT } from "@/features/stats/constants";
+import { DONUT_GENRES, GRID_GAP, GRID_ROW_HEIGHT } from "@/features/stats/constants";
+import { monthlyActivity, topWithOther } from "@/features/stats/lib/chart-geometry";
+import { DataTable } from "@/features/stats/ui/DataTable/DataTable";
 import type { MonthActivity, UserStats, WidgetType } from "@/features/stats/types";
 import { BarList } from "@/features/stats/ui/BarList/BarList";
 import { ActivityHeatmap } from "@/features/stats/ui/ActivityHeatmap/ActivityHeatmap";
@@ -42,6 +44,8 @@ export interface WidgetDefinition {
   /** Tiles carry their own label, so they show no header outside editing. */
   bare?: boolean;
   render: (props: WidgetProps) => ReactNode;
+  /** The same data as a table, for widgets in TABLE_VIEW_WIDGETS. */
+  renderTable?: (props: WidgetProps) => ReactNode;
 }
 
 // Padding, header and gap of a widget frame, and the height of one bar row
@@ -67,6 +71,13 @@ const monthColumns = (months: MonthActivity[], key: "watched" | "views") =>
       value: entry[key],
     };
   });
+
+const PERCENT = 100;
+
+const monthRows = (months: MonthActivity[], key: "watched" | "views") =>
+  [...months]
+    .reverse()
+    .map((entry) => [dayjs(`${entry.month}-01`).format("MMMM YYYY"), entry[key]]);
 
 const tile = (
   title: string,
@@ -135,6 +146,14 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
           Mark movies as watched or add favorites to see which genres you like most.
         </Text>
       ),
+    renderTable: ({ stats }) => (
+      <DataTable
+        label="Favorite genres, by number of watched and favorite movies"
+        columns={["Genre", "Movies"]}
+        rows={stats.topGenres.map((genre) => [genre.name, genre.count])}
+        emptyText="Mark movies as watched or add favorites to see which genres you like most."
+      />
+    ),
   },
   // Two charts rather than one: page views outnumber watched movies, so they need their own scale
   watchedMonthly: {
@@ -145,6 +164,14 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
       <WatchedMonthly
         columns={monthColumns(stats.activityByMonth, "watched")}
         unit={["movie watched", "movies watched"]}
+      />
+    ),
+    renderTable: ({ stats }) => (
+      <DataTable
+        label="Movies watched per month, last 12 months"
+        columns={["Month", "Movies watched"]}
+        rows={monthRows(stats.activityByMonth, "watched")}
+        emptyText="Movies you mark as watched show up here month by month."
       />
     ),
   },
@@ -160,18 +187,54 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
         emptyText="Movie pages you open over the year show up here as a trend."
       />
     ),
+    renderTable: ({ stats }) => (
+      <DataTable
+        label="Movie pages opened per month, last 12 months"
+        columns={["Month", "Pages opened"]}
+        rows={monthRows(stats.activityByMonth, "views")}
+        emptyText="Movie pages you open over the year show up here."
+      />
+    ),
   },
   genreDonut: {
     title: "Genre mix",
     description: "The share of your top genres, the rest as Other.",
     icon: PieChart,
     render: ({ stats }) => <GenreDonut genres={stats.topGenres} />,
+    renderTable: ({ stats }) => {
+      const slices = topWithOther(stats.topGenres, DONUT_GENRES);
+      const total = slices.reduce((sum, slice) => sum + slice.count, 0);
+      return (
+        <DataTable
+          label="Share of your top genres among watched and favorite movies"
+          columns={["Genre", "Share", "Movies"]}
+          rows={slices.map((slice) => [
+            slice.label,
+            `${Math.round((slice.count / total) * PERCENT)}%`,
+            slice.count,
+          ])}
+          emptyText="Mark movies as watched or add favorites to see your mix of genres."
+        />
+      );
+    },
   },
   activityHeatmap: {
     title: "Activity calendar",
     description: "A year of days: movies watched and pages opened.",
     icon: CalendarRange,
     render: ({ stats, now }) => <ActivityHeatmap days={stats.activityByDay} now={now} />,
+    renderTable: ({ stats }) => (
+      <DataTable
+        label="Activity per month in the last year"
+        columns={["Month", "Active days", "Activities"]}
+        rows={monthlyActivity(stats.activityByDay).map((month) => [
+          dayjs(`${month.month}-01`).format("MMMM YYYY"),
+          month.activeDays,
+          month.activities,
+        ])}
+        emptyText="No activity in the last year yet. Open a movie or mark one as watched."
+      />
+    ),
   },
   streak: {
     title: "Streak",
