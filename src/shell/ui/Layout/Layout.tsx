@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, type ReactNode } from "react";
 import { AppShell } from "@mantine/core";
-import { CommandPalette } from "@/features/movies/ui/CommandPalette/CommandPalette";
+import { CommandPalette } from "@/features/search-movies/ui/CommandPalette/CommandPalette";
 import { Footer } from "@/shared/ui/Footer/Footer";
 import { NavigationProgress } from "@/shared/ui/NavigationProgress/NavigationProgress";
 import { Navbar } from "@/shell/ui/Navbar/Navbar";

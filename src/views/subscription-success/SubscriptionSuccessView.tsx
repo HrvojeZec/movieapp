@@ -2,7 +2,7 @@
 import { Container, Group, Skeleton, Stack, Text, ThemeIcon, Title } from "@mantine/core";
 import { AlertCircle, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useConfirmCheckout } from "@/features/subscription/hooks/useConfirmCheckout";
+import { useConfirmCheckout } from "@/features/checkout/hooks/useConfirmCheckout";
 import { SUBSCRIPTION_PLANS } from "@/entities/subscription/constants";
 import { SubscriptionTicket } from "@/entities/subscription/ui/SubscriptionTicket/SubscriptionTicket";
 import { ROUTES } from "@/shared/routes";

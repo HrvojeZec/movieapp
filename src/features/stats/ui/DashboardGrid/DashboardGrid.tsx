@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { GRID_COLUMNS } from "@/entities/stats/constants";
 import { Text } from "@mantine/core";
 import { useGridColumns } from "@/features/stats/hooks/useGridColumns";
-import { useGridDrag, type CellMotion } from "@/features/stats/hooks/useGridDrag";
+import { useGridDrag, type CellMotion } from "@/features/customize-dashboard/hooks/useGridDrag";
 import { cellToPixels } from "@/entities/stats/lib/grid-drag";
 import {
   removeWidget,
@@ -14,7 +14,7 @@ import {
   toColumns,
 } from "@/entities/stats/lib/grid-layout";
 import type { LayoutItem, UserStats, WidgetType } from "@/entities/stats/types";
-import { ViewToggle } from "@/features/stats/ui/ViewToggle/ViewToggle";
+import { ViewToggle } from "@/features/customize-dashboard/ui/ViewToggle/ViewToggle";
 import { WidgetBody } from "@/features/stats/ui/WidgetBody/WidgetBody";
 import type { WidgetEditControls } from "@/features/stats/ui/WidgetFrame/WidgetFrame";
 import { WidgetFrame } from "@/features/stats/ui/WidgetFrame/WidgetFrame";

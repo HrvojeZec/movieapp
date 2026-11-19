@@ -20,12 +20,12 @@ import {
   MAX_RATING,
   YEAR_OPTIONS_COUNT,
 } from "@/entities/movie/constants";
-import { useDiscoverFilters } from "@/features/movies/hooks/useDiscoverFilters";
+import { useDiscoverFilters } from "@/features/discover-filters/hooks/useDiscoverFilters";
 import { useGenres } from "@/entities/movie/hooks/useGenres";
 import { useInfiniteDiscoverMovies } from "@/entities/movie/hooks/useInfiniteDiscoverMovies";
 import { buildYearOptions } from "@/entities/movie/lib/filters";
 import { dedupeMovies } from "@/entities/movie/lib/movies";
-import { AdvancedFilters } from "@/features/movies/ui/AdvancedFilters/AdvancedFilters";
+import { AdvancedFilters } from "@/features/discover-filters/ui/AdvancedFilters/AdvancedFilters";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";

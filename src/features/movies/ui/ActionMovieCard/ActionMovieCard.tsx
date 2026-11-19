@@ -1,8 +1,8 @@
 "use client";
 import { MovieCard, type MovieCardProps } from "@/entities/movie/ui/MovieCard/MovieCard";
-import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
-import { WatchedButton } from "@/features/watched/ui/WatchedButton/WatchedButton";
-import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
+import { FavoriteButton } from "@/features/toggle-favorite/ui/FavoriteButton/FavoriteButton";
+import { WatchedButton } from "@/features/mark-watched/ui/WatchedButton/WatchedButton";
+import { WatchlistButton } from "@/features/toggle-watchlist/ui/WatchlistButton/WatchlistButton";
 
 /** The movie card with the user's actions on it. */
 export function ActionMovieCard(props: Omit<MovieCardProps, "actions">) {

@@ -3,11 +3,11 @@ import { Button, Center, Container, Group, Loader, SimpleGrid, Stack, Text } fro
 import { useDisclosure } from "@mantine/hooks";
 import { ListVideo, Plus } from "lucide-react";
 import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
-import { useListMutations } from "@/features/lists/hooks/useListMutations";
+import { useListMutations } from "@/features/manage-lists/hooks/useListMutations";
 import { useLists } from "@/entities/movie-list/hooks/useLists";
 import { ListCard } from "@/entities/movie-list/ui/ListCard/ListCard";
-import { ListNameModal } from "@/features/lists/ui/ListNameModal/ListNameModal";
-import { ListsUpgradeNotice } from "@/features/lists/ui/ListsUpgradeNotice/ListsUpgradeNotice";
+import { ListNameModal } from "@/features/manage-lists/ui/ListNameModal/ListNameModal";
+import { ListsUpgradeNotice } from "@/features/manage-lists/ui/ListsUpgradeNotice/ListsUpgradeNotice";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";

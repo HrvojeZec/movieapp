@@ -17,10 +17,10 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { Calendar, Clock, MapPin, PlayCircle, Star } from "lucide-react";
 import { useAuth } from "@/entities/user/hooks/useAuth";
-import { FavoriteButton } from "@/features/favorites/ui/FavoriteButton/FavoriteButton";
-import { AddToListMenu } from "@/features/lists/ui/AddToListMenu/AddToListMenu";
-import { WatchedButton } from "@/features/watched/ui/WatchedButton/WatchedButton";
-import { WatchlistButton } from "@/features/watchlist/ui/WatchlistButton/WatchlistButton";
+import { FavoriteButton } from "@/features/toggle-favorite/ui/FavoriteButton/FavoriteButton";
+import { AddToListMenu } from "@/features/manage-lists/ui/AddToListMenu/AddToListMenu";
+import { WatchedButton } from "@/features/mark-watched/ui/WatchedButton/WatchedButton";
+import { WatchlistButton } from "@/features/toggle-watchlist/ui/WatchlistButton/WatchlistButton";
 import { useMovieDetails } from "@/entities/movie/hooks/useMovieDetails";
 import { useTrackRecentlyViewed } from "@/entities/movie/hooks/useRecentlyViewed";
 import { useTrackMovieView } from "@/entities/movie/hooks/useTrackMovieView";
