@@ -9,6 +9,7 @@ import type { Movie } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import GradualBlur from "@/shared/vendor/react-bits/GradualBlur/GradualBlur";
+import { FilmGrain } from "./FilmGrain";
 import classes from "./MovieHero.module.scss";
 import { Magnetic } from "@/shared/ui/motion/Magnetic";
 
@@ -30,6 +31,7 @@ export function MovieHero({ movie, onPlayTrailer }: MovieHeroProps) {
       className={classes.hero}
       style={{ backgroundImage: `url(${getImageUrl(movie.backdrop_path, "w1280")})` }}
     >
+      <FilmGrain />
       <Container size="xl" h="100%" className={classes.content}>
         <Box maw={600} className={classes.copy}>
           <Title size="3rem" fw={700} c="white" mb="md">

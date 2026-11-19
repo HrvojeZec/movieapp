@@ -1,0 +1,41 @@
+// Under the hero's text (which comes later and is positioned), over its backdrop
+.grain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+// SVG noise as a data URL (the CSP allows data: images); larger than the hero so it can shift
+.noise {
+  position: absolute;
+  inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
+  animation: grain 0.48s steps(1) infinite;
+  animation-play-state: paused;
+
+  .grain[data-playing="true"] & {
+    animation-play-state: running;
+  }
+}
+
+// Four jumps, no gliding: it reads as grain, not as a moving texture
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(-6%, 4%);
+  }
+
+  50% {
+    transform: translate(5%, -7%);
+  }
+
+  75% {
+    transform: translate(-3%, 6%);
+  }
+}

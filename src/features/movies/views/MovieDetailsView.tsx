@@ -1,4 +1,5 @@
 "use client";
+import { ViewTransition } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import {
@@ -24,6 +25,7 @@ import { useMovieDetails } from "@/features/movies/hooks/useMovieDetails";
 import { useTrackRecentlyViewed } from "@/features/movies/hooks/useRecentlyViewed";
 import { useTrackMovieView } from "@/features/movies/hooks/useTrackMovieView";
 import { getImageUrl } from "@/features/movies/lib/images";
+import { posterTransitionName } from "@/features/movies/store/view-transition.store";
 import { formatRating } from "@/features/movies/lib/movies";
 import { CastGrid } from "@/features/movies/ui/CastGrid/CastGrid";
 import { TrailerModal } from "@/features/movies/ui/TrailerModal/TrailerModal";
@@ -86,33 +88,38 @@ export function MovieDetailsView() {
       >
         <Container size="xl" h="100%" className={classes.header}>
           <Group gap="xl" align="flex-start">
-            {/* Tilts toward the pointer on desktop; a plain image on touch screens */}
-            <Box visibleFrom="md">
-              <TiltedCard
-                imageSrc={getImageUrl(movie.poster_path, "w500")}
-                altText={movie.title}
-                containerWidth={POSTER.width}
-                containerHeight={POSTER.height}
-                imageWidth={POSTER.width}
-                imageHeight={POSTER.height}
-                radius={POSTER.radius}
-                rotateAmplitude={POSTER_TILT_DEGREES}
-                scaleOnHover={POSTER_HOVER_SCALE}
-                showTooltip={false}
-                flipOnClick={false}
-                gyroscope={false}
-                intro={false}
-              />
-            </Box>
-            <Box hiddenFrom="md">
-              <Image
-                src={getImageUrl(movie.poster_path, "w500")}
-                alt={movie.title}
-                width={POSTER.width}
-                height={POSTER.height}
-                className={classes.poster}
-              />
-            </Box>
+            {/* The poster of the card that was clicked lands here (one name for both sizes) */}
+            <ViewTransition name={posterTransitionName(movie.id)} share="morph" default="none">
+              <Box>
+                {/* Tilts toward the pointer on desktop; a plain image on touch screens */}
+                <Box visibleFrom="md">
+                  <TiltedCard
+                    imageSrc={getImageUrl(movie.poster_path, "w500")}
+                    altText={movie.title}
+                    containerWidth={POSTER.width}
+                    containerHeight={POSTER.height}
+                    imageWidth={POSTER.width}
+                    imageHeight={POSTER.height}
+                    radius={POSTER.radius}
+                    rotateAmplitude={POSTER_TILT_DEGREES}
+                    scaleOnHover={POSTER_HOVER_SCALE}
+                    showTooltip={false}
+                    flipOnClick={false}
+                    gyroscope={false}
+                    intro={false}
+                  />
+                </Box>
+                <Box hiddenFrom="md">
+                  <Image
+                    src={getImageUrl(movie.poster_path, "w500")}
+                    alt={movie.title}
+                    width={POSTER.width}
+                    height={POSTER.height}
+                    className={classes.poster}
+                  />
+                </Box>
+              </Box>
+            </ViewTransition>
 
             <Stack gap="md" maw={700}>
               <Group>
