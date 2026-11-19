@@ -2,11 +2,14 @@
 import { useId } from "react";
 import Link from "next/link";
 import { Tooltip, UnstyledButton, VisuallyHidden } from "@mantine/core";
+import { usePrevious } from "@mantine/hooks";
 import { Lock } from "lucide-react";
 import { motion } from "motion/react";
 import { SPRINGS } from "@/shared/ui/motion/motion.constants";
 import type { SidebarLink } from "./sidebar-links";
 import classes from "./Sidebar.module.scss";
+
+const POP_FROM_SCALE = 0.4;
 
 interface SidebarItemProps {
   link: SidebarLink;
@@ -31,6 +34,8 @@ export function SidebarItem({
 }: SidebarItemProps) {
   const lockId = useId();
   const Icon = link.icon;
+  const previousCount = usePrevious(count);
+  const grew = previousCount !== undefined && count > previousCount;
 
   const content = (
     <>
@@ -45,9 +50,17 @@ export function SidebarItem({
       <span className={classes.icon}>
         <Icon size={20} />
         {count > 0 && (
-          <span className={classes.count} data-count={count}>
+          // Remounted per count, so a growing count pops in
+          <motion.span
+            key={count}
+            className={classes.count}
+            data-count={count}
+            initial={grew ? { scale: POP_FROM_SCALE } : false}
+            animate={{ scale: 1 }}
+            transition={SPRINGS.bouncy}
+          >
             {count}
-          </span>
+          </motion.span>
         )}
         {lockedPlan && <Lock size={10} className={classes.lock} aria-hidden />}
       </span>

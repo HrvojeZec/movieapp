@@ -1,3 +1,13 @@
+.badgeLabel {
+  display: inline-block;
+}
+
+// Swings from the top, like a real bell
+.bell {
+  display: inline-flex;
+  transform-origin: 50% 10%;
+}
+
 .badge {
   font-size: 10px;
   font-weight: 700;
