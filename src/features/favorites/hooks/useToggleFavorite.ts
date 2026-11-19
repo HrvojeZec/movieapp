@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/query-keys";
-import type { AuthUser } from "@/features/auth/types";
-import { deleteFavorite, postFavorite } from "@/features/favorites/api/favorites.api";
-import { favoriteKeys } from "@/features/favorites/api/query-keys";
-import { applyFavoriteChange, updateFavorites } from "@/features/favorites/lib/favorites";
-import type { FavoriteChange } from "@/features/favorites/types";
+import { authKeys } from "@/entities/user/api/query-keys";
+import type { AuthUser } from "@/entities/user/types";
+import { deleteFavorite, postFavorite } from "@/entities/favorites/api/favorites.api";
+import { favoriteKeys } from "@/entities/favorites/api/query-keys";
+import { applyFavoriteChange, updateFavorites } from "@/entities/favorites/lib/favorites";
+import type { FavoriteChange } from "@/entities/favorites/types";
 import { toApiError } from "@/shared/lib/api-error";
 import { HttpError } from "@/shared/lib/http";
 import { HTTP_STATUS } from "@/shared/lib/http-status";

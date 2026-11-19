@@ -2,9 +2,9 @@
 import { Button, Center, Container, Group, Progress, Stack, Text } from "@mantine/core";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { Heart } from "lucide-react";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
-import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
+import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { ROUTES } from "@/shared/routes";
 import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";

@@ -1,9 +1,9 @@
-import { fetchGenres } from "@/features/movies/server/movies";
+import { fetchGenres } from "@/entities/movie/server/movies";
 import {
   limitTmdbRequest,
   tmdbErrorResponse,
   tmdbJson,
-} from "@/features/movies/server/route-helpers";
+} from "@/entities/movie/server/route-helpers";
 
 // GET /api/genres
 export async function GET(request: Request) {

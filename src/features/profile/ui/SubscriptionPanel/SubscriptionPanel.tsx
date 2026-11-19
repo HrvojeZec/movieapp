@@ -2,18 +2,18 @@ import { useId } from "react";
 import { Alert, Badge, Button, Group, Paper, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AlertTriangle, CreditCard, Crown } from "lucide-react";
-import type { AuthUser } from "@/features/auth/types";
+import type { AuthUser } from "@/entities/user/types";
 import {
   PLAN_BADGE_COLORS,
   PLAN_SUMMARIES,
   SUBSCRIPTION_STATUS_DISPLAY,
 } from "@/features/profile/constants";
-import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { SUBSCRIPTION_PLANS } from "@/entities/subscription/constants";
 import { CancelSubscriptionModal } from "@/features/profile/ui/CancelSubscriptionModal/CancelSubscriptionModal";
 import { useManageSubscription } from "@/features/subscription/hooks/useManageSubscription";
 import { getBillingSummary } from "@/features/subscription/lib/billing";
-import { getEffectivePlan, getPlanName } from "@/features/subscription/lib/entitlements";
-import { isPaidPlan } from "@/features/subscription/lib/plans";
+import { getEffectivePlan, getPlanName } from "@/entities/subscription/lib/entitlements";
+import { isPaidPlan } from "@/entities/subscription/lib/plans";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
 import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";

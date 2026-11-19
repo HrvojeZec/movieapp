@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendSubscriptionReminders } from "@/features/subscription/server/reminders";
+import { sendSubscriptionReminders } from "@/entities/subscription/server/reminders";
 import { isCronRequest } from "@/server/http/cron-auth";
 import { RouteError } from "@/server/http/route-error";
 import { withRouteHandler } from "@/server/http/route-handler";

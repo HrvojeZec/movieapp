@@ -1,6 +1,6 @@
 "use client";
 import { History } from "lucide-react";
-import { useRecentlyViewed } from "@/features/movies/hooks/useRecentlyViewed";
+import { useRecentlyViewed } from "@/entities/movie/hooks/useRecentlyViewed";
 import { HorizontalMovieScroll } from "@/features/movies/ui/HorizontalMovieScroll/HorizontalMovieScroll";
 
 /** Movies opened in this browser, newest first; hidden until there is at least one. */

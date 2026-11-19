@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { STATS_DAYS } from "@/features/stats/constants";
+import { STATS_DAYS } from "@/entities/stats/constants";
 import User from "@/server/models/User";
 import UserActivity from "@/server/models/UserActivity";
 import { DAY_IN_SECONDS } from "@/shared/lib/time";

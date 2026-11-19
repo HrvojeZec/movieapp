@@ -1,6 +1,6 @@
 import { useElementSize } from "@mantine/hooks";
-import { GRID_GAP, GRID_ROW_HEIGHT } from "@/features/stats/constants";
-import { cellWidthFor, columnsForWidth, type GridMetrics } from "@/features/stats/lib/grid-drag";
+import { GRID_GAP, GRID_ROW_HEIGHT } from "@/entities/stats/constants";
+import { cellWidthFor, columnsForWidth, type GridMetrics } from "@/entities/stats/lib/grid-drag";
 
 /** Measures the board: its column count follows its own width, not the window's. */
 export function useGridColumns() {

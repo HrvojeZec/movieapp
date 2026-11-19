@@ -4,11 +4,11 @@ import { RouteError, notFound } from "@/server/http/route-error";
 import { getAppUrl } from "@/server/app-url";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { ROUTES } from "@/shared/routes";
-import { toAuthUser } from "@/features/auth/server/users";
-import type { AuthUser } from "@/features/auth/types";
-import { hasActiveSubscription } from "@/features/subscription/lib/plans";
-import { getStripe } from "@/features/subscription/server/stripe";
-import { syncSubscription } from "@/features/subscription/server/subscriptions";
+import { toAuthUser } from "@/entities/user/server/users";
+import type { AuthUser } from "@/entities/user/types";
+import { hasActiveSubscription } from "@/entities/subscription/lib/plans";
+import { getStripe } from "@/entities/subscription/server/stripe";
+import { syncSubscription } from "@/entities/subscription/server/subscriptions";
 
 const conflict = (message: string) => new RouteError(HTTP_STATUS.CONFLICT, message);
 

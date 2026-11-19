@@ -3,7 +3,7 @@ import nextTypescript from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 
 const SERVER_ONLY = {
-  group: ["@/server/*", "@/features/*/server/*"],
+  group: ["@/server/*", "@/features/*/server/*", "@/entities/*/server/*"],
   message: "Server-only module: import it from route handlers or other server code.",
 };
 
@@ -43,6 +43,13 @@ const eslintConfig = [
       "src/features/*/store/**",
       "src/features/*/constants.ts",
       "src/features/*/types.ts",
+      "src/entities/*/api/**",
+      "src/entities/*/hooks/**",
+      "src/entities/*/lib/**",
+      "src/entities/*/ui/**",
+      "src/entities/*/store/**",
+      "src/entities/*/constants.ts",
+      "src/entities/*/types.ts",
       "src/shell/**",
       "src/app/providers.tsx",
     ],
@@ -60,8 +67,8 @@ const eslintConfig = [
           patterns: [
             SERVER_ONLY,
             {
-              group: ["@/features/*", "@/shell/*"],
-              message: "shared must not depend on features or the app shell; move the code up.",
+              group: ["@/entities/*", "@/features/*", "@/views/*", "@/shell/*"],
+              message: "shared must not depend on the layers above it; move the code up.",
             },
           ],
         },

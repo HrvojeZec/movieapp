@@ -1,10 +1,10 @@
 "use client";
 import type { ReactNode } from "react";
 import { Box, Group, ScrollArea } from "@mantine/core";
-import { ROW_CARD_WIDTH, ROW_SKELETON_COUNT } from "@/features/movies/constants";
-import type { MovieSummary } from "@/features/movies/types";
-import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
-import { MovieCardSkeleton } from "@/features/movies/ui/MovieCardSkeleton/MovieCardSkeleton";
+import { ROW_CARD_WIDTH, ROW_SKELETON_COUNT } from "@/entities/movie/constants";
+import type { MovieSummary } from "@/entities/movie/types";
+import { MovieCard } from "@/entities/movie/ui/MovieCard/MovieCard";
+import { MovieCardSkeleton } from "@/entities/movie/ui/MovieCardSkeleton/MovieCardSkeleton";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
 import classes from "./HorizontalMovieScroll.module.scss";

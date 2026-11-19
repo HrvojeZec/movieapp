@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { NOTIFICATION_TTL_DAYS, NOTIFICATION_TYPES } from "@/features/notifications/constants";
-import type { NotificationType } from "@/features/notifications/types";
+import { NOTIFICATION_TTL_DAYS, NOTIFICATION_TYPES } from "@/entities/notification/constants";
+import type { NotificationType } from "@/entities/notification/types";
 import { DAY_IN_SECONDS } from "@/shared/lib/time";
 
 export interface INotification extends Document {

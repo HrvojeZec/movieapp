@@ -1,8 +1,8 @@
 import { Button, Group, List, Modal, Stack, Text } from "@mantine/core";
 import { X } from "lucide-react";
-import { FAVORITES_LIMIT, FEATURE_LABELS, PLAN_FEATURES } from "@/features/subscription/constants";
-import { getPlanName } from "@/features/subscription/lib/entitlements";
-import type { PaidPlan } from "@/features/subscription/types";
+import { FAVORITES_LIMIT, FEATURE_LABELS, PLAN_FEATURES } from "@/entities/subscription/constants";
+import { getPlanName } from "@/entities/subscription/lib/entitlements";
+import type { PaidPlan } from "@/entities/subscription/types";
 import { formatDate } from "@/shared/lib/format";
 import { COLORS } from "@/shared/theme/colors";
 

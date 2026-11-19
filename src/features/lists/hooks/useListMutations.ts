@@ -6,10 +6,10 @@ import {
   removeListMovie,
   renameListRequest,
   reorderListRequest,
-} from "@/features/lists/api/lists.api";
-import { listKeys } from "@/features/lists/api/query-keys";
-import type { MovieListDetails } from "@/features/lists/types";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+} from "@/entities/movie-list/api/lists.api";
+import { listKeys } from "@/entities/movie-list/api/query-keys";
+import type { MovieListDetails } from "@/entities/movie-list/types";
+import { useAuth } from "@/entities/user/hooks/useAuth";
 import { sameMembers } from "@/shared/lib/same-members";
 import { toApiError } from "@/shared/lib/api-error";
 import { notifyError } from "@/shared/lib/notify";

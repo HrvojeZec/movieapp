@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { listWatchedIds } from "@/features/watched/server/watched";
+import { requireSession } from "@/entities/user/server/session";
+import { listWatchedIds } from "@/entities/watched/server/watched";
 import { withRouteHandler } from "@/server/http/route-handler";
 
 // GET /api/user/watched/ids: every watched movie ID, so cards can show which ones were seen

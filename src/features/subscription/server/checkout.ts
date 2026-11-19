@@ -2,18 +2,18 @@ import connectDB from "@/server/db/mongodb";
 import User, { type IUser } from "@/server/models/User";
 import { RouteError, notFound } from "@/server/http/route-error";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
-import { findUserById } from "@/features/auth/server/users";
-import type { AuthUser } from "@/features/auth/types";
-import { TRIAL_DAYS } from "@/features/subscription/constants";
-import { getPriceIdForPlan, hasActiveSubscription } from "@/features/subscription/lib/plans";
-import { isTrialAvailable } from "@/features/subscription/lib/trial";
-import type { BillingInterval, PaidPlan } from "@/features/subscription/types";
-import { getStripe } from "./stripe";
+import { findUserById } from "@/entities/user/server/users";
+import type { AuthUser } from "@/entities/user/types";
+import { TRIAL_DAYS } from "@/entities/subscription/constants";
+import { getPriceIdForPlan, hasActiveSubscription } from "@/entities/subscription/lib/plans";
+import { isTrialAvailable } from "@/entities/subscription/lib/trial";
+import type { BillingInterval, PaidPlan } from "@/entities/subscription/types";
+import { getStripe } from "@/entities/subscription/server/stripe";
 import {
   getSubscriptionIdFromSession,
   linkStripeCustomer,
   syncSubscription,
-} from "./subscriptions";
+} from "@/entities/subscription/server/subscriptions";
 
 const STRIPE_INTEGRATION_IDENTIFIER = "movieapp_subscription_qvhrtmke";
 // More than a few open checkouts means many tabs; the rate limit keeps it at 10 a minute anyway

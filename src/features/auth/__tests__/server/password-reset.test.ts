@@ -17,7 +17,7 @@ vi.mock("@/server/models/User", () => ({
   },
 }));
 vi.mock("@/server/email/send", () => ({ sendEmail: (message: unknown) => sendEmail(message) }));
-vi.mock("@/features/notifications/server/notify", () => ({
+vi.mock("@/entities/notification/server/notify", () => ({
   notifyUser: (...args: unknown[]) => notifyUser(...args),
 }));
 

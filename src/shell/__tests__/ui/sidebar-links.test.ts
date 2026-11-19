@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { AuthUser } from "@/features/auth/types";
+import type { AuthUser } from "@/entities/user/types";
 import { SIDEBAR_GROUPS, lockedPlanName, visibleGroups } from "@/shell/ui/Sidebar/sidebar-links";
 
 const user = { id: "1", name: "Test", email: "test@example.com" } as AuthUser;

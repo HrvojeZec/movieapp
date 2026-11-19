@@ -1,7 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
-import { LIST_NAME_MAX_LENGTH } from "@/features/lists/constants";
+import { LIST_NAME_MAX_LENGTH } from "@/entities/movie-list/constants";
 
 interface ListNameModalProps {
   opened: boolean;

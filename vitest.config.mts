@@ -16,6 +16,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: [
+        "src/entities/**/*.ts",
         "src/features/**/*.ts",
         "src/shared/*.ts",
         "src/shared/lib/**/*.ts",

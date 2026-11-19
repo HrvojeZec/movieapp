@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
-import { fetchSearchResults } from "@/features/movies/server/movies";
+import { fetchSearchResults } from "@/entities/movie/server/movies";
 import {
   searchParamsToObject,
   limitTmdbRequest,
   tmdbErrorResponse,
   tmdbJson,
-} from "@/features/movies/server/route-helpers";
-import { movieSearchQuerySchema } from "@/features/movies/validations/movies.schema";
+} from "@/entities/movie/server/route-helpers";
+import { movieSearchQuerySchema } from "@/entities/movie/validations/movies.schema";
 
 // GET /api/movies/search?query=batman&page=1
 export async function GET(request: NextRequest) {

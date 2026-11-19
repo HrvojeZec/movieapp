@@ -14,14 +14,14 @@ import {
   pointerToCell,
   sizeFromDelta,
   type GridMetrics,
-} from "@/features/stats/lib/grid-drag";
+} from "@/entities/stats/lib/grid-drag";
 import {
   planMove,
   resizeWidget,
   stepWidget,
   type StepDirection,
-} from "@/features/stats/lib/grid-layout";
-import type { LayoutItem, WidgetType } from "@/features/stats/types";
+} from "@/entities/stats/lib/grid-layout";
+import type { LayoutItem, WidgetType } from "@/entities/stats/types";
 import {
   DRAG_TILT_MAX_DEG,
   DRAG_TILT_PER_VELOCITY,

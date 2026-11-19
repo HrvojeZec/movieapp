@@ -6,9 +6,9 @@ const stripe = {
 };
 const findById = vi.fn();
 
-vi.mock("@/features/subscription/server/stripe", () => ({ getStripe: () => stripe }));
-vi.mock("@/features/subscription/server/subscriptions", () => ({}));
-vi.mock("@/features/auth/server/users", () => ({}));
+vi.mock("@/entities/subscription/server/stripe", () => ({ getStripe: () => stripe }));
+vi.mock("@/entities/subscription/server/subscriptions", () => ({}));
+vi.mock("@/entities/user/server/users", () => ({}));
 vi.mock("@/server/db/mongodb", () => ({ default: vi.fn() }));
 vi.mock("@/server/models/User", () => ({ default: { findById: (id: string) => findById(id) } }));
 

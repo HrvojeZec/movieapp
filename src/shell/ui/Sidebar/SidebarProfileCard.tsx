@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Avatar, Menu, Text, UnstyledButton } from "@mantine/core";
 import { ChevronRight, CreditCard, LogOut, User } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
-import type { AuthUser } from "@/features/auth/types";
-import { getEffectivePlan, getPlanName } from "@/features/subscription/lib/entitlements";
+import type { AuthUser } from "@/entities/user/types";
+import { getEffectivePlan, getPlanName } from "@/entities/subscription/lib/entitlements";
 import { ROUTES } from "@/shared/routes";
 import classes from "./Sidebar.module.scss";
 

@@ -1,8 +1,8 @@
 "use client";
 import { Container, Stack, Title } from "@mantine/core";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
-import { ProfileHeader } from "@/features/profile/ui/ProfileHeader/ProfileHeader";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
+import { ProfileHeader } from "@/entities/user/ui/ProfileHeader/ProfileHeader";
 import { SubscriptionPanel } from "@/features/profile/ui/SubscriptionPanel/SubscriptionPanel";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 

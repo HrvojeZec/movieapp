@@ -2,11 +2,11 @@
 import { Button, Loader, Menu, Text, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Check, ListPlus, Lock, Plus } from "lucide-react";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/entities/user/hooks/useAuth";
 import { useListMutations } from "@/features/lists/hooks/useListMutations";
-import { useLists } from "@/features/lists/hooks/useLists";
+import { useLists } from "@/entities/movie-list/hooks/useLists";
 import { ListNameModal } from "@/features/lists/ui/ListNameModal/ListNameModal";
-import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
+import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { notifySuccess } from "@/shared/lib/notify";
 import { ROUTES } from "@/shared/routes";

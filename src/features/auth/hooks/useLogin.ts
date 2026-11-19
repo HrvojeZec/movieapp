@@ -1,4 +1,4 @@
-import { login } from "@/features/auth/api/auth.api";
+import { login } from "@/entities/user/api/auth.api";
 import { useSessionMutation } from "@/features/auth/hooks/useSessionMutation";
 
 export function useLogin() {

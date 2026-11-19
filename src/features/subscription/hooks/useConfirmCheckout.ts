@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/query-keys";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import type { AuthUser } from "@/features/auth/types";
-import { getEffectivePlan } from "@/features/subscription/lib/entitlements";
+import { authKeys } from "@/entities/user/api/query-keys";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import type { AuthUser } from "@/entities/user/types";
+import { getEffectivePlan } from "@/entities/subscription/lib/entitlements";
 import { API_ROUTES } from "@/shared/api-routes";
 import { HttpError, postJson } from "@/shared/lib/http";
 

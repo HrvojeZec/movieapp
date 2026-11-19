@@ -4,9 +4,9 @@ import {
   ADVANCED_FILTER_PARAMS,
   hasAdvancedFilters,
   parseAdvancedFilters,
-} from "@/features/movies/lib/discover";
-import { parseNumberParam, updateQuery } from "@/features/movies/lib/filters";
-import type { AdvancedDiscoverFilters, DiscoverFilters } from "@/features/movies/types";
+} from "@/entities/movie/lib/discover";
+import { parseNumberParam, updateQuery } from "@/entities/movie/lib/filters";
+import type { AdvancedDiscoverFilters, DiscoverFilters } from "@/entities/movie/types";
 
 // URL parameter for each filter; the URL is kept short and readable (?year=2024&rating=7)
 const FILTER_PARAMS = { year: "year", genre: "genre", minRating: "rating" } as const;

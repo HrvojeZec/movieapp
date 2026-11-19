@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getSessionUser } from "@/features/auth/server/session";
-import { recordMovieView } from "@/features/movies/server/movie-views";
-import { limitTmdbRequest } from "@/features/movies/server/route-helpers";
-import { INVALID_MOVIE_ID, movieViewSchema } from "@/features/movies/validations/movies.schema";
+import { getSessionUser } from "@/entities/user/server/session";
+import { recordMovieView } from "@/entities/movie/server/movie-views";
+import { limitTmdbRequest } from "@/entities/movie/server/route-helpers";
+import { INVALID_MOVIE_ID, movieViewSchema } from "@/entities/movie/validations/movies.schema";
 import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 import { HTTP_STATUS } from "@/shared/lib/http-status";

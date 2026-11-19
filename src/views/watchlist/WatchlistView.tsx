@@ -1,12 +1,12 @@
 "use client";
 import { Container, Stack, Text } from "@mantine/core";
 import { Bookmark } from "lucide-react";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
-import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
+import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { useToggleWatchlist } from "@/features/watchlist/hooks/useToggleWatchlist";
-import { LockedFeature } from "@/features/subscription/ui/LockedFeature/LockedFeature";
+import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";

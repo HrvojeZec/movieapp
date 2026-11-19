@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { limitTmdbRequest } from "@/features/movies/server/route-helpers";
-import { getUserStats } from "@/features/stats/server/stats";
-import { requireFeature } from "@/features/subscription/server/entitlements";
+import { requireSession } from "@/entities/user/server/session";
+import { limitTmdbRequest } from "@/entities/movie/server/route-helpers";
+import { getUserStats } from "@/entities/stats/server/stats";
+import { requireFeature } from "@/entities/subscription/server/entitlements";
 import { withRouteHandler } from "@/server/http/route-handler";
 
 const handle = withRouteHandler("User stats", async (request) => {

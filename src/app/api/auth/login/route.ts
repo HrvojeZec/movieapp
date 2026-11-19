@@ -1,5 +1,5 @@
-import { recordLogin, verifyCredentials } from "@/features/auth/server/users";
-import { startSession } from "@/features/auth/server/session";
+import { recordLogin, verifyCredentials } from "@/entities/user/server/users";
+import { startSession } from "@/entities/user/server/session";
 import { loginSchema } from "@/features/auth/validations/auth.schema";
 import { getClientIp } from "@/server/http/client-ip";
 import { parseJson } from "@/server/http/parse";

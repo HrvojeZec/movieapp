@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { STATS_DAYS } from "@/features/stats/constants";
+import { STATS_DAYS } from "@/entities/stats/constants";
 import { DAY_IN_SECONDS } from "@/shared/lib/time";
 
 // Kept a little past the year the stats read, then MongoDB deletes it (the free tier is small)

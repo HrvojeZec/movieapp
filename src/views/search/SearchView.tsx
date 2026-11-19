@@ -2,7 +2,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Container, Group, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
-import { useMovieSearch } from "@/features/movies/hooks/useMovieSearch";
+import { useMovieSearch } from "@/entities/movie/hooks/useMovieSearch";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchBox";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";

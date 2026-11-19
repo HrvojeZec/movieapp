@@ -1,7 +1,7 @@
 "use client";
 import { memo } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import type { UserStats, WidgetType, WidgetView } from "@/features/stats/types";
+import type { UserStats, WidgetType, WidgetView } from "@/entities/stats/types";
 import { WIDGETS } from "@/features/stats/widgets/registry";
 import { EASE_OUT } from "@/shared/ui/motion/motion.constants";
 import classes from "./WidgetBody.module.scss";

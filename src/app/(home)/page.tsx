@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { prefetchHomeMovies } from "@/features/movies/server/prefetch";
+import { prefetchHomeMovies } from "@/entities/movie/server/prefetch";
 import { HomeView } from "@/views/home/HomeView";
 import { getServerQueryClient } from "@/server/query-client";
 

@@ -7,8 +7,8 @@ const stripe = {
 const findById = vi.fn();
 const syncSubscription = vi.fn();
 
-vi.mock("@/features/subscription/server/stripe", () => ({ getStripe: () => stripe }));
-vi.mock("@/features/subscription/server/subscriptions", () => ({
+vi.mock("@/entities/subscription/server/stripe", () => ({ getStripe: () => stripe }));
+vi.mock("@/entities/subscription/server/subscriptions", () => ({
   syncSubscription: (id: string) => syncSubscription(id),
 }));
 vi.mock("@/server/db/mongodb", () => ({ default: vi.fn() }));

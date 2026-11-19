@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { listNotifications } from "@/features/notifications/server/notifications";
+import { requireSession } from "@/entities/user/server/session";
+import { listNotifications } from "@/entities/notification/server/notifications";
 import { withRouteHandler } from "@/server/http/route-handler";
 
 // GET /api/notifications: the latest notifications for the bell, plus the unread count

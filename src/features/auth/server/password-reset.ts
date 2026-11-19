@@ -6,10 +6,10 @@ import { sendEmail } from "@/server/email/send";
 import { RouteError } from "@/server/http/route-error";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import { ROUTES } from "@/shared/routes";
-import { PASSWORD_RESET_TOKEN_BYTES, PASSWORD_RESET_TTL_MS } from "@/features/auth/constants";
-import { getPasswordChangedNotification } from "@/features/notifications/lib/account-events";
-import { buildPasswordResetEmail } from "@/features/notifications/server/emails";
-import { notifyUser } from "@/features/notifications/server/notify";
+import { PASSWORD_RESET_TOKEN_BYTES, PASSWORD_RESET_TTL_MS } from "@/entities/user/constants";
+import { getPasswordChangedNotification } from "@/entities/notification/lib/account-events";
+import { buildPasswordResetEmail } from "@/entities/notification/server/emails";
+import { notifyUser } from "@/entities/notification/server/notify";
 
 // A leaked database must not give out working reset links, so only the hash is stored
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");

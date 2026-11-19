@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { clearAuthCookie } from "@/features/auth/server/session";
+import { clearAuthCookie } from "@/entities/user/server/session";
 
 export async function POST() {
   const response = NextResponse.json({ success: true });
