@@ -13,13 +13,10 @@ const movie = (id: number): MovieSummary => ({
 let storage: Map<string, string>;
 
 // A fresh store module per test, created after localStorage is stubbed, like in a new browser tab
-async function loadStore(saved?: MovieSummary[]) {
+async function loadStore(saved?: object[], version = 2) {
   storage = new Map();
   if (saved) {
-    storage.set(
-      RECENTLY_VIEWED_STORAGE_KEY,
-      JSON.stringify({ state: { movies: saved }, version: 1 }),
-    );
+    storage.set(RECENTLY_VIEWED_STORAGE_KEY, JSON.stringify({ state: { movies: saved }, version }));
   }
   vi.stubGlobal("localStorage", {
     getItem: (key: string) => storage.get(key) ?? null,
@@ -35,13 +32,36 @@ const savedIds = () =>
     JSON.parse(storage.get(RECENTLY_VIEWED_STORAGE_KEY)!) as { state: { movies: MovieSummary[] } }
   ).state.movies.map((m) => m.id);
 
+const DAY = 24 * 60 * 60 * 1000;
+const viewed = (id: number, daysAgo = 0) => ({
+  ...movie(id),
+  viewedAt: Date.now() - daysAgo * DAY,
+});
+
 describe("recently viewed store", () => {
   beforeEach(() => {
     vi.unstubAllGlobals();
   });
 
+  it("forgets movies viewed more than 180 days ago when it loads", async () => {
+    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([
+      viewed(1, 3),
+      viewed(2, 200),
+    ]);
+    await hydrateRecentlyViewed();
+
+    expect(useRecentlyViewedStore.getState().movies.map((m) => m.id)).toEqual([1]);
+  });
+
+  it("forgets a list saved before views had dates", async () => {
+    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([movie(1)], 1);
+    await hydrateRecentlyViewed();
+
+    expect(useRecentlyViewedStore.getState().movies).toEqual([]);
+  });
+
   it("starts empty and reads the saved list only when hydrated", async () => {
-    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([movie(1)]);
+    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([viewed(1)]);
 
     // Matches the server render until the client explicitly loads localStorage
     expect(useRecentlyViewedStore.getState().movies).toEqual([]);
@@ -51,7 +71,7 @@ describe("recently viewed store", () => {
   });
 
   it("saves added movies to localStorage, newest first", async () => {
-    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([movie(1)]);
+    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([viewed(1)]);
     await hydrateRecentlyViewed();
 
     useRecentlyViewedStore.getState().add(movie(2));
@@ -60,7 +80,7 @@ describe("recently viewed store", () => {
   });
 
   it("clears the list", async () => {
-    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([movie(1)]);
+    const { useRecentlyViewedStore, hydrateRecentlyViewed } = await loadStore([viewed(1)]);
     await hydrateRecentlyViewed();
 
     useRecentlyViewedStore.getState().clear();

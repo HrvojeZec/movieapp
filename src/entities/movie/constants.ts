@@ -1,3 +1,6 @@
+// TMDB's API terms: nothing obtained from TMDB may be kept for longer than 6 months
+export const TMDB_DATA_MAX_AGE_DAYS = 180;
+
 // TMDB serves at most 500 pages per list, regardless of total_pages
 export const TMDB_MAX_PAGE = 500;
 
