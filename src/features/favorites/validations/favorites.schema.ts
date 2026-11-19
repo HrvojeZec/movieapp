@@ -1,8 +1,7 @@
 import { z } from "zod";
+import { INVALID_MOVIE_ID, movieIdStringSchema } from "@/features/movies/validations/movies.schema";
 
-export const INVALID_MOVIE_ID = "Invalid movie ID";
-
-// TMDB movie IDs are positive integers; favorites store them as strings.
-export const favoriteMovieIdSchema = z.string().regex(/^[1-9]\d{0,9}$/, INVALID_MOVIE_ID);
+export { INVALID_MOVIE_ID };
+export const favoriteMovieIdSchema = movieIdStringSchema;
 
 export const addFavoriteSchema = z.object({ movieId: favoriteMovieIdSchema });

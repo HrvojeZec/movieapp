@@ -1,11 +1,8 @@
 import { z } from "zod";
-import {
-  INVALID_MOVIE_ID,
-  favoriteMovieIdSchema,
-} from "@/features/favorites/validations/favorites.schema";
+import { INVALID_MOVIE_ID, movieIdStringSchema } from "@/features/movies/validations/movies.schema";
 
 // The same TMDB movie IDs as favorites
-export const watchedMovieIdSchema = favoriteMovieIdSchema;
+export const watchedMovieIdSchema = movieIdStringSchema;
 export { INVALID_MOVIE_ID };
 
 export const markWatchedSchema = z.object({ movieId: watchedMovieIdSchema });
