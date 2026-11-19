@@ -15,8 +15,9 @@ export const MAIN_CONTENT_ID = "main";
 // loading state, so a slow profile request no longer blocks the whole app.
 export const Layout = ({ children }: { children: ReactNode }) => (
   <AppShell
-    // "alt": the sidebar runs the full height and the header sits beside it
-    layout="alt"
+    // The header runs the full width and the sidebar starts under it, so the logo and the
+    // sidebar toggle stay in one place whether the sidebar is wide or narrow
+    layout="default"
     header={{ height: HEADER_HEIGHT }}
     // The width is a CSS variable, so the saved wide/rail choice applies before React loads
     navbar={{ width: "var(--sidebar-width)", breakpoint: "sm", collapsed: { mobile: true } }}

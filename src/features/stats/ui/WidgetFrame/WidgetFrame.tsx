@@ -27,6 +27,10 @@ interface WidgetFrameProps {
   active?: boolean;
   /** Extra controls in the header, shown in and out of editing (e.g. chart or table). */
   actions?: ReactNode;
+  /** Dragged over a spot it can't take. */
+  blocked?: boolean;
+  /** Resized past its size limit. */
+  atLimit?: boolean;
   children: ReactNode;
 }
 
@@ -37,6 +41,8 @@ export function WidgetFrame({
   edit,
   active,
   actions,
+  blocked,
+  atLimit,
   children,
 }: WidgetFrameProps) {
   const showHeader = !bare || Boolean(edit);
@@ -47,6 +53,9 @@ export function WidgetFrame({
       className={classes.frame}
       data-editing={edit ? true : undefined}
       data-active={active || undefined}
+      data-blocked={blocked || undefined}
+      data-limit={atLimit || undefined}
+      data-widget-frame
     >
       {showHeader && (
         <div
@@ -63,13 +72,8 @@ export function WidgetFrame({
           </Group>
           {actions}
           {edit && (
-            // Buttons inside the header must not start a drag
-            <Group
-              gap={4}
-              wrap="nowrap"
-              className={classes.controls}
-              onPointerDown={(event) => event.stopPropagation()}
-            >
+            <Group gap={4} wrap="nowrap" className={classes.controls}>
+              {/* The grip drags like the rest of the header, and is the keyboard's way in */}
               {edit.keyboardProps && (
                 <ActionIcon
                   variant="subtle"
@@ -82,36 +86,39 @@ export function WidgetFrame({
                   <GripVertical size={16} />
                 </ActionIcon>
               )}
-              {edit.onMoveUp && (
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  aria-label={`Move ${title} up`}
-                  onClick={edit.onMoveUp}
-                >
-                  <ArrowUp size={16} />
-                </ActionIcon>
-              )}
-              {edit.onMoveDown && (
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  aria-label={`Move ${title} down`}
-                  onClick={edit.onMoveDown}
-                >
-                  <ArrowDown size={16} />
-                </ActionIcon>
-              )}
-              {edit.onRemove && (
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  aria-label={`Remove ${title}`}
-                  onClick={edit.onRemove}
-                >
-                  <X size={16} />
-                </ActionIcon>
-              )}
+              {/* The other buttons must not start a drag */}
+              <Group gap={4} wrap="nowrap" onPointerDown={(event) => event.stopPropagation()}>
+                {edit.onMoveUp && (
+                  <ActionIcon
+                    variant="subtle"
+                    color="gray"
+                    aria-label={`Move ${title} up`}
+                    onClick={edit.onMoveUp}
+                  >
+                    <ArrowUp size={16} />
+                  </ActionIcon>
+                )}
+                {edit.onMoveDown && (
+                  <ActionIcon
+                    variant="subtle"
+                    color="gray"
+                    aria-label={`Move ${title} down`}
+                    onClick={edit.onMoveDown}
+                  >
+                    <ArrowDown size={16} />
+                  </ActionIcon>
+                )}
+                {edit.onRemove && (
+                  <ActionIcon
+                    variant="subtle"
+                    color="gray"
+                    aria-label={`Remove ${title}`}
+                    onClick={edit.onRemove}
+                  >
+                    <X size={16} />
+                  </ActionIcon>
+                )}
+              </Group>
             </Group>
           )}
         </div>

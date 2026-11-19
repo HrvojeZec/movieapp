@@ -10,6 +10,7 @@ import {
   compact,
   hasOverlap,
   moveWidget,
+  planMove,
   removeWidget,
   reorderWidget,
   resizeWidget,
@@ -302,6 +303,38 @@ describe("reorderWidget", () => {
   it("the first widget can't go up and the last can't go down", () => {
     expect(reorderWidget(BOARD, "tileWatched", -1)).toEqual(compact(BOARD));
     expect(reorderWidget(BOARD, "viewsTrend", 1)).toEqual(compact(BOARD));
+  });
+});
+
+describe("planMove", () => {
+  // BOARD: tiles in row 0 (2 rows tall), genreBars 6×5 below them at (0, 2)
+  const at = (layout: LayoutItem[], type: WidgetType) => {
+    const { x, y } = layout.find(byType(type))!;
+    return { x, y };
+  };
+
+  it("past the middle of the widget below, a dragged widget lands under it", () => {
+    // genreBars spans rows 2–6, its middle is 4.5
+    const plan = planMove(BOARD, "tileWatched", 0, 5);
+    expect(at(plan.layout, "tileWatched")).toEqual({ x: 0, y: 7 });
+    expect(plan.blocked).toBe(false);
+    expect(hasOverlap(plan.layout)).toBe(false);
+  });
+
+  it("before the middle, the widget can't stay there and the move is blocked", () => {
+    const plan = planMove(BOARD, "tileWatched", 0, 3);
+    expect(at(plan.layout, "tileWatched")).toEqual({ x: 0, y: 0 });
+    expect(plan.blocked).toBe(true);
+  });
+
+  it("a move that lands somewhere new is not blocked", () => {
+    expect(planMove(BOARD, "tileWatched", 3, 0).blocked).toBe(false);
+    // Into the empty space under everything: it settles under the last widget
+    expect(planMove(BOARD, "tileWatched", 0, 40).blocked).toBe(false);
+  });
+
+  it("staying where it is isn't blocked", () => {
+    expect(planMove(BOARD, "tileWatched", 0, 0).blocked).toBe(false);
   });
 });
 

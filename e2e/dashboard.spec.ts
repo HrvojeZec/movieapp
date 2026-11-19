@@ -261,3 +261,82 @@ test("switching to the table doesn't start a drag", async ({ page }) => {
   await finish(page);
   expect(find(await savedLayout(page), "genreBars")).toMatchObject({ x: 0, y: 6, view: "table" });
 });
+
+/** Pixels of one grid row step and one column step on the current board. */
+async function steps(page: Page) {
+  const board = (await page.locator("[data-widget]").first().locator("..").boundingBox())!;
+  return { column: (board.width + GAP) / COLUMNS, row: 72 + GAP };
+}
+
+test("a widget can be dragged by its grip", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const grip = page.getByRole("button", { name: "Move Movies watched", exact: true });
+  const { column } = await steps(page);
+  const from = await center(page, grip);
+
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x + 3 * column, from.y, { steps: 8 });
+  await page.mouse.up();
+  await finish(page);
+
+  expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ x: 3, y: 0 });
+});
+
+test("a tile dragged past the middle of the calendar lands below it", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const handle = page.locator('[data-widget="tileWatched"] [data-drag-handle]');
+  const { row } = await steps(page);
+  const from = await center(page, handle);
+
+  // The calendar (4 rows) sits under the tiles; 4 rows down is past its middle
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x, from.y + 4 * row, { steps: 10 });
+  await page.mouse.up();
+  await finish(page);
+
+  expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ x: 0, y: 6 });
+});
+
+test("an impossible spot is shown and the widget goes back", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const widget = page.locator('[data-widget="tileWatched"]');
+  const handle = widget.locator("[data-drag-handle]");
+  const { row } = await steps(page);
+  const from = await center(page, handle);
+
+  // One row down, the tile would just float back up
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x, from.y + row, { steps: 6 });
+  await expect(page.getByText("Can't place here")).toBeVisible();
+  await expect(widget.locator("[data-blocked]")).toHaveCount(1);
+  await page.mouse.up();
+
+  await expect(page.getByText("Can't move there.")).toBeAttached();
+  await expect(page.getByText("Can't place here")).toHaveCount(0);
+  await expect(page.getByText("Saving…")).toHaveCount(0);
+  expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ x: 0, y: 0 });
+});
+
+test("resizing past a widget's limit shows the limit", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const widget = page.locator('[data-widget="tileWatched"]');
+  const { column } = await steps(page);
+  const from = await center(page, page.getByTitle("Resize Movies watched"));
+
+  // Tiles are at most 4 columns wide
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x + 4 * column, from.y, { steps: 8 });
+  await expect(widget.locator("[data-limit]")).toHaveCount(1);
+  await page.mouse.up();
+  await finish(page);
+
+  expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ w: 4 });
+});

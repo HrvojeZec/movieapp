@@ -3,6 +3,7 @@ import {
   cellToPixels,
   cellWidthFor,
   clampFrameSize,
+  rubberBand,
   columnsForWidth,
   describePosition,
   pointerToCell,
@@ -92,5 +93,25 @@ describe("clampFrameSize", () => {
 
   it("the frame stops at the widget's maximum height", () => {
     expect(clampFrameSize(bars, { width: 500, height: 5000 }, GRID).height).toBe(8 * 72 + 7 * 16);
+  });
+});
+
+describe("rubberBand", () => {
+  it("follows the pointer exactly inside the limit", () => {
+    expect(rubberBand(300, 300)).toBe(300);
+  });
+
+  it("gives a little past the limit, less the further it is pulled", () => {
+    const near = rubberBand(320, 300) - 300;
+    const far = rubberBand(600, 300) - 300;
+    expect(near).toBeGreaterThan(0);
+    expect(near).toBeLessThan(20);
+    expect(far).toBeGreaterThan(near);
+    expect(far).toBeLessThanOrEqual(24);
+  });
+
+  it("works the same way below a minimum", () => {
+    expect(rubberBand(250, 300)).toBeLessThan(300);
+    expect(rubberBand(250, 300)).toBeGreaterThanOrEqual(276);
   });
 });
