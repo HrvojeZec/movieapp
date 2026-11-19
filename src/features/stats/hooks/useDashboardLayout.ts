@@ -1,12 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { getDashboardLayout, saveDashboardLayout } from "@/features/stats/api/dashboard.api";
+import {
+  getDashboardLayout,
+  saveDashboardLayout,
+  saveDashboardLayoutOnExit,
+} from "@/features/stats/api/dashboard.api";
 import { statsKeys } from "@/features/stats/api/query-keys";
 import { DASHBOARD_SAVE_DEBOUNCE_MS, DEFAULT_LAYOUT } from "@/features/stats/constants";
 import type { LayoutItem } from "@/features/stats/types";
 
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+// Saves run one after another, so an older one can't land after a newer one
+const SAVE_SCOPE = { id: "dashboard-layout" };
 
 /**
  * The stats board's layout. Changes show at once and are saved a moment after the last one;
@@ -28,19 +35,29 @@ export function useDashboardLayout() {
   const pending = useRef<LayoutItem[] | null>(null);
   const lastSaved = useRef<LayoutItem[] | null>(null);
   const failed = useRef<LayoutItem[] | null>(null);
+  // Saves sent and not yet answered
+  const inFlight = useRef(0);
 
   const { mutate } = useMutation({
     mutationFn: saveDashboardLayout,
+    scope: SAVE_SCOPE,
+    onMutate: () => {
+      inFlight.current += 1;
+    },
     onSuccess: (stored) => {
       lastSaved.current = stored;
-      // A newer change is already waiting; showing the stored one would undo it
-      if (!pending.current) queryClient.setQueryData(queryKey, stored);
-      setStatus(pending.current ? "saving" : "saved");
+      // A newer change is waiting or on its way; showing this stored one would undo it
+      const newer = pending.current !== null || inFlight.current > 1;
+      if (!newer) queryClient.setQueryData(queryKey, stored);
+      setStatus(newer ? "saving" : "saved");
     },
     onError: (_error, layout) => {
       failed.current = layout;
       if (lastSaved.current) queryClient.setQueryData(queryKey, lastSaved.current);
       setStatus("error");
+    },
+    onSettled: () => {
+      inFlight.current -= 1;
     },
   });
 
@@ -74,8 +91,21 @@ export function useDashboardLayout() {
     save();
   }, [save, setLayout]);
 
-  // Leaving the page before the wait is over still saves the last change
+  // Leaving the view before the wait is over still saves the last change
   useEffect(() => () => save(), [save]);
+
+  // Closing the tab or reloading doesn't unmount anything, so the waiting change goes out here
+  useEffect(() => {
+    const onHide = () => {
+      const layout = pending.current;
+      if (!layout) return;
+      clearTimeout(timer.current);
+      pending.current = null;
+      void saveDashboardLayoutOnExit(layout);
+    };
+    window.addEventListener("pagehide", onHide);
+    return () => window.removeEventListener("pagehide", onHide);
+  }, []);
 
   return {
     layout: query.data,

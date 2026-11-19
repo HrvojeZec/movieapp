@@ -340,3 +340,54 @@ test("resizing past a widget's limit shows the limit", async ({ page }) => {
 
   expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ w: 4 });
 });
+
+/** Picks up Movies watched with the keyboard and drops it one step down. */
+async function moveTileDown(page: Page) {
+  await page.getByRole("button", { name: "Move Movies watched", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+}
+
+test("a change made right before leaving the page is still saved", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  await moveTileDown(page);
+
+  // Leave at once, before the save's wait is over
+  await page.goto("/");
+  await expect
+    .poll(async () => find(await savedLayout(page), "tileWatched"))
+    .not.toMatchObject({ x: 0, y: 0 });
+});
+
+test("a slow save can't overwrite a newer one", async ({ page }) => {
+  await openAsPro(page);
+  const bodies: { layout: Item[] }[] = [];
+  let firstSent: () => void;
+  const firstSentPromise = new Promise<void>((resolve) => (firstSent = resolve));
+  await page.route(`**${ROUTE}`, async (route) => {
+    if (route.request().method() === "PUT") {
+      bodies.push(route.request().postDataJSON());
+      if (bodies.length === 1) {
+        firstSent();
+        // The first save is slow to arrive, so the newer one would get there first
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }
+    await route.continue();
+  });
+  await customize(page);
+
+  await moveTileDown(page);
+  await firstSentPromise;
+  await moveTileDown(page);
+  await finish(page);
+
+  expect(bodies).toHaveLength(2);
+  const newest = find(bodies[1].layout, "tileWatched");
+  expect(newest).not.toEqual(find(bodies[0].layout, "tileWatched"));
+  // Both saves are through; the newer one is what stays
+  await page.waitForTimeout(2500);
+  expect(find(await savedLayout(page), "tileWatched")).toEqual(newest);
+});
