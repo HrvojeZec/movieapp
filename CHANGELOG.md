@@ -222,6 +222,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The README describes the project instead of the create-next-app template: features by plan, how
+  to try the paid plans with a test card, the stack, the architecture and its layers, running
+  locally and in Docker, environment variables, tests, known limitations and what I would do
+  differently, with screenshots taken by an on-demand Playwright script (`README_SHOTS=1`)
 - The app shell (layout, header, sidebar, phone menu) lives in `src/shell` instead of
   `src/shared`, and a lint rule keeps `shared` from importing features or the shell. The movie ID
   schema moved to movies and the subscription notification texts to subscription, so lists,
