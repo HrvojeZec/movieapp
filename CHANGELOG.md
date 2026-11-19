@@ -222,6 +222,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The sidebar's collapse button is an icon next to the logo instead of a labelled row at the
+  bottom; on the narrow sidebar the logo turns into the expand button on hover (touch screens
+  keep it under the logo). Ctrl/⌘+B still toggles it
 - The header is slimmer: search and notifications only, turning to glass once the page scrolls.
   Phones keep the menu button
 - The profile's favorites count rolls its digits into place like an odometer instead of counting

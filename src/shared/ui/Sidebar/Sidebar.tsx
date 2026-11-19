@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Skeleton, Text, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { ActionIcon, Skeleton, Text, Tooltip, useMantineTheme } from "@mantine/core";
 import { useClickOutside, useMediaQuery } from "@mantine/hooks";
 import { Film, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { LayoutGroup } from "motion/react";
@@ -57,14 +57,30 @@ export function Sidebar() {
 
   return (
     <div ref={ref} className={classes.panel} data-overlay={overlayOpen || undefined}>
-      <Link href={ROUTES.home} className={classes.brand} onClick={closeOverlay}>
-        <span className={classes.icon}>
-          <Film size={26} color={COLORS.primary} />
-        </span>
-        <Text component="span" size="lg" fw={700} c="white" className={classes.label}>
-          {APP_NAME}
-        </Text>
-      </Link>
+      {/* Wide: the toggle sits right of the logo. Narrow: it takes the logo's place on hover */}
+      <div className={classes.top}>
+        <Link href={ROUTES.home} className={classes.brand} onClick={closeOverlay}>
+          <span className={classes.icon}>
+            <Film size={26} color={COLORS.primary} />
+          </span>
+          <Text component="span" size="lg" fw={700} c="white" className={classes.label}>
+            {APP_NAME}
+          </Text>
+        </Link>
+        <Tooltip label={wide ? "Collapse sidebar" : "Expand sidebar"} position="right" withArrow>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            size="lg"
+            className={classes.toggle}
+            onClick={isDesktop ? toggle : () => setOverlay((open) => !open)}
+            aria-expanded={wide}
+            aria-label={wide ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            <ToggleIcon size={18} />
+          </ActionIcon>
+        </Tooltip>
+      </div>
 
       <div className={classes.groups}>
         <LayoutGroup id="sidebar">
@@ -94,18 +110,6 @@ export function Sidebar() {
       </div>
 
       <div className={classes.footer}>
-        <UnstyledButton
-          className={classes.item}
-          onClick={isDesktop ? toggle : () => setOverlay((open) => !open)}
-          aria-expanded={wide}
-          aria-label={wide ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          <span className={classes.icon}>
-            <ToggleIcon size={20} />
-          </span>
-          <span className={classes.label}>Collapse</span>
-        </UnstyledButton>
-
         {loading ? (
           <Skeleton height={44} radius="md" />
         ) : user ? (

@@ -108,3 +108,35 @@ test("the skip link jumps to the content", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page.locator("main#main")).toBeFocused();
 });
+
+test("the collapse button sits next to the logo", async ({ page }) => {
+  await page.setViewportSize(WIDE_SCREEN);
+  await page.goto("/");
+  const nav = sidebar(page);
+  const logo = (await nav.getByRole("link", { name: "MovieHub" }).boundingBox())!;
+  const toggle = (await nav.getByRole("button", { name: "Collapse sidebar" }).boundingBox())!;
+
+  expect(Math.abs(logo.y + logo.height / 2 - (toggle.y + toggle.height / 2))).toBeLessThan(8);
+  expect(toggle.x).toBeGreaterThan(logo.x);
+  // An icon is enough; the old labelled button at the bottom is gone
+  await expect(nav.getByText("Collapse", { exact: true })).toHaveCount(0);
+});
+
+test("a collapsed sidebar expands from the logo", async ({ page }) => {
+  await page.setViewportSize(WIDE_SCREEN);
+  await page.goto("/");
+  await page.getByRole("button", { name: "Collapse sidebar" }).click();
+  await expect.poll(() => sidebarMode(page)).toBe("collapsed");
+
+  const expand = page.getByRole("button", { name: "Expand sidebar" });
+  const opacity = () => expand.evaluate((element) => getComputedStyle(element).opacity);
+  await page.mouse.move(800, 400);
+  await expect.poll(opacity).toBe("0");
+  // Hovering the logo turns it into the expand button (which lies over it, so move the mouse)
+  const logo = (await sidebar(page).getByRole("link", { name: "MovieHub" }).boundingBox())!;
+  await page.mouse.move(logo.x + 20, logo.y + logo.height / 2);
+  await expect.poll(opacity).toBe("1");
+
+  await expand.click();
+  await expect.poll(() => sidebarMode(page)).toBe("expanded");
+});
