@@ -126,3 +126,16 @@ export function topWithOther(genres: GenreCount[], limit: number) {
   const rest = genres.slice(limit).reduce((sum, genre) => sum + genre.count, 0);
   return rest > 0 ? [...top, { label: "Other", count: rest }] : top;
 }
+
+/** The activity calendar as a table: per month, the days with activity and their total. */
+export function monthlyActivity(days: DayActivity[]) {
+  const months = new Map<string, { month: string; activeDays: number; activities: number }>();
+  for (const day of days) {
+    const month = day.date.slice(0, "YYYY-MM".length);
+    const entry = months.get(month) ?? { month, activeDays: 0, activities: 0 };
+    entry.activeDays += 1;
+    entry.activities += day.watched + day.views;
+    months.set(month, entry);
+  }
+  return [...months.values()].sort((a, b) => b.month.localeCompare(a.month));
+}

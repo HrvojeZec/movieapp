@@ -1,4 +1,4 @@
-import type { WIDGET_TYPES } from "./constants";
+import type { WIDGET_TYPES, WIDGET_VIEWS } from "./constants";
 
 export interface GenreCount {
   id: number;
@@ -40,6 +40,8 @@ export interface UserStats {
 
 export type WidgetType = (typeof WIDGET_TYPES)[number];
 
+export type WidgetView = (typeof WIDGET_VIEWS)[number];
+
 /** A widget's cell on the 12-column dashboard grid. */
 export interface LayoutItem {
   type: WidgetType;
@@ -47,6 +49,8 @@ export interface LayoutItem {
   y: number;
   w: number;
   h: number;
+  /** Charts can be shown as a table; left out means the chart. */
+  view?: WidgetView;
 }
 
 /** [columns, rows] */

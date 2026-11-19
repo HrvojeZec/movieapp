@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Dashboard charts (favorite genres, genre mix, watched per month, pages opened per month, the
+  activity calendar) can be shown as a table with a chart/table switch in their header; the
+  view swaps with a short blur-and-fade and is saved with the dashboard, so it follows the user
 - Lists can be reordered: "Reorder" turns the list into rows that move by dragging their grip or
   with up and down buttons, saved right away (`PATCH /api/lists/:id/order`, which only accepts
   the list's own movies, each once). New movies now go to the top of a list

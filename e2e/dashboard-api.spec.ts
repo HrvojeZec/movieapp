@@ -41,6 +41,20 @@ test("the server packs a saved dashboard", async ({ page }) => {
   expect((await saved.json()).layout).toEqual([{ type: "tileLists", x: 9, y: 0, w: 3, h: 2 }]);
 });
 
+test("a chart's view is stored with the dashboard", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, plan("pro"));
+
+  const layout = [{ type: "genreBars", x: 0, y: 0, w: 6, h: 5, view: "table" }];
+  await page.request.put(ROUTE, { data: { layout } });
+  expect((await (await page.request.get(ROUTE)).json()).layout).toEqual(layout);
+
+  const unknown = await page.request.put(ROUTE, {
+    data: { layout: [{ type: "genreBars", x: 0, y: 0, w: 6, h: 5, view: "pie" }] },
+  });
+  expect(unknown.status()).toBe(400);
+});
+
 test("a malformed dashboard is rejected", async ({ page }) => {
   const user = await registerViaApi(page);
   await seedSubscription(user, plan("pro"));

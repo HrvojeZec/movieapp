@@ -219,3 +219,45 @@ test("customizing is only for pro", async ({ page }) => {
   await expect(page.getByText("Available on the Pro plan")).toBeVisible();
   await expect(page.getByRole("button", { name: "Customize" })).toHaveCount(0);
 });
+
+test("a chart can be shown as a table and it stays after reload", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, { plan: "pro", interval: "month", currentPeriodEnd: PERIOD_END });
+  // Pulp Fiction: crime and thriller
+  await page.request.post("/api/user/watched", { data: { movieId: "680" } });
+  await page.goto("/stats");
+
+  const genres = page.locator('[data-widget="genreBars"]');
+  await genres.getByRole("button", { name: "Show as table" }).click();
+  const table = genres.locator('[data-view="table"]');
+  await expect(table.getByRole("rowheader", { name: "Crime" })).toBeVisible();
+  await expect(genres.getByRole("button", { name: "Show as table" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
+  expect(find(await savedLayout(page), "genreBars")).toMatchObject({ view: "table" });
+
+  await page.reload();
+  await expect(
+    genres.locator('[data-view="table"]').getByRole("rowheader", { name: "Crime" }),
+  ).toBeVisible();
+
+  await genres.getByRole("button", { name: "Show as chart" }).click();
+  await expect(genres.locator('[data-view="chart"]')).toBeVisible();
+});
+
+test("switching to the table doesn't start a drag", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const genres = page.locator('[data-widget="genreBars"]');
+  await genres.scrollIntoViewIfNeeded();
+  const before = await genres.boundingBox();
+
+  await genres.getByRole("button", { name: "Show as table" }).click();
+
+  await expect(genres.locator('[data-view="table"]')).toBeVisible();
+  expect(await genres.boundingBox()).toEqual(before);
+  await finish(page);
+  expect(find(await savedLayout(page), "genreBars")).toMatchObject({ x: 0, y: 6, view: "table" });
+});

@@ -32,6 +32,18 @@ export const WIDGET_TYPES = [
   "recentWatched",
 ] as const;
 
+/** How a chart widget can be shown; the first is the default and isn't stored. */
+export const WIDGET_VIEWS = ["chart", "table"] as const;
+
+/** Widgets whose data reads as a table too; tiles, the streak and posters don't. */
+export const TABLE_VIEW_WIDGETS: readonly WidgetType[] = [
+  "genreBars",
+  "genreDonut",
+  "watchedMonthly",
+  "viewsTrend",
+  "activityHeatmap",
+];
+
 const TILE_SIZE = { min: [2, 2], max: [4, 3], default: [3, 2] } as const;
 const CHART_SIZE = { min: [4, 4], max: [12, 6], default: [6, 5] } as const;
 

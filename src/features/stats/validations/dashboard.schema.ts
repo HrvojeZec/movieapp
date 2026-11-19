@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { WIDGET_TYPES } from "@/features/stats/constants";
+import { WIDGET_TYPES, WIDGET_VIEWS } from "@/features/stats/constants";
 
 const cell = z.number().int();
 
@@ -9,6 +9,7 @@ const layoutItemSchema = z.object({
   y: cell.min(0),
   w: cell.min(1),
   h: cell.min(1),
+  view: z.enum(WIDGET_VIEWS).optional(),
 });
 
 /** A board from the client: the shape must be right; overlaps and packing are fixed on save. */
