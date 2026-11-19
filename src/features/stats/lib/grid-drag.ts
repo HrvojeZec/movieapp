@@ -84,3 +84,18 @@ export function clampFrameSize(
     height: clamp(height, minimum.height, maximum.height),
   };
 }
+
+// How far a resized frame may stretch past its limit, and how quickly it stiffens
+const RUBBER_BAND_MAX_PX = 24;
+const RUBBER_BAND_SOFTNESS_PX = 60;
+
+/**
+ * A frame pulled past its size limit gives a little, like rubber, and stiffens the further it is
+ * pulled, so the limit is felt instead of the frame just stopping.
+ */
+export function rubberBand(wanted: number, limit: number): number {
+  const overshoot = wanted - limit;
+  if (overshoot === 0) return wanted;
+  const give = RUBBER_BAND_MAX_PX * (1 - Math.exp(-Math.abs(overshoot) / RUBBER_BAND_SOFTNESS_PX));
+  return limit + Math.sign(overshoot) * give;
+}

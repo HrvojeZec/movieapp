@@ -247,3 +247,39 @@ export function setWidgetView(
     }),
   );
 }
+
+/**
+ * Where a dragged widget aimed at a cell would land, for the pointer. Packing pulls a widget
+ * dragged a little way down straight back up; once the pointer is past the middle of the widget
+ * underneath, it lands below that widget instead (so moving down feels like moving up). The move
+ * is blocked when, despite pointing elsewhere, the widget would end up where it started.
+ */
+export function planMove(
+  layout: readonly LayoutItem[],
+  type: WidgetType,
+  x: number,
+  y: number,
+): { layout: LayoutItem[]; blocked: boolean } {
+  const origin = layout.find((item) => item.type === type);
+  if (!origin) return { layout: compact(layout), blocked: false };
+  const wantedY = Math.max(0, y);
+  let result = moveWidget(layout, type, x, wantedY);
+  let landed = result.find((item) => item.type === type)!;
+
+  for (let jumps = 0; landed.y < wantedY && jumps < layout.length; jumps += 1) {
+    const current = landed;
+    const below = result
+      .filter(
+        (other) =>
+          other.type !== type && sharesColumns(current, other) && other.y >= current.y + current.h,
+      )
+      .sort(byPosition)[0];
+    if (!below || wantedY < below.y + below.h / 2) break;
+    result = moveWidget(layout, type, x, below.y + below.h);
+    landed = result.find((item) => item.type === type)!;
+  }
+
+  const pointsAtOrigin = clamp(x, 0, GRID_COLUMNS - origin.w) === origin.x && wantedY === origin.y;
+  const backWhereItStarted = landed.x === origin.x && landed.y === origin.y;
+  return { layout: result, blocked: !pointsAtOrigin && backWhereItStarted };
+}
