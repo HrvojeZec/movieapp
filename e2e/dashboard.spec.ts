@@ -391,3 +391,23 @@ test("a slow save can't overwrite a newer one", async ({ page }) => {
   await page.waitForTimeout(2500);
   expect(find(await savedLayout(page), "tileWatched")).toEqual(newest);
 });
+
+test("leaving the page mid-drag leaves no drag cursor behind", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const from = await center(
+    page,
+    page.locator('[data-widget="tileWatched"]').locator("[data-drag-handle]"),
+  );
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x + 120, from.y + 40, { steps: 4 });
+  const dragging = () => page.evaluate(() => document.documentElement.dataset.dragging ?? null);
+  expect(await dragging()).toBe("move");
+
+  // A link followed while the button is still down (here from script, as a shortcut would)
+  await page.evaluate(() => document.querySelector<HTMLAnchorElement>('a[href="/"]')?.click());
+  await expect(page).toHaveURL("/");
+  await page.mouse.up();
+  expect(await dragging()).toBeNull();
+});
