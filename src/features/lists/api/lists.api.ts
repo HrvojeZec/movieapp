@@ -32,3 +32,11 @@ export const addListMovie = async (listId: string, movieId: string) =>
 
 export const removeListMovie = async (listId: string, movieId: string) =>
   (await deleteJson<ListResponse>(API_ROUTES.lists.movie(listId, movieId))).list;
+
+export const reorderListRequest = async (listId: string, movieIds: string[]) =>
+  (
+    await fetchJson<ListResponse>(API_ROUTES.lists.order(listId), {
+      method: "PATCH",
+      body: JSON.stringify({ movieIds }),
+    })
+  ).list;

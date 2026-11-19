@@ -65,7 +65,8 @@ describe("lists", () => {
           id: LIST_ID,
           name: "Sunday classics",
           movieCount: 2,
-          coverMovieIds: ["680", "550"],
+          // Stored newest first, so the cover is the first movies
+          coverMovieIds: ["550", "680"],
           hasMovie: true,
           updatedAt: UPDATED.toISOString(),
         },
@@ -141,18 +142,33 @@ describe("lists", () => {
       await lists.addMovieToList(USER_ID, LIST_ID, "13");
 
       expect(requireFeature).toHaveBeenCalledWith(USER_ID, "customLists");
-      const [filter, update] = findOneAndUpdate.mock.calls[0];
-      // The 500th slot must still be empty, unless the movie is already on the list
+      const [filter] = findOneAndUpdate.mock.calls[0];
+      // Not on the list yet, and the 500th slot still empty
       expect(filter).toEqual({
         ...ownList,
-        $or: [{ movieIds: "13" }, { "movieIds.499": { $exists: false } }],
+        movieIds: { $ne: "13" },
+        "movieIds.499": { $exists: false },
       });
-      expect(update).toEqual({ $addToSet: { movieIds: "13" } });
+    });
+
+    it("new movies go to the top of the list", async () => {
+      await lists.addMovieToList(USER_ID, LIST_ID, "13");
+
+      const [, update] = findOneAndUpdate.mock.calls[0];
+      expect(update).toEqual({ $push: { movieIds: { $each: ["13"], $position: 0 } } });
+    });
+
+    it("adding a movie already on the list changes nothing", async () => {
+      findOneAndUpdate.mockResolvedValue(null);
+      findOne.mockResolvedValue(doc(["13", "550"]));
+
+      await expect(lists.addMovieToList(USER_ID, LIST_ID, "13")).resolves.toMatchObject({
+        movieIds: ["13", "550"],
+      });
     });
 
     it("limits are enforced: 500 movies per list", async () => {
       findOneAndUpdate.mockResolvedValue(null);
-      exists.mockResolvedValue({ _id: LIST_ID });
 
       await expect(lists.addMovieToList(USER_ID, LIST_ID, "13")).rejects.toMatchObject({
         status: 409,
@@ -162,17 +178,59 @@ describe("lists", () => {
 
     it("adding to another user's list is not found", async () => {
       findOneAndUpdate.mockResolvedValue(null);
+      findOne.mockResolvedValue(null);
 
       await expect(lists.addMovieToList(USER_ID, LIST_ID, "13")).rejects.toMatchObject({
         status: 404,
       });
-      expect(exists).toHaveBeenCalledWith(ownList);
+      expect(findOne).toHaveBeenCalledWith(ownList);
     });
 
     it("adding needs the customLists feature", async () => {
       requireFeature.mockRejectedValue(forbidden);
 
       await expect(lists.addMovieToList(USER_ID, LIST_ID, "13")).rejects.toBe(forbidden);
+      expect(findOneAndUpdate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("reordering", () => {
+    it("reorders a list when the movies are the same", async () => {
+      findOneAndUpdate.mockResolvedValue(doc(["680", "550"]));
+
+      const list = await lists.reorderList(USER_ID, LIST_ID, ["680", "550"]);
+
+      expect(requireFeature).toHaveBeenCalledWith(USER_ID, "customLists");
+      // Only when the list still holds exactly these movies, in one atomic update
+      expect(findOneAndUpdate.mock.calls[0].slice(0, 2)).toEqual([
+        { ...ownList, movieIds: { $size: 2, $all: ["680", "550"] } },
+        { $set: { movieIds: ["680", "550"] } },
+      ]);
+      expect(list.movieIds).toEqual(["680", "550"]);
+    });
+
+    it("rejects an order with missing or extra movies", async () => {
+      findOneAndUpdate.mockResolvedValue(null);
+
+      await expect(lists.reorderList(USER_ID, LIST_ID, ["680", "13"])).rejects.toMatchObject({
+        status: 409,
+        message: "The list changed, reload and try again.",
+      });
+    });
+
+    it("reordering another user's list is not found", async () => {
+      findOneAndUpdate.mockResolvedValue(null);
+      findOne.mockResolvedValue(null);
+
+      await expect(lists.reorderList(USER_ID, LIST_ID, ["550"])).rejects.toMatchObject({
+        status: 404,
+      });
+    });
+
+    it("reordering needs the customLists feature", async () => {
+      requireFeature.mockRejectedValue(forbidden);
+
+      await expect(lists.reorderList(USER_ID, LIST_ID, ["550"])).rejects.toBe(forbidden);
       expect(findOneAndUpdate).not.toHaveBeenCalled();
     });
   });

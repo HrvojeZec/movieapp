@@ -13,13 +13,15 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
+import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { ArrowLeft, Pencil, Trash2, X } from "lucide-react";
+import { ArrowDownUp, ArrowLeft, Check, Pencil, Trash2, X } from "lucide-react";
 import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
 import { useList } from "@/features/lists/hooks/useList";
 import { useListMutations } from "@/features/lists/hooks/useListMutations";
 import { ListNameModal } from "@/features/lists/ui/ListNameModal/ListNameModal";
 import { ListsUpgradeNotice } from "@/features/lists/ui/ListsUpgradeNotice/ListsUpgradeNotice";
+import { ReorderList } from "@/features/lists/ui/ReorderList/ReorderList";
 import { GRID_COLUMNS } from "@/features/movies/constants";
 import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
 import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
@@ -33,6 +35,8 @@ import { ROUTES } from "@/shared/routes";
 import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { StatusPage } from "@/shared/ui/StatusPage/StatusPage";
+import { SwipeToRemove } from "@/shared/ui/SwipeToRemove/SwipeToRemove";
+import { showUndoNotice } from "@/shared/ui/SwipeToRemove/undo-notice";
 
 export function ListView({ listId }: { listId: string }) {
   return (
@@ -45,14 +49,32 @@ export function ListView({ listId }: { listId: string }) {
 function ListContent({ listId }: { listId: string }) {
   const { data: list, isPending, error, refetch } = useList(listId);
   const { can } = useEntitlements();
-  const { rename, remove, toggleMovie } = useListMutations();
+  const { rename, remove, toggleMovie, reorder } = useListMutations();
+  const [reordering, setReordering] = useState(false);
   const router = useAppRouter();
   const [renameOpened, renameModal] = useDisclosure(false);
   const [deleteOpened, deleteModal] = useDisclosure(false);
-  // Newest first, like the watchlist
-  const movieIds = [...(list?.movieIds ?? [])].reverse();
+  // Saved in the order shown: new movies go to the top, and the user can rearrange them
+  const movieIds = list?.movieIds ?? [];
   const { movies, isPending: moviesPending } = useMoviesByIds(movieIds.map(Number));
   const canEdit = can("customLists");
+
+  const removeWithUndo = (movieId: string, title: string) => {
+    const previousOrder = movieIds;
+    toggleMovie.mutate({ listId, movieId, add: false });
+    showUndoNotice({
+      title: "Removed from the list",
+      message: title,
+      // Adding needs the plan; it lands on top, so the old order is put back after it
+      onUndo: canEdit
+        ? () =>
+            toggleMovie.mutate(
+              { listId, movieId, add: true },
+              { onSuccess: () => reorder.mutate({ listId, movieIds: previousOrder }) },
+            )
+        : undefined,
+    });
+  };
 
   if (error instanceof HttpError && error.status === HTTP_STATUS.NOT_FOUND) {
     return (
@@ -95,6 +117,15 @@ function ListContent({ listId }: { listId: string }) {
                 </Text>
               </div>
               <Group gap="xs">
+                {canEdit && movieIds.length > 1 && (
+                  <Button
+                    variant={reordering ? "filled" : "default"}
+                    leftSection={reordering ? <Check size={16} /> : <ArrowDownUp size={16} />}
+                    onClick={() => setReordering((on) => !on)}
+                  >
+                    {reordering ? "Done" : "Reorder"}
+                  </Button>
+                )}
                 {canEdit && (
                   <Tooltip label="Rename list">
                     <ActionIcon
@@ -128,13 +159,24 @@ function ListContent({ listId }: { listId: string }) {
             <Text c="dimmed" ta="center" size="lg" mt="xl">
               This list is empty. Use &ldquo;Add to list&rdquo; on a movie page to fill it.
             </Text>
+          ) : reordering ? (
+            <ReorderList
+              movieIds={movieIds}
+              movies={movies}
+              onCommit={(order) => reorder.mutate({ listId, movieIds: order })}
+            />
           ) : moviesPending && movies.length === 0 ? (
             <MovieGrid movies={[]} loading />
           ) : (
             <SimpleGrid cols={GRID_COLUMNS} spacing="lg">
               {movies.map((movie) => (
                 <Stack key={movie.id} gap={6}>
-                  <MovieCard movie={movie} />
+                  <SwipeToRemove
+                    label="Remove"
+                    onRemove={() => removeWithUndo(String(movie.id), movie.title)}
+                  >
+                    <MovieCard movie={movie} />
+                  </SwipeToRemove>
                   <Button
                     variant="subtle"
                     color="gray"

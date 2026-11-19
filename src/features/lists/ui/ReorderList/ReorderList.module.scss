@@ -1,0 +1,33 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-dark-7);
+}
+
+// Dragging must not scroll the page on touch screens
+.grip {
+  display: inline-grid;
+  place-items: center;
+  color: var(--mantine-color-dimmed);
+  cursor: grab;
+  touch-action: none;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+}

@@ -1,3 +1,4 @@
+import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import { registerViaApi, seedSubscription, seedWatchlist } from "./helpers";
 
@@ -58,4 +59,51 @@ test("logged out visitors are sent to log in", async ({ page }) => {
 
   await page.goto("/watchlist");
   await expect(page).toHaveURL(/\/auth\/login/);
+});
+
+/** A real finger swipe to the left across an element (touch events, as a phone sends them). */
+async function swipeLeft(page: Page, target: Locator, distance: number) {
+  const box = (await target.boundingBox())!;
+  const y = box.y + box.height / 2;
+  const startX = box.x + box.width * 0.8;
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: startX, y }],
+  });
+  const STEPS = 10;
+  for (let step = 1; step <= STEPS; step += 1) {
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: startX - (distance * step) / STEPS, y }],
+    });
+  }
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+}
+
+test.describe("on a touch screen", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  test("swiping a movie off the watchlist can be undone", async ({ page }) => {
+    const user = await registerViaApi(page);
+    await seedSubscription(user, {
+      plan: "premium",
+      interval: "month",
+      currentPeriodEnd: PERIOD_END,
+    });
+    await seedWatchlist(user, ["550", "680"]);
+    await page.goto("/watchlist");
+
+    const cards = page.locator("[data-swipe-item]");
+    await expect(cards).toHaveCount(2);
+    await swipeLeft(page, cards.first(), 160);
+
+    await expect(cards).toHaveCount(1);
+    await expect(page).toHaveURL("/watchlist");
+    await page.getByRole("button", { name: "Undo" }).click();
+    await expect(cards).toHaveCount(2);
+    await expect
+      .poll(async () => (await (await page.request.get("/api/user/profile")).json()).user.watchlist)
+      .toHaveLength(2);
+  });
 });

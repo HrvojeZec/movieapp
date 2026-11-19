@@ -27,7 +27,8 @@ const toSummary = (list: ListRecord, movieId?: string): MovieListSummary => ({
   id: String(list._id),
   name: list.name,
   movieCount: list.movieIds.length,
-  coverMovieIds: list.movieIds.slice(-LIST_COVER_SIZE).reverse(),
+  // Stored newest first (new movies go to the top), so the cover is the start of the list
+  coverMovieIds: list.movieIds.slice(0, LIST_COVER_SIZE),
   hasMovie: movieId === undefined ? undefined : list.movieIds.includes(movieId),
   updatedAt: list.updatedAt.toISOString(),
 });
@@ -102,23 +103,51 @@ export async function addMovieToList(
   const filter = ownList(userId, listId);
   await requireFeature(userId, "customLists");
 
-  // Like the favorites limit: the slot after the last allowed one must still be empty, checked in
-  // the same update, unless the movie is already on the list
+  // New movies go to the top. Like the favorites limit, the slot after the last allowed one must
+  // still be empty, checked in the same update as "not on the list yet"
   const list = await MovieList.findOneAndUpdate(
     {
       ...filter,
-      $or: [{ movieIds: movieId }, { [`movieIds.${MAX_MOVIES_PER_LIST - 1}`]: { $exists: false } }],
+      movieIds: { $ne: movieId },
+      [`movieIds.${MAX_MOVIES_PER_LIST - 1}`]: { $exists: false },
     },
-    { $addToSet: { movieIds: movieId } },
+    { $push: { movieIds: { $each: [movieId], $position: 0 } } },
     AFTER_UPDATE,
   ).lean();
   if (list) return toDetails(list);
 
-  if (!(await MovieList.exists(filter))) throw notFound("List");
+  const current = await MovieList.findOne(filter).lean();
+  if (!current) throw notFound("List");
+  // Already there: adding it again is a no-op, not an error
+  if (current.movieIds.includes(movieId)) return toDetails(current);
   throw new RouteError(
     HTTP_STATUS.CONFLICT,
     `A list can hold up to ${MAX_MOVIES_PER_LIST} movies.`,
   );
+}
+
+/**
+ * Puts the list's movies in a new order. The order must name exactly the movies on the list (the
+ * schema rejects duplicates); if the list changed meanwhile, nothing is saved.
+ */
+export async function reorderList(
+  userId: string,
+  listId: string,
+  movieIds: string[],
+): Promise<MovieListDetails> {
+  const filter = ownList(userId, listId);
+  await requireFeature(userId, "customLists");
+
+  // Same size and containing every given ID means the same movies, checked in the update itself
+  const list = await MovieList.findOneAndUpdate(
+    { ...filter, movieIds: { $size: movieIds.length, $all: movieIds } },
+    { $set: { movieIds } },
+    AFTER_UPDATE,
+  ).lean();
+  if (list) return toDetails(list);
+
+  if (!(await MovieList.findOne(filter).lean())) throw notFound("List");
+  throw new RouteError(HTTP_STATUS.CONFLICT, "The list changed, reload and try again.");
 }
 
 export async function removeMovieFromList(

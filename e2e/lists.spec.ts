@@ -94,3 +94,36 @@ test("another user's list is not found", async ({ page }) => {
   await page.goto(`/lists/${listId}`);
   await expect(page.getByRole("heading", { name: "List not found" })).toBeVisible();
 });
+
+test("a premium user reorders a list", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, premium);
+  // Stored newest first: Fight Club, then Pulp Fiction
+  const listId = await seedList(user, { name: "Sunday classics", movieIds: ["550", "680"] });
+  await page.goto(`/lists/${listId}`);
+
+  await page.getByRole("button", { name: "Reorder" }).click();
+  await expect(page.getByRole("button", { name: "Move Fight Club up" })).toBeDisabled();
+  await page.getByRole("button", { name: "Move Pulp Fiction up" }).click();
+
+  await expect
+    .poll(async () => (await (await page.request.get(`/api/lists/${listId}`)).json()).list.movieIds)
+    .toEqual(["680", "550"]);
+  await page.getByRole("button", { name: "Done" }).click();
+  await expect(page.getByRole("link", { name: /Pulp Fiction/ }).first()).toBeVisible();
+});
+
+test("an order with other movies is refused", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await seedSubscription(user, premium);
+  const listId = await seedList(user, { name: "Sunday classics", movieIds: ["550", "680"] });
+
+  const changed = await page.request.patch(`/api/lists/${listId}/order`, {
+    data: { movieIds: ["680", "13"] },
+  });
+  expect(changed.status()).toBe(409);
+  const duplicated = await page.request.patch(`/api/lists/${listId}/order`, {
+    data: { movieIds: ["550", "550"] },
+  });
+  expect(duplicated.status()).toBe(400);
+});
