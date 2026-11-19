@@ -1,9 +1,10 @@
 "use client";
 import type { ReactNode } from "react";
 import { Badge, Button, Group, Indicator, List, Loader, Stack, Text, Title } from "@mantine/core";
+import { Magnetic } from "@/shared/ui/motion/Magnetic";
+import { RollingNumber } from "@/shared/ui/motion/RollingNumber/RollingNumber";
 import { Check, CheckIcon, Star, Zap } from "lucide-react";
 import type { BillingInterval, PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
-import { formatPrice } from "@/shared/lib/format";
 import { COLORS } from "@/shared/theme/colors";
 import ShinyText from "@/shared/vendor/react-bits/ShinyText/ShinyText";
 import SpotlightCard from "@/shared/vendor/react-bits/SpotlightCard/SpotlightCard";
@@ -66,17 +67,19 @@ export function PlanCard({
   ];
 
   const button = (
-    <Button
-      fullWidth
-      size="lg"
-      variant={plan.popular ? "filled" : "outline"}
-      color={plan.popular ? "blue" : "gray"}
-      onClick={onSubscribe}
-      disabled={disabled}
-      className={`${classes.subscribe} ${plan.popular ? classes.highlighted : ""}`}
-    >
-      {pending ? <Loader size="sm" /> : buttonLabel}
-    </Button>
+    <Magnetic block>
+      <Button
+        fullWidth
+        size="lg"
+        variant={plan.popular ? "filled" : "outline"}
+        color={plan.popular ? "blue" : "gray"}
+        onClick={onSubscribe}
+        disabled={disabled}
+        className={`${classes.subscribe} ${plan.popular ? classes.highlighted : ""}`}
+      >
+        {pending ? <Loader size="sm" /> : buttonLabel}
+      </Button>
+    </Magnetic>
   );
 
   return (
@@ -111,13 +114,14 @@ export function PlanCard({
 
           <Group gap={4} align="baseline">
             <Text size="3rem" fw={700} c="white">
-              {price > 0 ? formatPrice(price) : "$0"}
+              {/* Rolls to the new price on Monthly/Yearly; shown as is before JavaScript loads */}
+              <RollingNumber value={price} prefix="$" decimals={price > 0 ? 2 : 0} rollIn={false} />
             </Text>
             {price > 0 && <Text c="dimmed">{interval === "year" ? "/year" : "/month"}</Text>}
           </Group>
 
           {trialDays && price > 0 ? (
-            <Badge variant="light" color="teal" size="lg">
+            <Badge variant="light" color="teal" size="lg" className={classes.trial}>
               {trialDays}-day free trial
             </Badge>
           ) : null}
