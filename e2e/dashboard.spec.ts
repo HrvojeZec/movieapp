@@ -70,6 +70,47 @@ test("a pro user rearranges the dashboard and it stays after reload", async ({ p
   expect(find(await savedLayout(page), "tileWatched")).toMatchObject({ x: 3, y: 0 });
 });
 
+test("escape during a mouse drag puts the widget back", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const widget = page.locator('[data-widget="genreBars"]');
+  // In view, so the pointer goes down on the widget and not outside the window
+  await widget.scrollIntoViewIfNeeded();
+  const before = await widget.boundingBox();
+  const board = (await page.locator("[data-widget]").first().locator("..").boundingBox())!;
+  const from = await center(page, widget.locator("[data-drag-handle]"));
+
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x + (2 * (board.width + GAP)) / COLUMNS, from.y, { steps: 6 });
+  await page.keyboard.press("Escape");
+  await page.mouse.up();
+
+  await expect.poll(() => widget.boundingBox()).toEqual(before);
+  await expect(page.getByText("Saving…")).toHaveCount(0);
+  expect(find(await savedLayout(page), "genreBars")).toMatchObject({ x: 0, y: 6 });
+});
+
+test("a cancelled drag puts the widget back", async ({ page }) => {
+  await openAsPro(page);
+  await customize(page);
+  const widget = page.locator('[data-widget="genreBars"]');
+  const handle = widget.locator("[data-drag-handle]");
+  await widget.scrollIntoViewIfNeeded();
+  const before = await widget.boundingBox();
+  const from = await center(page, handle);
+
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(from.x + 200, from.y + 120, { steps: 6 });
+  // The browser takes the pointer away (a system gesture, a lost window)
+  await handle.dispatchEvent("pointercancel");
+  await page.mouse.up();
+
+  await expect.poll(() => widget.boundingBox()).toEqual(before);
+  await expect(page.getByText("Saving…")).toHaveCount(0);
+});
+
 test("the dashboard can be rearranged with the keyboard", async ({ page }) => {
   await openAsPro(page);
   await customize(page);

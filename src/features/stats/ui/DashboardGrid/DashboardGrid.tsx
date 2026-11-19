@@ -1,18 +1,20 @@
 "use client";
-import { useId } from "react";
+import { useId, type CSSProperties } from "react";
 import { VisuallyHidden } from "@mantine/core";
 import { motion } from "motion/react";
 import { GRID_COLUMNS } from "@/features/stats/constants";
 import { useGridColumns } from "@/features/stats/hooks/useGridColumns";
-import { useGridDrag } from "@/features/stats/hooks/useGridDrag";
+import { useGridDrag, type CellMotion } from "@/features/stats/hooks/useGridDrag";
 import { cellToPixels } from "@/features/stats/lib/grid-drag";
 import { removeWidget, reorderWidget, toColumns } from "@/features/stats/lib/grid-layout";
 import type { LayoutItem, UserStats, WidgetType } from "@/features/stats/types";
+import { WidgetBody } from "@/features/stats/ui/WidgetBody/WidgetBody";
 import type { WidgetEditControls } from "@/features/stats/ui/WidgetFrame/WidgetFrame";
 import { WidgetFrame } from "@/features/stats/ui/WidgetFrame/WidgetFrame";
 import { WIDGETS } from "@/features/stats/widgets/registry";
 import { COLORS } from "@/shared/theme/colors";
 import { SPRINGS } from "@/shared/ui/motion/motion.constants";
+import { GridCell } from "./GridCell";
 import classes from "./DashboardGrid.module.scss";
 
 interface DashboardGridProps {
@@ -26,12 +28,11 @@ interface DashboardGridProps {
 }
 
 const titleOf = (type: WidgetType) => WIDGETS[type].title;
-const FOLLOW_POINTER = { duration: 0 };
 
 /**
  * The stats board: widgets placed on a grid. While customizing, a wide board moves widgets by
  * their header and resizes them by their corner (or with the keyboard); a narrow one moves
- * them up and down with buttons.
+ * them up and down with buttons. A dashed outline shows where a moved widget will land.
  */
 export function DashboardGrid({ layout, stats, editing, onChange, now }: DashboardGridProps) {
   const instructionsId = useId();
@@ -48,19 +49,17 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
       return top + itemHeight;
     }),
   );
-  const placeholder = drag.dragging
-    ? shown.find((item) => item.type === drag.dragging?.type)
-    : null;
+  const landing = drag.pointerType ? shown.find((item) => item.type === drag.pointerType) : null;
 
-  const editControls = (type: WidgetType): WidgetEditControls | undefined => {
+  const editControls = (type: WidgetType, values: CellMotion): WidgetEditControls | undefined => {
     if (!editing) return undefined;
     const canRemove = layout.length > 1;
     const onRemove = canRemove ? () => onChange(removeWidget(layout, type)) : undefined;
     if (wide) {
       return {
-        dragProps: drag.dragProps(type),
+        dragProps: drag.dragProps(type, values),
         keyboardProps: drag.keyboardProps(type),
-        resizeProps: drag.resizeProps(type),
+        resizeProps: drag.resizeProps(type, values),
         onRemove,
         instructionsId,
       };
@@ -75,42 +74,54 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
     };
   };
 
+  // The grid's cells as dots behind the widgets while customizing
+  const gridLines = {
+    "--cell-w": `${metrics.cellWidth}px`,
+    "--row-h": `${metrics.rowHeight}px`,
+    "--gap": `${metrics.gap}px`,
+  } as CSSProperties;
+
   return (
-    <div ref={ref} className={classes.board} style={{ height }}>
-      {placeholder && (
-        <div className={classes.placeholder} style={pixelBox(cellToPixels(placeholder, metrics))} />
+    <div
+      ref={ref}
+      className={classes.board}
+      data-editing={editing && wide ? true : undefined}
+      style={{ height, ...gridLines }}
+    >
+      {landing && (
+        <motion.div
+          className={classes.placeholder}
+          aria-hidden
+          initial={false}
+          animate={toBox(cellToPixels(landing, metrics))}
+          transition={SPRINGS.snappy}
+        />
       )}
 
       {measured &&
         shown.map((item) => {
-          const { left, top, width, height: itemHeight } = cellToPixels(item, metrics);
-          const following = drag.dragging?.type === item.type ? drag.dragging : null;
-          const start = following ? cellToPixels(following.origin, metrics) : null;
           const widget = WIDGETS[item.type];
           const Icon = widget.icon;
           return (
-            <motion.div
+            <GridCell
               key={item.type}
-              className={classes.cell}
-              data-widget={item.type}
-              style={{ width, height: itemHeight, zIndex: drag.activeType === item.type ? 2 : 1 }}
-              initial={false}
-              animate={{
-                x: start && following ? start.left + following.dx : left,
-                y: start && following ? start.top + following.dy : top,
-              }}
-              transition={following ? FOLLOW_POINTER : SPRINGS.gentle}
+              item={item}
+              metrics={metrics}
+              followsPointer={drag.pointerType === item.type}
+              raised={drag.activeType === item.type || drag.landingType === item.type}
             >
-              <WidgetFrame
-                title={widget.title}
-                icon={<Icon size={16} color={COLORS.primary} />}
-                bare={widget.bare}
-                edit={editControls(item.type)}
-                active={drag.activeType === item.type}
-              >
-                {widget.render({ stats, size: { w: item.w, h: item.h }, now })}
-              </WidgetFrame>
-            </motion.div>
+              {(values, size) => (
+                <WidgetFrame
+                  title={widget.title}
+                  icon={<Icon size={16} color={COLORS.primary} />}
+                  bare={widget.bare}
+                  edit={editControls(item.type, values)}
+                  active={drag.activeType === item.type}
+                >
+                  <WidgetBody type={item.type} w={size.w} h={size.h} stats={stats} now={now} />
+                </WidgetFrame>
+              )}
+            </GridCell>
           );
         })}
 
@@ -123,8 +134,10 @@ export function DashboardGrid({ layout, stats, editing, onChange, now }: Dashboa
   );
 }
 
-const pixelBox = ({ left, top, width, height }: ReturnType<typeof cellToPixels>) => ({
-  transform: `translate(${left}px, ${top}px)`,
+// Position by transform, so the outline glides between cells without layout work
+const toBox = ({ left, top, width, height }: ReturnType<typeof cellToPixels>) => ({
+  x: left,
+  y: top,
   width,
   height,
 });

@@ -42,6 +42,7 @@ export function WidgetFrame({ title, icon, bare, edit, active, children }: Widge
         <div
           className={classes.header}
           data-draggable={edit?.dragProps ? true : undefined}
+          data-drag-handle={edit?.dragProps ? true : undefined}
           {...edit?.dragProps}
         >
           <Group gap={8} wrap="nowrap" className={classes.title}>
@@ -52,7 +53,12 @@ export function WidgetFrame({ title, icon, bare, edit, active, children }: Widge
           </Group>
           {edit && (
             // Buttons inside the header must not start a drag
-            <Group gap={4} wrap="nowrap" onPointerDown={(event) => event.stopPropagation()}>
+            <Group
+              gap={4}
+              wrap="nowrap"
+              className={classes.controls}
+              onPointerDown={(event) => event.stopPropagation()}
+            >
               {edit.keyboardProps && (
                 <ActionIcon
                   variant="subtle"
@@ -99,7 +105,9 @@ export function WidgetFrame({ title, icon, bare, edit, active, children }: Widge
           )}
         </div>
       )}
-      <div className={classes.body}>{children}</div>
+      <div className={classes.body} data-widget-body>
+        {children}
+      </div>
       {edit?.resizeProps && (
         <div className={classes.resize} title={`Resize ${title}`} aria-hidden {...edit.resizeProps}>
           <MoveDiagonal2 size={14} />

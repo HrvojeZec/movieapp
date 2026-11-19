@@ -4,7 +4,9 @@
   flex-direction: column;
   gap: var(--mantine-spacing-sm);
   height: 100%;
-  transition: box-shadow 150ms ease;
+  transition:
+    box-shadow 150ms ease,
+    outline-color 150ms ease;
 
   &[data-editing] {
     outline: 1px dashed var(--surface-border);
@@ -32,6 +34,18 @@
 
 .title {
   min-width: 0;
+}
+
+// Edit controls fade in when customizing starts
+.controls,
+.resize {
+  animation: controls-in 180ms ease-out both;
+}
+
+@keyframes controls-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .grip {

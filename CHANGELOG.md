@@ -300,6 +300,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Dragging and resizing dashboard widgets no longer stutters: the widget follows the pointer
+  through motion values and the board only redraws when the widget aims at another cell
+  (JavaScript per drag went from about 730 ms to 60 ms; resizing from a 530 ms stall to none).
+  A carried widget lifts and leans into its direction, the landing outline glides and breathes,
+  the grid shows as dots while customizing, and a dropped widget settles with a small bounce.
+  Escape or a lost pointer puts it back
 - Skeletons of genre rows still below the screen no longer shimmer, which kept an idle home
   page busy (about 9% CPU)
 - The pricing page listed the watchlist, custom lists, recommendations and statistics as "Coming

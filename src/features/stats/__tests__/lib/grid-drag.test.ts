@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   cellToPixels,
   cellWidthFor,
+  clampFrameSize,
   columnsForWidth,
   describePosition,
   pointerToCell,
@@ -63,5 +64,33 @@ describe("describePosition", () => {
     expect(describePosition(origin, "Favorite genres")).toBe(
       "Favorite genres, column 3, row 4, 6 by 5",
     );
+  });
+});
+
+describe("clampFrameSize", () => {
+  // genreBars: min 4×4, max 12×8
+  const bars = { type: "genreBars" as const, x: 2, y: 0, w: 6, h: 5 };
+
+  it("the frame follows the pointer between the limits", () => {
+    expect(clampFrameSize(bars, { width: 500, height: 450 }, GRID)).toEqual({
+      width: 500,
+      height: 450,
+    });
+  });
+
+  it("the frame stops at the widget's minimum", () => {
+    expect(clampFrameSize(bars, { width: 10, height: 10 }, GRID)).toEqual({
+      width: 4 * 60 + 3 * 16,
+      height: 4 * 72 + 3 * 16,
+    });
+  });
+
+  it("the frame stops at the grid's right edge", () => {
+    // x=2 leaves 10 columns
+    expect(clampFrameSize(bars, { width: 5000, height: 450 }, GRID).width).toBe(10 * 60 + 9 * 16);
+  });
+
+  it("the frame stops at the widget's maximum height", () => {
+    expect(clampFrameSize(bars, { width: 500, height: 5000 }, GRID).height).toBe(8 * 72 + 7 * 16);
   });
 });
