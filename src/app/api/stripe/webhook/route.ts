@@ -9,7 +9,7 @@ import {
   linkStripeCustomer,
   syncSubscription,
 } from "@/features/subscription/server/subscriptions";
-import { getSubscriptionNotification } from "@/features/notifications/lib/subscription-events";
+import { getSubscriptionNotification } from "@/features/subscription/lib/subscription-events";
 import { notifyUser } from "@/features/notifications/server/notify";
 
 export async function POST(request: NextRequest) {
