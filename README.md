@@ -84,7 +84,7 @@ More test cards (declines, 3-D Secure) are in the
 | Movie data  | [TMDB API](https://www.themoviedb.org/documentation/api), called only from the server               |
 | Testing     | Vitest (unit), Playwright (end to end)                                                              |
 | Tooling     | ESLint, Prettier, Husky, lint-staged, commitlint, GitHub Actions, Dependabot, CodeQL                |
-| Hosting     | Vercel (with a daily cron job), Docker image for self-hosting                                       |
+| Hosting     | Vercel (with daily cron jobs), Docker image for self-hosting                                        |
 
 Everything runs on free plans: Vercel Hobby, MongoDB Atlas free tier, Upstash free tier, a Gmail
 account and Stripe test mode.
@@ -100,7 +100,7 @@ flowchart LR
   Next --> Redis[(Upstash Redis)]
   Next --> Gmail[Gmail SMTP]
   Stripe -->|webhooks| Next
-  Cron[Vercel Cron] -->|daily reminders| Next
+  Cron[Vercel Cron] -->|daily jobs| Next
 ```
 
 The code follows [Feature-Sliced Design](https://feature-sliced.design), adapted to the Next.js
@@ -246,6 +246,12 @@ with `Authorization: Bearer $CRON_SECRET`; it notifies users three days before a
 scheduled end or the end of a trial, once per event. On a preview deployment it can be triggered by
 hand with the same header.
 
+**TMDB data.** TMDB's terms allow keeping data from TMDB for at most 6 months. Watched movies store
+their TMDB genres for stats and recommendations, so a second daily job
+(`/api/cron/refresh-tmdb-data`, 06:00 UTC) looks them up again before they turn 6 months old; the
+recently viewed list in the browser forgets movies after 6 months, and page views keep no TMDB data
+at all.
+
 ## Known limitations
 
 - **Sessions are stateless JWTs.** Logging out or changing the password doesn't end sessions on
@@ -253,8 +259,10 @@ hand with the same header.
 - **Email goes through a Gmail account,** about 500 messages a day (the app stops at 400), and may
   land in the Promotions tab. A custom domain with a transactional email service would fix both.
 - **Payments are test mode only.** This is a portfolio project; no real subscriptions are sold.
-- **Movie data and images come from TMDB.** This product uses the TMDB API but is not endorsed or
-  certified by TMDB.
+  TMDB's API terms allow non-commercial use only, so charging real money would first need a
+  commercial agreement with TMDB.
+- **Movie data and images come from TMDB.** This website uses TMDB and the TMDB APIs but is not
+  endorsed, certified, or otherwise approved by TMDB.
 
 ## What I'd do differently
 
