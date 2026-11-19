@@ -14,6 +14,7 @@ import {
   reorderWidget,
   resizeWidget,
   sanitizeLayout,
+  setWidgetView,
   stepWidget,
   toColumns,
 } from "@/features/stats/lib/grid-layout";
@@ -304,6 +305,41 @@ describe("reorderWidget", () => {
   });
 });
 
+describe("chart or table view", () => {
+  const withTable = BOARD.map((item) =>
+    item.type === "genreBars" ? { ...item, view: "table" as const } : item,
+  );
+  const viewOf = (layout: LayoutItem[], type: WidgetType) => layout.find(byType(type))?.view;
+
+  it("sanitizeLayout keeps a valid view and drops an unknown one", () => {
+    const repaired = sanitizeLayout([
+      { type: "genreBars", x: 0, y: 0, w: 6, h: 5, view: "table" },
+      // Tiles have no table view
+      { type: "tileWatched", x: 6, y: 0, w: 3, h: 2, view: "table" },
+      { type: "watchedMonthly", x: 0, y: 5, w: 6, h: 5, view: "pie" as "table" },
+    ]);
+    expect(viewOf(repaired, "genreBars")).toBe("table");
+    expect(repaired.find(byType("tileWatched"))).not.toHaveProperty("view");
+    expect(repaired.find(byType("watchedMonthly"))).not.toHaveProperty("view");
+  });
+
+  it("moving and resizing keep the view", () => {
+    expect(viewOf(moveWidget(withTable, "genreBars", 6, 2), "genreBars")).toBe("table");
+    expect(viewOf(resizeWidget(withTable, "genreBars", 8, 6), "genreBars")).toBe("table");
+    expect(viewOf(toColumns(withTable, 6), "genreBars")).toBe("table");
+    expect(viewOf(toColumns(withTable, 1), "genreBars")).toBe("table");
+  });
+
+  it("setWidgetView only applies to charts", () => {
+    expect(viewOf(setWidgetView(BOARD, "genreBars", "table"), "genreBars")).toBe("table");
+    expect(setWidgetView(BOARD, "tileWatched", "table")).toEqual(compact(BOARD));
+    // Chart is the default, so it isn't stored
+    expect(
+      setWidgetView(withTable, "genreBars", "chart").find(byType("genreBars")),
+    ).not.toHaveProperty("view");
+  });
+});
+
 describe("immutability", () => {
   it("never mutates its input", () => {
     const layout = freeze(BOARD);
@@ -318,6 +354,7 @@ describe("immutability", () => {
       reorderWidget(layout, "genreBars", -1);
       toColumns(layout, 6);
       toColumns(layout, 1);
+      setWidgetView(layout, "genreBars", "table");
       sanitizeLayout(layout);
       hasOverlap(layout);
     }).not.toThrow();

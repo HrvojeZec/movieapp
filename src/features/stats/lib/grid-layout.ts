@@ -1,11 +1,12 @@
 import {
   GRID_COLUMNS,
+  TABLE_VIEW_WIDGETS,
   PHONE_GRID_COLUMNS,
   TABLET_GRID_COLUMNS,
   WIDGET_SIZES,
   WIDGET_TYPES,
 } from "@/features/stats/constants";
-import type { LayoutItem, WidgetType } from "@/features/stats/types";
+import type { LayoutItem, WidgetType, WidgetView } from "@/features/stats/types";
 
 type Columns = typeof GRID_COLUMNS | typeof TABLET_GRID_COLUMNS | typeof PHONE_GRID_COLUMNS;
 
@@ -156,6 +157,10 @@ export function sanitizeLayout(items: readonly LayoutItem[]): LayoutItem[] {
       y: Math.max(0, wholeOr(item.y, 0)),
       w,
       h: clamp(wholeOr(item.h, size[1]), min[1], max[1]),
+      // Only charts can be tables; anything else (or an unknown view) shows the chart
+      ...(item.view === "table" && TABLE_VIEW_WIDGETS.includes(item.type)
+        ? { view: item.view }
+        : {}),
     });
   }
   return compact(valid);
@@ -225,4 +230,20 @@ export function reorderWidget(
   if (index < 0 || target < 0 || target >= ordered.length) return ordered;
   [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
   return flow(ordered);
+}
+
+/** Shows a chart widget as a chart or a table; the chart is the default, so it isn't stored. */
+export function setWidgetView(
+  layout: readonly LayoutItem[],
+  type: WidgetType,
+  view: WidgetView,
+): LayoutItem[] {
+  if (!TABLE_VIEW_WIDGETS.includes(type)) return compact(layout);
+  return compact(
+    layout.map((item) => {
+      if (item.type !== type) return item;
+      const { view: _previous, ...rest } = item;
+      return view === "table" ? { ...rest, view } : rest;
+    }),
+  );
 }

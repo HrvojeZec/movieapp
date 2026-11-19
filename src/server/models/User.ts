@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import { NAME_MAX_LENGTH } from "@/features/auth/constants";
-import { WIDGET_TYPES } from "@/features/stats/constants";
+import { WIDGET_TYPES, WIDGET_VIEWS } from "@/features/stats/constants";
 import type { LayoutItem } from "@/features/stats/types";
 
 // Each extra round doubles the hashing time; 12 keeps brute force expensive and logins fast enough
@@ -46,6 +46,7 @@ const DashboardItemSchema = new Schema<LayoutItem>(
     y: { type: Number, required: true, min: 0 },
     w: { type: Number, required: true, min: 1 },
     h: { type: Number, required: true, min: 1 },
+    view: { type: String, enum: WIDGET_VIEWS },
   },
   { _id: false },
 );

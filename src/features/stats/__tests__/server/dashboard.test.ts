@@ -81,6 +81,14 @@ describe("saveDashboardLayout", () => {
     );
   });
 
+  it("saving keeps the view", async () => {
+    const saved = await saveDashboardLayout(USER_ID, [
+      { type: "genreBars", x: 0, y: 0, w: 6, h: 5, view: "table" },
+    ]);
+    expect(saved).toEqual([{ type: "genreBars", x: 0, y: 0, w: 6, h: 5, view: "table" }]);
+    expect(updateOne.mock.calls[0][1]).toEqual({ $set: { dashboardLayout: saved } });
+  });
+
   it("answers 404 for a user that no longer exists", async () => {
     db.matched = 0;
     await expect(saveDashboardLayout(USER_ID, [])).rejects.toMatchObject({ status: 404 });
