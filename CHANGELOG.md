@@ -222,9 +222,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The sidebar's collapse button is an icon next to the logo instead of a labelled row at the
-  bottom; on the narrow sidebar the logo turns into the expand button on hover (touch screens
-  keep it under the logo). Ctrl/⌘+B still toggles it
+- The header runs the full width with the sidebar under it: the sidebar button and the full
+  logo sit at its left and never move, so collapsing the sidebar no longer squeezes the logo
+  under the button. Ctrl/⌘+B still toggles it; on tablets a click outside closes the open panel
+- The dashboard's total tiles (movies watched, favorites, watchlist, lists) get their icon in
+  their own color, with the same icon large and faint in the corner
 - The header is slimmer: search and notifications only, turning to glass once the page scrolls.
   Phones keep the menu button
 - The profile's favorites count rolls its digits into place like an odometer instead of counting

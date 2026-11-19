@@ -19,3 +19,10 @@
 .link {
   text-decoration: none;
 }
+
+// The toggle's icon lines up with the sidebar's icons below it
+.start {
+  @media (min-width: 48em) {
+    padding-left: 3px;
+  }
+}

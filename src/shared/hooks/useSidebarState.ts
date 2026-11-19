@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useSyncExternalStore } from "react";
-import { useHotkeys } from "@mantine/hooks";
 import { SIDEBAR_STORAGE_KEY, type SidebarMode } from "@/shared/lib/sidebar-script";
 
 const readMode = (): SidebarMode =>
@@ -16,7 +15,7 @@ function subscribe(onChange: () => void) {
   return () => observer.disconnect();
 }
 
-/** The desktop sidebar's wide or collapsed state, remembered in localStorage; Ctrl/⌘+B toggles it. */
+/** The desktop sidebar's wide or collapsed state, remembered in localStorage. */
 export function useSidebarState() {
   const mode = useSyncExternalStore(subscribe, readMode, () => "expanded" as const);
 
@@ -29,8 +28,6 @@ export function useSidebarState() {
       // Blocked storage: the choice lasts until the page reloads
     }
   }, []);
-
-  useHotkeys([["mod+B", toggle]]);
 
   return { collapsed: mode === "collapsed", toggle };
 }

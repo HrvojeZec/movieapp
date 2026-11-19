@@ -1,22 +1,21 @@
 "use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { ActionIcon, Skeleton, Text, Tooltip, useMantineTheme } from "@mantine/core";
-import { useClickOutside, useMediaQuery } from "@mantine/hooks";
-import { Film, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Skeleton } from "@mantine/core";
+import { useHotkeys } from "@mantine/hooks";
 import { LayoutGroup } from "motion/react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useCommandPaletteStore } from "@/features/movies/store/command-palette.store";
 import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
 import { useSidebarState } from "@/shared/hooks/useSidebarState";
-import { APP_NAME } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
-import { COLORS } from "@/shared/theme/colors";
 import { lockedPlanName, visibleGroups, type SidebarLink } from "./sidebar-links";
 import { SidebarAuthCard } from "./SidebarAuthCard";
 import { SidebarItem } from "./SidebarItem";
 import { SidebarProfileCard } from "./SidebarProfileCard";
+import { useSidebarOverlayStore } from "./sidebar-overlay.store";
+import { SIDEBAR_TOGGLE_ATTRIBUTE } from "./SidebarToggle";
+import { useSidebarWide } from "./useSidebarWide";
 import classes from "./Sidebar.module.scss";
 
 const isActive = (link: SidebarLink, pathname: string) =>
@@ -24,64 +23,45 @@ const isActive = (link: SidebarLink, pathname: string) =>
   (pathname === link.href || (link.href !== ROUTES.home && pathname.startsWith(`${link.href}/`)));
 
 /**
- * Navigation and the user's library. On desktop it is wide or a narrow rail (remembered; the
- * inline script in <head> applies it before the first paint). On tablets it stays a rail and
- * opens wide over the page.
+ * Navigation and the user's library, under the header. On desktop it is wide or a narrow rail
+ * (remembered; the inline script in <head> applies it before the first paint). On tablets it
+ * stays a rail and opens wide over the page. The toggle and the logo live in the header.
  */
 export function Sidebar() {
   const { user, loading } = useAuth();
   const { plan, loading: planLoading } = useEntitlements();
   const pathname = usePathname();
   const openSearch = useCommandPaletteStore((state) => state.open);
-  const { collapsed, toggle } = useSidebarState();
-  const theme = useMantineTheme();
-  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg})`);
-  const [overlay, setOverlay] = useState(false);
-  const ref = useClickOutside<HTMLDivElement>(() => setOverlay(false));
-
-  // Only tablets open over the page; on desktop the toggle changes the layout instead
-  const overlayOpen = overlay && !isDesktop;
-  const wide = isDesktop ? !collapsed : overlayOpen;
+  const { wide, overlayOpen } = useSidebarWide();
+  const setOverlay = useSidebarOverlayStore((state) => state.setOpened);
+  const ref = useRef<HTMLDivElement>(null);
   const closeOverlay = () => setOverlay(false);
+  // Here, mounted once (the header toggle uses the same state and would toggle it twice)
+  const { toggle } = useSidebarState();
+  useHotkeys([["mod+B", toggle]]);
 
   useEffect(() => {
     if (!overlayOpen) return;
-    const close = (event: KeyboardEvent) => {
+    const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOverlay(false);
     };
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
-  }, [overlayOpen]);
-
-  const ToggleIcon = wide ? PanelLeftClose : PanelLeftOpen;
+    // The header toggle is outside the panel too; closing on its press would reopen on its click
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target as Element;
+      if (ref.current?.contains(target) || target.closest(`[${SIDEBAR_TOGGLE_ATTRIBUTE}]`)) return;
+      setOverlay(false);
+    };
+    // Capture: the focused toggle's tooltip stops Escape from bubbling
+    window.addEventListener("keydown", onKey, true);
+    document.addEventListener("pointerdown", onPointer);
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [overlayOpen, setOverlay]);
 
   return (
     <div ref={ref} className={classes.panel} data-overlay={overlayOpen || undefined}>
-      {/* Wide: the toggle sits right of the logo. Narrow: it takes the logo's place on hover */}
-      <div className={classes.top}>
-        <Link href={ROUTES.home} className={classes.brand} onClick={closeOverlay}>
-          <span className={classes.icon}>
-            <Film size={26} color={COLORS.primary} />
-          </span>
-          <Text component="span" size="lg" fw={700} c="white" className={classes.label}>
-            {APP_NAME}
-          </Text>
-        </Link>
-        <Tooltip label={wide ? "Collapse sidebar" : "Expand sidebar"} position="right" withArrow>
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            size="lg"
-            className={classes.toggle}
-            onClick={isDesktop ? toggle : () => setOverlay((open) => !open)}
-            aria-expanded={wide}
-            aria-label={wide ? "Collapse sidebar" : "Expand sidebar"}
-          >
-            <ToggleIcon size={18} />
-          </ActionIcon>
-        </Tooltip>
-      </div>
-
       <div className={classes.groups}>
         <LayoutGroup id="sidebar">
           {visibleGroups(user).map((group) => (

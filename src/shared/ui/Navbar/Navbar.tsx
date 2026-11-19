@@ -10,6 +10,7 @@ import { APP_NAME } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
 import { MobileMenu } from "@/shared/ui/MobileMenu/MobileMenu";
+import { SidebarToggle } from "@/shared/ui/Sidebar/SidebarToggle";
 import { AccountArea } from "./AccountArea";
 import classes from "./Navbar.module.scss";
 
@@ -17,8 +18,9 @@ const BAR_HEIGHT = 48;
 const SEARCH_WIDTH = 320;
 
 /**
- * The top bar: search and notifications (navigation lives in the sidebar). On phones it also has
- * the menu button and the logo. It turns to glass once the page scrolls under it.
+ * The top bar across the whole width, above the sidebar: the sidebar toggle (the menu button on
+ * phones) and the logo, which never move, then search and notifications. It turns to glass once
+ * the page scrolls under it.
  */
 export function Navbar() {
   const [menuOpened, menu] = useDisclosure(false);
@@ -26,15 +28,20 @@ export function Navbar() {
   const [scroll] = useWindowScroll();
 
   return (
-    <header className={classes.header} data-scrolled={scroll.y > 0 || undefined}>
+    // A div: AppShell.Header around it is already the page's one banner
+    <div className={classes.header} data-scrolled={scroll.y > 0 || undefined}>
       <Group justify="space-between" h={BAR_HEIGHT} wrap="nowrap">
-        <Group gap="sm" wrap="nowrap" hiddenFrom="sm">
+        <Group gap="sm" wrap="nowrap" className={classes.start}>
           <Burger
             opened={menuOpened}
             onClick={menu.toggle}
             size="sm"
+            hiddenFrom="sm"
             aria-label={menuOpened ? "Close navigation" : "Open navigation"}
           />
+          <Box visibleFrom="sm">
+            <SidebarToggle />
+          </Box>
           <Link href={ROUTES.home} className={classes.link}>
             <Group gap="xs" wrap="nowrap">
               <Film size={28} color={COLORS.primary} />
@@ -70,6 +77,6 @@ export function Navbar() {
       </Group>
 
       <MobileMenu opened={menuOpened} onClose={menu.close} />
-    </header>
+    </div>
   );
 }
