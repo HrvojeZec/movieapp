@@ -109,3 +109,14 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+// While a dashboard widget is dragged or resized, the pointer keeps that cursor wherever it goes
+:root[data-dragging="move"],
+:root[data-dragging="move"] * {
+  cursor: grabbing !important;
+}
+
+:root[data-dragging="resize"],
+:root[data-dragging="resize"] * {
+  cursor: nwse-resize !important;
+}

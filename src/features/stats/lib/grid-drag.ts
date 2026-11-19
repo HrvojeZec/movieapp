@@ -4,6 +4,7 @@ import {
   GRID_TABLET_MIN_WIDTH,
   PHONE_GRID_COLUMNS,
   TABLET_GRID_COLUMNS,
+  WIDGET_SIZES,
 } from "@/features/stats/constants";
 import type { LayoutItem } from "@/features/stats/types";
 
@@ -60,3 +61,26 @@ export const columnsForWidth = (width: number): GridColumns => {
 /** For screen readers: "Favorite genres, column 3, row 4, 6 by 5". */
 export const describePosition = ({ x, y, w, h }: LayoutItem, title: string) =>
   `${title}, column ${x + 1}, row ${y + 1}, ${w} by ${h}`;
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+/**
+ * The pixel size a widget being resized can take while following the pointer: within its kind's
+ * minimum and maximum cells, and never past the right edge of the grid.
+ */
+export function clampFrameSize(
+  item: LayoutItem,
+  { width, height }: { width: number; height: number },
+  metrics: GridMetrics,
+): { width: number; height: number } {
+  const { min, max } = WIDGET_SIZES[item.type];
+  const minimum = cellToPixels({ x: 0, y: 0, w: min[0], h: min[1] }, metrics);
+  const maximum = cellToPixels(
+    { x: 0, y: 0, w: Math.min(max[0], GRID_COLUMNS - item.x), h: max[1] },
+    metrics,
+  );
+  return {
+    width: clamp(width, minimum.width, maximum.width),
+    height: clamp(height, minimum.height, maximum.height),
+  };
+}

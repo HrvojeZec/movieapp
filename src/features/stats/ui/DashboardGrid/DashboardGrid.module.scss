@@ -1,14 +1,22 @@
 .board {
   position: relative;
+
+  // While customizing, faint dots mark where the grid's cells start
+  &[data-editing] {
+    background-image: radial-gradient(circle, var(--input-bg-strong) 1.5px, transparent 2px);
+    background-position: calc(var(--gap) / -2) calc(var(--gap) / -2);
+    background-size: calc(var(--cell-w) + var(--gap)) calc(var(--row-h) + var(--gap));
+  }
 }
 
 .cell {
   position: absolute;
   top: 0;
   left: 0;
+  will-change: transform;
 }
 
-// Where the dragged widget lands when it's let go
+// Where the moved widget lands when it's let go; it breathes softly while a widget is carried
 .placeholder {
   position: absolute;
   top: 0;
@@ -16,4 +24,17 @@
   border: 2px dashed var(--primary-500);
   border-radius: var(--mantine-radius-sm);
   background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+  animation: landing-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes landing-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+// During a gesture the widgets the pointer sweeps over show no hover effects or text selection
+:global(:root[data-dragging]) .board [data-widget-body] {
+  pointer-events: none;
+  user-select: none;
 }

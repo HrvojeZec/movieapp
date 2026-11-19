@@ -22,6 +22,8 @@ export const SPRINGS = {
   snappy: { type: "spring", stiffness: 500, damping: 40 },
   gentle: { type: "spring", stiffness: 220, damping: 28 },
   bouncy: { type: "spring", stiffness: 400, damping: 15 },
+  // A dropped widget settles into its cell with a small overshoot
+  land: { type: "spring", stiffness: 380, damping: 24 },
 } as const;
 
 /** Pixels an icon shifts on hover. */
@@ -38,3 +40,9 @@ export const BLINK_SCALE = [1, 0.1, 1];
 export const BLINK_SECONDS = 0.3;
 // Added things pop from this scale on the bouncy spring
 export const POP_FROM_SCALE = 0.6;
+
+// A dashboard widget being dragged: lifted a little, leaning into the direction it moves
+export const LIFT_SCALE = 1.03;
+export const DRAG_TILT_MAX_DEG = 3;
+/** Degrees of lean per pixel per second of sideways speed (1000 px/s leans the full 3°). */
+export const DRAG_TILT_PER_VELOCITY = 0.003;
