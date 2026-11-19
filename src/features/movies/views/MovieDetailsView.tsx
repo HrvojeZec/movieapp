@@ -84,6 +84,7 @@ export function MovieDetailsView() {
     <div>
       <Box
         className={classes.backdrop}
+        data-movie-hero
         style={{ backgroundImage: `url(${getImageUrl(movie.backdrop_path, "w1280")})` }}
       >
         <Container size="xl" h="100%" className={classes.header}>
@@ -142,17 +143,17 @@ export function MovieDetailsView() {
                 <Badge leftSection={<Star size={14} />} size="lg" variant="filled" color="yellow">
                   {formatRating(movie.vote_average)}
                 </Badge>
-                <Badge leftSection={<Calendar size={14} />} size="lg" variant="outline">
+                <Badge leftSection={<Calendar size={14} />} size="lg" className={classes.chip}>
                   {formatYear(movie.release_date)}
                 </Badge>
-                <Badge leftSection={<Clock size={14} />} size="lg" variant="outline">
+                <Badge leftSection={<Clock size={14} />} size="lg" className={classes.chip}>
                   {formatRuntime(movie.runtime)}
                 </Badge>
               </Group>
 
               <Group gap="xs">
                 {movie.genres.map((genre) => (
-                  <Badge key={genre.id} variant="light" size="sm">
+                  <Badge key={genre.id} size="sm" className={classes.chip}>
                     {genre.name}
                   </Badge>
                 ))}
