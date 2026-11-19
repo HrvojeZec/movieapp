@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/query-keys";
-import type { AuthUser } from "@/features/auth/types";
+import { authKeys } from "@/entities/user/api/query-keys";
+import type { AuthUser } from "@/entities/user/types";
 import { toApiError } from "@/shared/lib/api-error";
 import { notifyError, notifySuccess } from "@/shared/lib/notify";
 

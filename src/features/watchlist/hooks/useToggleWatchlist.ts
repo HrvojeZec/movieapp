@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authKeys } from "@/features/auth/api/query-keys";
-import type { AuthUser } from "@/features/auth/types";
-import { deleteWatchlist, postWatchlist } from "@/features/watchlist/api/watchlist.api";
-import { watchlistKeys } from "@/features/watchlist/api/query-keys";
-import { updateWatchlist } from "@/features/watchlist/lib/watchlist";
+import { authKeys } from "@/entities/user/api/query-keys";
+import type { AuthUser } from "@/entities/user/types";
+import { deleteWatchlist, postWatchlist } from "@/entities/watchlist/api/watchlist.api";
+import { watchlistKeys } from "@/entities/watchlist/api/query-keys";
+import { updateWatchlist } from "@/entities/watchlist/lib/watchlist";
 import { toApiError } from "@/shared/lib/api-error";
 import { HttpError } from "@/shared/lib/http";
 import { HTTP_STATUS } from "@/shared/lib/http-status";

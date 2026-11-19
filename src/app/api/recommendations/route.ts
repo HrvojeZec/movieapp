@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { limitTmdbRequest, tmdbErrorResponse } from "@/features/movies/server/route-helpers";
-import { getRecommendations } from "@/features/recommendations/server/recommend";
-import { requireFeature } from "@/features/subscription/server/entitlements";
+import { requireSession } from "@/entities/user/server/session";
+import { limitTmdbRequest, tmdbErrorResponse } from "@/entities/movie/server/route-helpers";
+import { getRecommendations } from "@/entities/recommendation/server/recommend";
+import { requireFeature } from "@/entities/subscription/server/entitlements";
 
 // Personal, so never cached anywhere but the user's own browser (TanStack Query)
 const NO_STORE = "private, no-store";

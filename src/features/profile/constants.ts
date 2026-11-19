@@ -1,5 +1,5 @@
-import { FAVORITES_LIMIT } from "@/features/subscription/constants";
-import type { SubscriptionPlan } from "@/features/subscription/types";
+import { FAVORITES_LIMIT } from "@/entities/subscription/constants";
+import type { SubscriptionPlan } from "@/entities/subscription/types";
 
 export const PLAN_BADGE_COLORS: Record<SubscriptionPlan, string> = {
   basic: "gray",

@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
-import { fetchMovieList } from "@/features/movies/server/movies";
+import { fetchMovieList } from "@/entities/movie/server/movies";
 import {
   searchParamsToObject,
   limitTmdbRequest,
   tmdbErrorResponse,
   tmdbJson,
-} from "@/features/movies/server/route-helpers";
-import { movieListQuerySchema } from "@/features/movies/validations/movies.schema";
+} from "@/entities/movie/server/route-helpers";
+import { movieListQuerySchema } from "@/entities/movie/validations/movies.schema";
 
 // GET /api/movies?list=popular|top_rated|now_playing|upcoming&page=1
 export async function GET(request: NextRequest) {

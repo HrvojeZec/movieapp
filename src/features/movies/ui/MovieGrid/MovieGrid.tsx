@@ -1,10 +1,10 @@
 "use client";
 import type { ReactNode } from "react";
 import { SimpleGrid } from "@mantine/core";
-import { GRID_COLUMNS, GRID_SKELETON_COUNT } from "@/features/movies/constants";
-import type { Movie } from "@/features/movies/types";
-import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
-import { MovieCardSkeleton } from "@/features/movies/ui/MovieCardSkeleton/MovieCardSkeleton";
+import { GRID_COLUMNS, GRID_SKELETON_COUNT } from "@/entities/movie/constants";
+import type { Movie } from "@/entities/movie/types";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
+import { MovieCardSkeleton } from "@/entities/movie/ui/MovieCardSkeleton/MovieCardSkeleton";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 
 interface MovieGridProps {
@@ -21,9 +21,9 @@ export const MovieGrid = ({ movies, loading, renderCard }: MovieGridProps) => (
       : movies.map((movie, index) => (
           <Reveal key={movie.id} index={index}>
             {renderCard ? (
-              renderCard(movie, <MovieCard movie={movie} />)
+              renderCard(movie, <ActionMovieCard movie={movie} />)
             ) : (
-              <MovieCard movie={movie} />
+              <ActionMovieCard movie={movie} />
             )}
           </Reveal>
         ))}

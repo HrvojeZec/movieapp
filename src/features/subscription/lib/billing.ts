@@ -1,5 +1,5 @@
-import type { AuthUser } from "@/features/auth/types";
-import type { PlanDetails } from "@/features/subscription/types";
+import type { AuthUser } from "@/entities/user/types";
+import type { PlanDetails } from "@/entities/subscription/types";
 import { formatDate, formatPrice } from "@/shared/lib/format";
 
 type SubscriptionDetails = NonNullable<AuthUser["subscription"]>;

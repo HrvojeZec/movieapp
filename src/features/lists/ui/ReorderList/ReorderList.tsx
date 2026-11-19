@@ -3,9 +3,9 @@ import { useState } from "react";
 import { ActionIcon, Group, Image, Text } from "@mantine/core";
 import { ArrowDown, ArrowUp, GripVertical } from "lucide-react";
 import { Reorder, useDragControls } from "motion/react";
-import { PLACEHOLDER_POSTER } from "@/features/movies/constants";
-import { getImageUrl } from "@/features/movies/lib/images";
-import type { MovieSummary } from "@/features/movies/types";
+import { PLACEHOLDER_POSTER } from "@/entities/movie/constants";
+import { getImageUrl } from "@/entities/movie/lib/images";
+import type { MovieSummary } from "@/entities/movie/types";
 import classes from "./ReorderList.module.scss";
 
 const THUMBNAIL = { width: 40, height: 60 };

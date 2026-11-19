@@ -1,13 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { fetchDiscover } from "@/features/movies/server/movies";
+import { requireSession } from "@/entities/user/server/session";
+import { fetchDiscover } from "@/entities/movie/server/movies";
 import {
   limitTmdbRequest,
   searchParamsToObject,
   tmdbErrorResponse,
-} from "@/features/movies/server/route-helpers";
-import { advancedDiscoverQuerySchema } from "@/features/movies/validations/movies.schema";
-import { requireFeature } from "@/features/subscription/server/entitlements";
+} from "@/entities/movie/server/route-helpers";
+import { advancedDiscoverQuerySchema } from "@/entities/movie/validations/movies.schema";
+import { requireFeature } from "@/entities/subscription/server/entitlements";
 
 // Unlike the basic discover route, the answer depends on who asks: a shared cache could hand a
 // Premium response to anyone, so nothing here may be cached

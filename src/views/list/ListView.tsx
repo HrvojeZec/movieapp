@@ -16,17 +16,17 @@ import {
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { ArrowDownUp, ArrowLeft, Check, Pencil, Trash2, X } from "lucide-react";
-import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
-import { useList } from "@/features/lists/hooks/useList";
+import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
+import { useList } from "@/entities/movie-list/hooks/useList";
 import { useListMutations } from "@/features/lists/hooks/useListMutations";
 import { ListNameModal } from "@/features/lists/ui/ListNameModal/ListNameModal";
 import { ListsUpgradeNotice } from "@/features/lists/ui/ListsUpgradeNotice/ListsUpgradeNotice";
 import { ReorderList } from "@/features/lists/ui/ReorderList/ReorderList";
-import { GRID_COLUMNS } from "@/features/movies/constants";
-import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
-import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
+import { GRID_COLUMNS } from "@/entities/movie/constants";
+import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
-import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
+import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { pluralize } from "@/shared/lib/format";
 import { HttpError } from "@/shared/lib/http";
@@ -175,7 +175,7 @@ function ListContent({ listId }: { listId: string }) {
                     label="Remove"
                     onRemove={() => removeWithUndo(String(movie.id), movie.title)}
                   >
-                    <MovieCard movie={movie} />
+                    <ActionMovieCard movie={movie} />
                   </SwipeToRemove>
                   <Button
                     variant="subtle"

@@ -5,7 +5,7 @@ import {
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   PASSWORD_RESET_TOKEN_BYTES,
-} from "@/features/auth/constants";
+} from "@/entities/user/constants";
 
 // Normalized here so every lookup and insert uses the same form of the address
 const emailSchema = z

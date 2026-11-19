@@ -2,11 +2,11 @@
 import { Anchor, Group, Paper, Stack, Text, ThemeIcon } from "@mantine/core";
 import Link from "next/link";
 import { Lock, Sparkles } from "lucide-react";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/entities/user/hooks/useAuth";
 import { HorizontalMovieScroll } from "@/features/movies/ui/HorizontalMovieScroll/HorizontalMovieScroll";
-import { RECOMMENDATIONS_ROW_LIMIT } from "@/features/recommendations/constants";
-import { useRecommendations } from "@/features/recommendations/hooks/useRecommendations";
-import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
+import { RECOMMENDATIONS_ROW_LIMIT } from "@/entities/recommendation/constants";
+import { useRecommendations } from "@/entities/recommendation/hooks/useRecommendations";
+import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
 import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";

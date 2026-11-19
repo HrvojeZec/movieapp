@@ -4,7 +4,7 @@ import { Badge, Button, Group, Indicator, List, Loader, Stack, Text, Title } fro
 import { Magnetic } from "@/shared/ui/motion/Magnetic";
 import { RollingNumber } from "@/shared/ui/motion/RollingNumber/RollingNumber";
 import { Check, CheckIcon, Star, Zap } from "lucide-react";
-import type { BillingInterval, PlanDetails, SubscriptionPlan } from "@/features/subscription/types";
+import type { BillingInterval, PlanDetails, SubscriptionPlan } from "@/entities/subscription/types";
 import { COLORS } from "@/shared/theme/colors";
 import ShinyText from "@/shared/vendor/react-bits/ShinyText/ShinyText";
 import SpotlightCard from "@/shared/vendor/react-bits/SpotlightCard/SpotlightCard";

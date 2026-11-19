@@ -1,12 +1,12 @@
 "use client";
 import { Alert, Container, SimpleGrid, Stack, Text } from "@mantine/core";
 import { Info, Sparkles } from "lucide-react";
-import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
-import { GRID_COLUMNS } from "@/features/movies/constants";
-import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
+import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
+import { GRID_COLUMNS } from "@/entities/movie/constants";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
-import { useRecommendations } from "@/features/recommendations/hooks/useRecommendations";
-import { LockedFeature } from "@/features/subscription/ui/LockedFeature/LockedFeature";
+import { useRecommendations } from "@/entities/recommendation/hooks/useRecommendations";
+import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { COLORS } from "@/shared/theme/colors";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
@@ -53,7 +53,7 @@ function RecommendationsContent() {
           {data.results.map((movie, index) => (
             <Reveal key={movie.id} index={index}>
               <Stack gap={6}>
-                <MovieCard movie={movie} />
+                <ActionMovieCard movie={movie} />
                 <Text size="xs" c="dimmed" ta="center" lineClamp={2}>
                   {movie.reason}
                 </Text>

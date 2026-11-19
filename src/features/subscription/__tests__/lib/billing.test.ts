@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getBillingSummary } from "@/features/subscription/lib/billing";
-import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
+import { SUBSCRIPTION_PLANS } from "@/entities/subscription/constants";
 
 const premium = SUBSCRIPTION_PLANS.find((plan) => plan.id === "premium")!;
 const PERIOD_END = "2027-11-17T12:00:00.000Z";

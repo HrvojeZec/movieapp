@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { NAME_MAX_LENGTH } from "@/features/auth/constants";
-import { WIDGET_TYPES, WIDGET_VIEWS } from "@/features/stats/constants";
-import type { LayoutItem } from "@/features/stats/types";
+import { NAME_MAX_LENGTH } from "@/entities/user/constants";
+import { WIDGET_TYPES, WIDGET_VIEWS } from "@/entities/stats/constants";
+import type { LayoutItem } from "@/entities/stats/types";
 
 // Each extra round doubles the hashing time; 12 keeps brute force expensive and logins fast enough
 export const BCRYPT_SALT_ROUNDS = 12;

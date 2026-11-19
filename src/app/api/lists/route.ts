@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { createList, listLists } from "@/features/lists/server/lists";
+import { requireSession } from "@/entities/user/server/session";
+import { createList, listLists } from "@/entities/movie-list/server/lists";
 import {
   INVALID_MOVIE_ID,
   createListSchema,
   listMovieIdSchema,
-} from "@/features/lists/validations/lists.schema";
+} from "@/entities/movie-list/validations/lists.schema";
 import { parseJson, parseWith } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 import { HTTP_STATUS } from "@/shared/lib/http-status";

@@ -1,7 +1,7 @@
 "use client";
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { ChartColumnBig, Table2 } from "lucide-react";
-import type { WidgetView } from "@/features/stats/types";
+import type { WidgetView } from "@/entities/stats/types";
 import classes from "./ViewToggle.module.scss";
 
 const OPTIONS: { view: WidgetView; label: string; icon: typeof Table2 }[] = [

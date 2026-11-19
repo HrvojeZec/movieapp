@@ -19,16 +19,16 @@ import {
   INFINITE_SCROLL_MARGIN,
   MAX_RATING,
   YEAR_OPTIONS_COUNT,
-} from "@/features/movies/constants";
+} from "@/entities/movie/constants";
 import { useDiscoverFilters } from "@/features/movies/hooks/useDiscoverFilters";
-import { useGenres } from "@/features/movies/hooks/useGenres";
-import { useInfiniteDiscoverMovies } from "@/features/movies/hooks/useInfiniteDiscoverMovies";
-import { buildYearOptions } from "@/features/movies/lib/filters";
-import { dedupeMovies } from "@/features/movies/lib/movies";
+import { useGenres } from "@/entities/movie/hooks/useGenres";
+import { useInfiniteDiscoverMovies } from "@/entities/movie/hooks/useInfiniteDiscoverMovies";
+import { buildYearOptions } from "@/entities/movie/lib/filters";
+import { dedupeMovies } from "@/entities/movie/lib/movies";
 import { AdvancedFilters } from "@/features/movies/ui/AdvancedFilters/AdvancedFilters";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
-import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
-import { LockedFeature } from "@/features/subscription/ui/LockedFeature/LockedFeature";
+import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
+import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { useInfiniteScroll } from "@/shared/hooks/useInfiniteScroll";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
+import { requireSession } from "@/entities/user/server/session";
 import { createSubscriptionCheckout } from "@/features/subscription/server/checkout";
 import { checkoutSessionSchema } from "@/features/subscription/validations/subscription.schema";
 import { parseJson } from "@/server/http/parse";

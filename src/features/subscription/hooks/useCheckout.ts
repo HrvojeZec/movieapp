@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import type { BillingInterval, PaidPlan } from "@/features/subscription/types";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import type { BillingInterval, PaidPlan } from "@/entities/subscription/types";
 import { toApiError } from "@/shared/lib/api-error";
 import { API_ROUTES } from "@/shared/api-routes";
 import { postJson } from "@/shared/lib/http";

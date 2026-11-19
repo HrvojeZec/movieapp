@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { setWatchlist } from "@/features/watchlist/server/watchlist";
+import { requireSession } from "@/entities/user/server/session";
+import { setWatchlist } from "@/entities/watchlist/server/watchlist";
 import {
   INVALID_MOVIE_ID,
   watchlistMovieIdSchema,
-} from "@/features/watchlist/validations/watchlist.schema";
+} from "@/entities/watchlist/validations/watchlist.schema";
 import { parseWith } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 

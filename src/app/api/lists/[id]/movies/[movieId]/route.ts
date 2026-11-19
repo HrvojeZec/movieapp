@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { removeMovieFromList } from "@/features/lists/server/lists";
-import { INVALID_MOVIE_ID, listMovieIdSchema } from "@/features/lists/validations/lists.schema";
+import { requireSession } from "@/entities/user/server/session";
+import { removeMovieFromList } from "@/entities/movie-list/server/lists";
+import {
+  INVALID_MOVIE_ID,
+  listMovieIdSchema,
+} from "@/entities/movie-list/validations/lists.schema";
 import { parseWith } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 

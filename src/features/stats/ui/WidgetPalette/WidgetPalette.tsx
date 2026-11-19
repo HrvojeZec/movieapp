@@ -1,8 +1,8 @@
 "use client";
 import { Button, Drawer, Group, Paper, Stack, Text, ThemeIcon, Title } from "@mantine/core";
 import { Plus } from "lucide-react";
-import { WIDGET_TYPES } from "@/features/stats/constants";
-import type { LayoutItem, WidgetType } from "@/features/stats/types";
+import { WIDGET_TYPES } from "@/entities/stats/constants";
+import type { LayoutItem, WidgetType } from "@/entities/stats/types";
 import { WIDGETS } from "@/features/stats/widgets/registry";
 
 interface WidgetPaletteProps {

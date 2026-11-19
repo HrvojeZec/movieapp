@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { setFavorite } from "@/features/favorites/server/favorites";
+import { requireSession } from "@/entities/user/server/session";
+import { setFavorite } from "@/entities/favorites/server/favorites";
 import {
   INVALID_MOVIE_ID,
   addFavoriteSchema,
-} from "@/features/favorites/validations/favorites.schema";
+} from "@/entities/favorites/validations/favorites.schema";
 import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 

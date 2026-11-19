@@ -14,9 +14,9 @@ import {
 import { usePrevious } from "@mantine/hooks";
 import { Bell } from "lucide-react";
 import { motion } from "motion/react";
-import { useMarkNotificationsRead } from "@/features/notifications/hooks/useMarkNotificationsRead";
-import { useNotifications } from "@/features/notifications/hooks/useNotifications";
-import type { NotificationDto } from "@/features/notifications/types";
+import { useMarkNotificationsRead } from "@/entities/notification/hooks/useMarkNotificationsRead";
+import { useNotifications } from "@/entities/notification/hooks/useNotifications";
+import type { NotificationDto } from "@/entities/notification/types";
 import { formatRelativeTime } from "@/shared/lib/format";
 import { SPRINGS } from "@/shared/ui/motion/motion.constants";
 import classes from "./NotificationsMenu.module.scss";

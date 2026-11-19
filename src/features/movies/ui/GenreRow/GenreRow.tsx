@@ -1,9 +1,9 @@
 "use client";
 import { useIntersection } from "@mantine/hooks";
 import { Drama } from "lucide-react";
-import { GENRE_ROW_PRELOAD_MARGIN } from "@/features/movies/constants";
-import { useDiscoverMovies } from "@/features/movies/hooks/useDiscoverMovies";
-import type { Genre } from "@/features/movies/types";
+import { GENRE_ROW_PRELOAD_MARGIN } from "@/entities/movie/constants";
+import { useDiscoverMovies } from "@/entities/movie/hooks/useDiscoverMovies";
+import type { Genre } from "@/entities/movie/types";
 import { HorizontalMovieScroll } from "@/features/movies/ui/HorizontalMovieScroll/HorizontalMovieScroll";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";
 

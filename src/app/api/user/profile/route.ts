@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { findUserById } from "@/features/auth/server/users";
-import { requireSession } from "@/features/auth/server/session";
+import { findUserById } from "@/entities/user/server/users";
+import { requireSession } from "@/entities/user/server/session";
 import { notFound } from "@/server/http/route-error";
 import { withRouteHandler } from "@/server/http/route-handler";
 

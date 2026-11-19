@@ -1,6 +1,6 @@
 "use client";
 import { Skeleton } from "@mantine/core";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/entities/user/hooks/useAuth";
 import { NotificationsMenu } from "./NotificationsMenu";
 
 const PLACEHOLDER_SIZE = 36;

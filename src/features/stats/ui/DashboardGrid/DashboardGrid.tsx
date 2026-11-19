@@ -2,18 +2,18 @@
 import { useId, type CSSProperties } from "react";
 import { VisuallyHidden } from "@mantine/core";
 import { motion } from "motion/react";
-import { GRID_COLUMNS } from "@/features/stats/constants";
+import { GRID_COLUMNS } from "@/entities/stats/constants";
 import { Text } from "@mantine/core";
 import { useGridColumns } from "@/features/stats/hooks/useGridColumns";
 import { useGridDrag, type CellMotion } from "@/features/stats/hooks/useGridDrag";
-import { cellToPixels } from "@/features/stats/lib/grid-drag";
+import { cellToPixels } from "@/entities/stats/lib/grid-drag";
 import {
   removeWidget,
   reorderWidget,
   setWidgetView,
   toColumns,
-} from "@/features/stats/lib/grid-layout";
-import type { LayoutItem, UserStats, WidgetType } from "@/features/stats/types";
+} from "@/entities/stats/lib/grid-layout";
+import type { LayoutItem, UserStats, WidgetType } from "@/entities/stats/types";
 import { ViewToggle } from "@/features/stats/ui/ViewToggle/ViewToggle";
 import { WidgetBody } from "@/features/stats/ui/WidgetBody/WidgetBody";
 import type { WidgetEditControls } from "@/features/stats/ui/WidgetFrame/WidgetFrame";

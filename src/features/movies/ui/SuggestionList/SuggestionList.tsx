@@ -2,9 +2,9 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { Box, Group, Text, UnstyledButton } from "@mantine/core";
-import { getImageUrl } from "@/features/movies/lib/images";
-import { formatRating } from "@/features/movies/lib/movies";
-import type { Movie, MovieSummary } from "@/features/movies/types";
+import { getImageUrl } from "@/entities/movie/lib/images";
+import { formatRating } from "@/entities/movie/lib/movies";
+import type { Movie, MovieSummary } from "@/entities/movie/types";
 import { formatYear } from "@/shared/lib/format";
 import { highlightMatch } from "@/shared/lib/highlight";
 import classes from "./SuggestionList.module.scss";

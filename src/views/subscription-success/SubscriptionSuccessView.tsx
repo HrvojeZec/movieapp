@@ -3,8 +3,8 @@ import { Container, Group, Skeleton, Stack, Text, ThemeIcon, Title } from "@mant
 import { AlertCircle, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useConfirmCheckout } from "@/features/subscription/hooks/useConfirmCheckout";
-import { SUBSCRIPTION_PLANS } from "@/features/subscription/constants";
-import { SubscriptionTicket } from "@/features/subscription/ui/SubscriptionTicket/SubscriptionTicket";
+import { SUBSCRIPTION_PLANS } from "@/entities/subscription/constants";
+import { SubscriptionTicket } from "@/entities/subscription/ui/SubscriptionTicket/SubscriptionTicket";
 import { ROUTES } from "@/shared/routes";
 import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";
 import classes from "./SubscriptionSuccessView.module.scss";

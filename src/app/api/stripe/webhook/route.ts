@@ -2,15 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { jsonError } from "@/server/http/responses";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
 import type Stripe from "stripe";
-import { getStripe } from "@/features/subscription/server/stripe";
+import { getStripe } from "@/entities/subscription/server/stripe";
 import {
   getSubscriptionIdFromInvoice,
   getSubscriptionIdFromSession,
   linkStripeCustomer,
   syncSubscription,
-} from "@/features/subscription/server/subscriptions";
-import { getSubscriptionNotification } from "@/features/subscription/lib/subscription-events";
-import { notifyUser } from "@/features/notifications/server/notify";
+} from "@/entities/subscription/server/subscriptions";
+import { getSubscriptionNotification } from "@/entities/subscription/lib/subscription-events";
+import { notifyUser } from "@/entities/notification/server/notify";
 
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;

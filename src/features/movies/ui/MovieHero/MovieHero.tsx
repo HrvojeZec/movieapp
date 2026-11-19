@@ -2,10 +2,10 @@
 import { Badge, Box, Button, Container, Group, Text, Title } from "@mantine/core";
 import { PlayCircle, Star } from "lucide-react";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
-import { HERO_HEIGHT } from "@/features/movies/constants";
-import { getImageUrl } from "@/features/movies/lib/images";
-import { formatRating, hasRating } from "@/features/movies/lib/movies";
-import type { Movie } from "@/features/movies/types";
+import { HERO_HEIGHT } from "@/entities/movie/constants";
+import { getImageUrl } from "@/entities/movie/lib/images";
+import { formatRating, hasRating } from "@/entities/movie/lib/movies";
+import type { Movie } from "@/entities/movie/types";
 import { formatYear } from "@/shared/lib/format";
 import { ROUTES } from "@/shared/routes";
 import GradualBlur from "@/shared/vendor/react-bits/GradualBlur/GradualBlur";

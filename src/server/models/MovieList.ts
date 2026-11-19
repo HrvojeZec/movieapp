@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { LIST_NAME_MAX_LENGTH } from "@/features/lists/constants";
+import { LIST_NAME_MAX_LENGTH } from "@/entities/movie-list/constants";
 
 export interface IMovieList extends Document {
   userId: mongoose.Types.ObjectId;

@@ -11,9 +11,9 @@ import {
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
-import type { AuthUser } from "@/features/auth/types";
-import { getPlanName, hasFeature, requiredPlanFor } from "@/features/subscription/lib/entitlements";
-import type { Feature, SubscriptionPlan } from "@/features/subscription/types";
+import type { AuthUser } from "@/entities/user/types";
+import { getPlanName, hasFeature, requiredPlanFor } from "@/entities/subscription/lib/entitlements";
+import type { Feature, SubscriptionPlan } from "@/entities/subscription/types";
 import { ROUTES } from "@/shared/routes";
 
 export interface SidebarLink {

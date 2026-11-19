@@ -1,4 +1,4 @@
-import { register } from "@/features/auth/api/auth.api";
+import { register } from "@/entities/user/api/auth.api";
 import { useSessionMutation } from "@/features/auth/hooks/useSessionMutation";
 
 export function useRegister() {

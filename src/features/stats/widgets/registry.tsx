@@ -15,18 +15,18 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { DONUT_GENRES, GRID_GAP, GRID_ROW_HEIGHT } from "@/features/stats/constants";
-import { monthlyActivity, topWithOther } from "@/features/stats/lib/chart-geometry";
-import { DataTable } from "@/features/stats/ui/DataTable/DataTable";
-import type { MonthActivity, UserStats, WidgetType } from "@/features/stats/types";
-import { BarList } from "@/features/stats/ui/BarList/BarList";
-import { ActivityHeatmap } from "@/features/stats/ui/ActivityHeatmap/ActivityHeatmap";
-import { GenreDonut } from "@/features/stats/ui/GenreDonut/GenreDonut";
-import { RecentWatched } from "@/features/stats/ui/RecentWatched/RecentWatched";
-import { StatTile } from "@/features/stats/ui/StatTile/StatTile";
-import { StreakRing } from "@/features/stats/ui/StreakRing/StreakRing";
-import { TrendLine } from "@/features/stats/ui/TrendLine/TrendLine";
-import { WatchedMonthly } from "@/features/stats/ui/WatchedMonthly/WatchedMonthly";
+import { DONUT_GENRES, GRID_GAP, GRID_ROW_HEIGHT } from "@/entities/stats/constants";
+import { monthlyActivity, topWithOther } from "@/entities/stats/lib/chart-geometry";
+import { DataTable } from "@/entities/stats/ui/DataTable/DataTable";
+import type { MonthActivity, UserStats, WidgetType } from "@/entities/stats/types";
+import { BarList } from "@/entities/stats/ui/BarList/BarList";
+import { ActivityHeatmap } from "@/entities/stats/ui/ActivityHeatmap/ActivityHeatmap";
+import { GenreDonut } from "@/entities/stats/ui/GenreDonut/GenreDonut";
+import { RecentWatched } from "@/entities/stats/ui/RecentWatched/RecentWatched";
+import { StatTile } from "@/entities/stats/ui/StatTile/StatTile";
+import { StreakRing } from "@/entities/stats/ui/StreakRing/StreakRing";
+import { TrendLine } from "@/entities/stats/ui/TrendLine/TrendLine";
+import { WatchedMonthly } from "@/entities/stats/ui/WatchedMonthly/WatchedMonthly";
 
 export interface WidgetProps {
   stats: UserStats;

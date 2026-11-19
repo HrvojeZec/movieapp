@@ -7,9 +7,9 @@ import {
   MIN_VOTES_OPTIONS,
   RUNTIME_OPTIONS,
   SORT_OPTIONS,
-} from "@/features/movies/constants";
+} from "@/entities/movie/constants";
 import type { AdvancedFilterKey } from "@/features/movies/hooks/useDiscoverFilters";
-import { buildYearOptions } from "@/features/movies/lib/filters";
+import { buildYearOptions } from "@/entities/movie/lib/filters";
 import classes from "./AdvancedFilters.module.scss";
 
 const yearOptions = buildYearOptions(new Date().getFullYear() + 1, ADVANCED_YEAR_OPTIONS_COUNT);

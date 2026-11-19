@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import { Modal, ScrollArea, Stack, Text, TextInput } from "@mantine/core";
 import { useHotkeys, useMediaQuery } from "@mantine/hooks";
 import { Search } from "lucide-react";
-import { PALETTE_RECENT_LIMIT, SEARCH_SUGGESTION_MIN_LENGTH } from "@/features/movies/constants";
-import { useRecentlyViewed } from "@/features/movies/hooks/useRecentlyViewed";
+import { PALETTE_RECENT_LIMIT, SEARCH_SUGGESTION_MIN_LENGTH } from "@/entities/movie/constants";
+import { useRecentlyViewed } from "@/entities/movie/hooks/useRecentlyViewed";
 import { useSearchSuggestions } from "@/features/movies/hooks/useSearchSuggestions";
 import { useCommandPaletteStore } from "@/features/movies/store/command-palette.store";
-import type { MovieSummary } from "@/features/movies/types";
+import type { MovieSummary } from "@/entities/movie/types";
 import {
   SuggestionList,
   suggestionOptionId,

@@ -2,13 +2,13 @@
 import { Center, Container, Loader, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Eye } from "lucide-react";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { ProtectedRoute } from "@/features/auth/ui/ProtectedRoute/ProtectedRoute";
-import { GRID_COLUMNS } from "@/features/movies/constants";
-import { useMoviesByIds } from "@/features/movies/hooks/useMoviesByIds";
-import { MovieCard } from "@/features/movies/ui/MovieCard/MovieCard";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
+import { GRID_COLUMNS } from "@/entities/movie/constants";
+import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
-import { watchedHistoryQuery } from "@/features/watched/api/queries";
+import { watchedHistoryQuery } from "@/entities/watched/api/queries";
 import { useInfiniteScroll } from "@/shared/hooks/useInfiniteScroll";
 import { formatDate } from "@/shared/lib/format";
 import { COLORS } from "@/shared/theme/colors";
@@ -68,7 +68,7 @@ function WatchedContent() {
             return (
               <Reveal key={entry.movieId} index={index}>
                 <Stack gap={6}>
-                  <MovieCard movie={movie} />
+                  <ActionMovieCard movie={movie} />
                   <Text size="xs" c="dimmed" ta="center">
                     Watched {formatDate(entry.watchedAt)}
                   </Text>

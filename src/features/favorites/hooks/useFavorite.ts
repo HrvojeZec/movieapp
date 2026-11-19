@@ -1,5 +1,5 @@
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/entities/user/hooks/useAuth";
 import { useToggleFavorite } from "@/features/favorites/hooks/useToggleFavorite";
 import { ROUTES } from "@/shared/routes";
 

@@ -1,8 +1,8 @@
 import { after } from "next/server";
-import { createUser } from "@/features/auth/server/users";
-import { startSession } from "@/features/auth/server/session";
-import { getWelcomeNotification } from "@/features/notifications/lib/account-events";
-import { notifyUser } from "@/features/notifications/server/notify";
+import { createUser } from "@/entities/user/server/users";
+import { startSession } from "@/entities/user/server/session";
+import { getWelcomeNotification } from "@/entities/notification/lib/account-events";
+import { notifyUser } from "@/entities/notification/server/notify";
 import { registerSchema } from "@/features/auth/validations/auth.schema";
 import { getClientIp } from "@/server/http/client-ip";
 import { parseJson } from "@/server/http/parse";

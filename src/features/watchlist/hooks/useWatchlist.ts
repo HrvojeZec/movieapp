@@ -1,5 +1,5 @@
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useEntitlements } from "@/features/subscription/hooks/useEntitlements";
+import { useAuth } from "@/entities/user/hooks/useAuth";
+import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useToggleWatchlist } from "@/features/watchlist/hooks/useToggleWatchlist";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
 import { ROUTES } from "@/shared/routes";

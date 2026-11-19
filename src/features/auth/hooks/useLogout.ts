@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { logout } from "@/features/auth/api/auth.api";
-import { authKeys } from "@/features/auth/api/query-keys";
+import { logout } from "@/entities/user/api/auth.api";
+import { authKeys } from "@/entities/user/api/query-keys";
 import { notifyError, notifyInfo } from "@/shared/lib/notify";
 
 export function useLogout() {

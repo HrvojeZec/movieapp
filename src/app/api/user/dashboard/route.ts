@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { getDashboardLayout, saveDashboardLayout } from "@/features/stats/server/dashboard";
-import { dashboardLayoutSchema } from "@/features/stats/validations/dashboard.schema";
-import { requireFeature } from "@/features/subscription/server/entitlements";
+import { requireSession } from "@/entities/user/server/session";
+import { getDashboardLayout, saveDashboardLayout } from "@/entities/stats/server/dashboard";
+import { dashboardLayoutSchema } from "@/entities/stats/validations/dashboard.schema";
+import { requireFeature } from "@/entities/subscription/server/entitlements";
 import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 

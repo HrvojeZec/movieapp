@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { markNotificationsRead } from "@/features/notifications/server/notifications";
-import { markReadSchema } from "@/features/notifications/validations/notifications.schema";
+import { requireSession } from "@/entities/user/server/session";
+import { markNotificationsRead } from "@/entities/notification/server/notifications";
+import { markReadSchema } from "@/entities/notification/validations/notifications.schema";
 import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 

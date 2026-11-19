@@ -5,9 +5,9 @@ import {
   SEARCH_DEBOUNCE_MS,
   SEARCH_SUGGESTION_LIMIT,
   SEARCH_SUGGESTION_MIN_LENGTH,
-} from "@/features/movies/constants";
-import { useMovieSearch } from "@/features/movies/hooks/useMovieSearch";
-import type { Movie, MovieSummary } from "@/features/movies/types";
+} from "@/entities/movie/constants";
+import { useMovieSearch } from "@/entities/movie/hooks/useMovieSearch";
+import type { Movie, MovieSummary } from "@/entities/movie/types";
 import { ROUTES } from "@/shared/routes";
 
 interface SearchSuggestionsOptions {

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/features/auth/server/session";
-import { listWatched, markWatched } from "@/features/watched/server/watched";
+import { requireSession } from "@/entities/user/server/session";
+import { listWatched, markWatched } from "@/entities/watched/server/watched";
 import {
   INVALID_MOVIE_ID,
   markWatchedSchema,
   watchedPageSchema,
-} from "@/features/watched/validations/watched.schema";
+} from "@/entities/watched/validations/watched.schema";
 import { parseJson, parseWith } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 import { HTTP_STATUS } from "@/shared/lib/http-status";
