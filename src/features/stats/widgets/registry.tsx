@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Text } from "@mantine/core";
+import { Text, type MantineColor } from "@mantine/core";
 import dayjs from "dayjs";
 import {
   Bookmark,
@@ -83,6 +83,7 @@ const tile = (
   title: string,
   description: string,
   icon: LucideIcon,
+  color: MantineColor,
   label: string,
   pick: (totals: UserStats["totals"]) => number,
   trend?: (stats: UserStats) => number[],
@@ -96,6 +97,8 @@ const tile = (
       value={pick(stats.totals)}
       label={label}
       size={size}
+      icon={icon}
+      color={color}
       trend={trend && size.w >= TREND_TILE.w && size.h >= TREND_TILE.h ? trend(stats) : undefined}
     />
   ),
@@ -106,6 +109,7 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
     "Movies watched",
     "How many movies you've marked as watched.",
     Eye,
+    "blue",
     "Movies watched",
     (totals) => totals.watched,
     (stats) => stats.activityByMonth.map((month) => month.watched),
@@ -114,6 +118,7 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
     "Favorites",
     "How many movies you've saved as favorites.",
     Heart,
+    "red",
     "Favorites",
     (totals) => totals.favorites,
   ),
@@ -121,10 +126,18 @@ export const WIDGETS: Record<WidgetType, WidgetDefinition> = {
     "Watchlist",
     "How many movies wait on your watchlist.",
     Bookmark,
+    "teal",
     "On the watchlist",
     (totals) => totals.watchlist,
   ),
-  tileLists: tile("Lists", "How many lists you've made.", List, "Lists", (totals) => totals.lists),
+  tileLists: tile(
+    "Lists",
+    "How many lists you've made.",
+    List,
+    "grape",
+    "Lists",
+    (totals) => totals.lists,
+  ),
   genreBars: {
     title: "Favorite genres",
     description: "The genres of your watched and favorite movies.",
