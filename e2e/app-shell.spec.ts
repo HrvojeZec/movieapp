@@ -23,7 +23,9 @@ test.describe("on a phone", () => {
 test("the footer credits TMDB as its terms require", async ({ page }) => {
   await page.goto("/");
   await expect(
-    page.getByText("This product uses the TMDB API but is not endorsed or certified by TMDB."),
+    page.getByText(
+      "This website uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.",
+    ),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "TMDB", exact: true })).toHaveAttribute(
     "href",

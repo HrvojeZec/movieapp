@@ -6,8 +6,10 @@ export interface IWatchedMovie extends Document {
   userId: mongoose.Types.ObjectId;
   movieId: string;
   watchedAt: Date;
-  /** TMDB genre IDs at the time, for recommendations and stats without a TMDB call per movie. */
+  /** TMDB genre IDs, for recommendations and stats without a TMDB call per movie. */
   genreIds: number[];
+  /** When the genres came from TMDB; a daily job refreshes them before 6 months (its terms). */
+  genresUpdatedAt?: Date;
 }
 
 const WatchedMovieSchema = new Schema<IWatchedMovie>({
@@ -15,6 +17,7 @@ const WatchedMovieSchema = new Schema<IWatchedMovie>({
   movieId: { type: String, required: true, trim: true },
   watchedAt: { type: Date, required: true },
   genreIds: { type: [Number], default: [] },
+  genresUpdatedAt: { type: Date },
 });
 
 // Each movie once per user

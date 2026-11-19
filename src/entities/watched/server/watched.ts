@@ -25,11 +25,12 @@ export async function markWatched(userId: string, movieId: string): Promise<void
   const { matchedCount } = await User.updateOne({ _id: userId }, { $pull: { watchlist: movieId } });
   if (matchedCount === 0) throw notFound("User");
 
+  const now = new Date();
   let added: boolean;
   try {
     const { upsertedCount } = await WatchedMovie.updateOne(
       { userId, movieId },
-      { $setOnInsert: { watchedAt: new Date(), genreIds } },
+      { $setOnInsert: { watchedAt: now, genreIds, genresUpdatedAt: now } },
       { upsert: true },
     );
     added = upsertedCount > 0;
@@ -39,7 +40,7 @@ export async function markWatched(userId: string, movieId: string): Promise<void
     added = false;
   }
 
-  if (added) await logUserActivity(userId, "watched", movieId, undefined, { genreIds });
+  if (added) await logUserActivity(userId, "watched", movieId);
 }
 
 export async function unmarkWatched(userId: string, movieId: string): Promise<void> {

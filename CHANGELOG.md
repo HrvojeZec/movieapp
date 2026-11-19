@@ -331,6 +331,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Kept to TMDB's API terms: the footer shows their current notice ("uses TMDB and the TMDB APIs but
+  is not endorsed, certified, or otherwise approved by TMDB"), and nothing from TMDB is kept longer
+  than 6 months. Page views and watched activity no longer store TMDB genres (nothing read them),
+  a daily cron job (`/api/cron/refresh-tmdb-data`) looks up again the genres of watched movies
+  before they turn 6 months old and clears genres stored with older activity, and the recently
+  viewed list remembers when each movie was opened and forgets it after 6 months
 - Movie pages with a bright backdrop (white skies, pale walls) were hard to read: the backdrop now
   has a dark veil that fades into the page, and the year, runtime and genre badges are solid
   instead of see-through outlines. An end-to-end test measures the text contrast (WCAG AA, 4.5:1)

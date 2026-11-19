@@ -2,7 +2,6 @@ import { expect, test } from "./fixtures";
 import { getActivities, registerViaApi } from "./helpers";
 
 const VIEW_ROUTE = "/api/user/activity/view";
-const DRAMA = 18;
 
 test("opening a movie as a logged-in user records a view", async ({ page }) => {
   const user = await registerViaApi(page);
@@ -11,7 +10,8 @@ test("opening a movie as a logged-in user records a view", async ({ page }) => {
   await expect.poll(async () => (await getActivities(user, "view")).length).toBe(1);
   const [view] = await getActivities(user, "view");
   expect(view.movieId).toBe("550");
-  expect(view.metadata.genreIds).toContain(DRAMA);
+  // TMDB's terms limit how long its data may be kept; the genres weren't used anyway
+  expect(view.metadata?.genreIds).toBeUndefined();
 
   // Coming back within the hour isn't a new view
   const reported = page.waitForResponse((response) => response.url().endsWith(VIEW_ROUTE));

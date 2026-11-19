@@ -1,4 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [{ "path": "/api/cron/subscription-reminders", "schedule": "0 7 * * *" }]
+  "crons": [
+    {
+      "path": "/api/cron/subscription-reminders",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/refresh-tmdb-data",
+      "schedule": "0 6 * * *"
+    }
+  ]
 }

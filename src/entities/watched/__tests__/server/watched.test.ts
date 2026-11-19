@@ -69,10 +69,10 @@ describe("markWatched", () => {
     expect(filter).toEqual({ userId: USER_ID, movieId: "550" });
     expect(update.$setOnInsert).toMatchObject({ genreIds: [18, 53] });
     expect(update.$setOnInsert.watchedAt).toBeInstanceOf(Date);
+    // When the genres came from TMDB, so they can be refreshed within its 6-month limit
+    expect(update.$setOnInsert.genresUpdatedAt).toEqual(update.$setOnInsert.watchedAt);
     expect(options).toEqual({ upsert: true });
-    expect(logUserActivity).toHaveBeenCalledWith(USER_ID, "watched", "550", undefined, {
-      genreIds: [18, 53],
-    });
+    expect(logUserActivity).toHaveBeenCalledWith(USER_ID, "watched", "550");
   });
 
   it("marking watched removes the movie from the watchlist", async () => {
