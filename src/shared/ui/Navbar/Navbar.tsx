@@ -9,8 +9,8 @@ import { MovieSearchBox } from "@/features/movies/ui/MovieSearchBox/MovieSearchB
 import { APP_NAME } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
 import { COLORS } from "@/shared/theme/colors";
+import { MobileMenu } from "@/shared/ui/MobileMenu/MobileMenu";
 import { AccountArea } from "./AccountArea";
-import { NavDrawer } from "./NavDrawer";
 import classes from "./Navbar.module.scss";
 
 const BAR_HEIGHT = 48;
@@ -21,7 +21,7 @@ const SEARCH_WIDTH = 320;
  * the menu button and the logo. It turns to glass once the page scrolls under it.
  */
 export function Navbar() {
-  const [drawerOpened, drawer] = useDisclosure(false);
+  const [menuOpened, menu] = useDisclosure(false);
   const openPalette = useCommandPaletteStore((state) => state.open);
   const [scroll] = useWindowScroll();
 
@@ -30,10 +30,10 @@ export function Navbar() {
       <Group justify="space-between" h={BAR_HEIGHT} wrap="nowrap">
         <Group gap="sm" wrap="nowrap" hiddenFrom="sm">
           <Burger
-            opened={drawerOpened}
-            onClick={drawer.toggle}
+            opened={menuOpened}
+            onClick={menu.toggle}
             size="sm"
-            aria-label={drawerOpened ? "Close navigation" : "Open navigation"}
+            aria-label={menuOpened ? "Close navigation" : "Open navigation"}
           />
           <Link href={ROUTES.home} className={classes.link}>
             <Group gap="xs" wrap="nowrap">
@@ -69,7 +69,7 @@ export function Navbar() {
         </Group>
       </Group>
 
-      <NavDrawer opened={drawerOpened} onClose={drawer.close} />
+      <MobileMenu opened={menuOpened} onClose={menu.close} />
     </header>
   );
 }
