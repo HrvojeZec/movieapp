@@ -26,7 +26,7 @@ import { useInfiniteDiscoverMovies } from "@/entities/movie/hooks/useInfiniteDis
 import { buildYearOptions } from "@/entities/movie/lib/filters";
 import { dedupeMovies } from "@/entities/movie/lib/movies";
 import { AdvancedFilters } from "@/features/discover-filters/ui/AdvancedFilters/AdvancedFilters";
-import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { MovieGrid } from "@/widgets/movie-collections/ui/MovieGrid/MovieGrid";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
 import { useInfiniteScroll } from "@/shared/hooks/useInfiniteScroll";

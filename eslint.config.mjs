@@ -50,7 +50,7 @@ const eslintConfig = [
       "src/entities/*/store/**",
       "src/entities/*/constants.ts",
       "src/entities/*/types.ts",
-      "src/shell/**",
+      "src/widgets/**",
       "src/app/providers.tsx",
     ],
     rules: {
@@ -58,7 +58,7 @@ const eslintConfig = [
     },
   },
   {
-    // The bottom layer: features and the app shell build on shared, never the other way round
+    // The bottom layer: every other layer builds on shared, never the other way round
     files: ["src/shared/**"],
     rules: {
       "no-restricted-imports": [
@@ -67,7 +67,7 @@ const eslintConfig = [
           patterns: [
             SERVER_ONLY,
             {
-              group: ["@/entities/*", "@/features/*", "@/views/*", "@/shell/*"],
+              group: ["@/entities/*", "@/features/*", "@/views/*", "@/widgets/*"],
               message: "shared must not depend on the layers above it; move the code up.",
             },
           ],

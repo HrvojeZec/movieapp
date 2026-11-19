@@ -20,7 +20,7 @@ export default defineConfig({
         "src/features/**/*.ts",
         "src/shared/*.ts",
         "src/shared/lib/**/*.ts",
-        "src/shell/**/*.ts",
+        "src/widgets/**/*.ts",
         "src/server/**/*.ts",
       ],
       exclude: ["**/__tests__/**", "src/shared/vendor/**"],

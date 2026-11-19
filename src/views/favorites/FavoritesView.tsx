@@ -5,7 +5,7 @@ import { Heart } from "lucide-react";
 import { useAuth } from "@/entities/user/hooks/useAuth";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
-import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
+import { MovieGrid } from "@/widgets/movie-collections/ui/MovieGrid/MovieGrid";
 import { ROUTES } from "@/shared/routes";
 import { LinkButton } from "@/shared/ui/LinkButton/LinkButton";
 import { QueryError } from "@/shared/ui/QueryError/QueryError";

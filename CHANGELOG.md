@@ -229,7 +229,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   movie-list, recommendation, stats). The movie card no longer imports the favorite, watched and
   watchlist buttons; it takes them as `actions`. Features are the user's actions: auth,
   toggle-favorite, toggle-watchlist, mark-watched, manage-lists, checkout, manage-subscription,
-  search-movies, discover-filters and customize-dashboard
+  search-movies, discover-filters and customize-dashboard. Large blocks are widgets: the app
+  shell (layout, header, sidebar, phone menu, footer, formerly `src/shell`), the movie grids and
+  rows with their actions, the home hero and the stats dashboard
 - The README describes the project instead of the create-next-app template: features by plan, how
   to try the paid plans with a test card, the stack, the architecture and its layers, running
   locally and in Docker, environment variables, tests, known limitations and what I would do
