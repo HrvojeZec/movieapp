@@ -1,0 +1,124 @@
+// The page stays faintly visible behind the menu, blurred
+.overlay {
+  background-color: rgba(10, 14, 24, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+// Mantine's content box is only the full-screen frame; the panel inside paints the menu
+.content {
+  overflow: hidden;
+  background: none;
+  box-shadow: none;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+  height: 100%;
+  padding: var(--mantine-spacing-md);
+  overflow-y: auto;
+  background:
+    linear-gradient(180deg, var(--primary-glow-soft), transparent 35%), var(--sidebar-bg-solid);
+  // Vertical scrolling stays with the browser; horizontal moves drag the panel
+  touch-action: pan-y;
+}
+
+.header {
+  flex-wrap: nowrap;
+}
+
+.title {
+  color: var(--mantine-color-white);
+  font-size: var(--mantine-font-size-xl);
+  font-weight: 700;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-md);
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  background-color: var(--input-bg);
+  text-decoration: none;
+}
+
+.profileText {
+  min-width: 0;
+}
+
+.signIn {
+  padding: var(--mantine-spacing-md);
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  background-color: var(--input-bg);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.groupLabel {
+  margin: 0;
+  padding: 0 12px;
+  color: var(--mantine-color-dimmed);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+// Big rows for thumbs
+.link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: 12px;
+  color: var(--mantine-color-gray-3);
+  font-size: var(--mantine-font-size-md);
+  text-decoration: none;
+
+  &:active,
+  &:hover {
+    background-color: var(--input-bg);
+  }
+
+  &[aria-current="page"] {
+    color: var(--mantine-color-white);
+    background-color: color-mix(in srgb, var(--primary-500) 18%, transparent);
+  }
+}
+
+.linkLabel {
+  flex: 1;
+}
+
+.plan {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--input-bg-strong);
+  color: var(--mantine-color-gray-4);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--mantine-spacing-sm);
+  border-top: 1px solid var(--surface-border);
+}

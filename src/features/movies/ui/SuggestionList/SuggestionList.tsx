@@ -6,6 +6,7 @@ import { getImageUrl } from "@/features/movies/lib/images";
 import { formatRating } from "@/features/movies/lib/movies";
 import type { Movie, MovieSummary } from "@/features/movies/types";
 import { formatYear } from "@/shared/lib/format";
+import { highlightMatch } from "@/shared/lib/highlight";
 import classes from "./SuggestionList.module.scss";
 
 // Poster thumbnail size per variant (2:3 like TMDB posters)
@@ -27,6 +28,8 @@ interface SuggestionListProps {
   onSelect: (movie: MovieSummary) => void;
   /** `detailed` also shows each movie's overview. */
   variant?: SuggestionVariant;
+  /** The typed text, marked in each title. */
+  query?: string;
 }
 
 /**
@@ -40,6 +43,7 @@ export function SuggestionList({
   activeIndex,
   onSelect,
   variant = "compact",
+  query = "",
 }: SuggestionListProps) {
   const thumbnail = THUMBNAILS[variant];
   const detailed = variant === "detailed";
@@ -78,7 +82,15 @@ export function SuggestionList({
             />
             <Box>
               <Text size="sm" c="white" fw={500} lineClamp={1}>
-                {movie.title}
+                {highlightMatch(movie.title, query).map((part, partIndex) =>
+                  part.match ? (
+                    <mark key={partIndex} className={classes.match}>
+                      {part.text}
+                    </mark>
+                  ) : (
+                    part.text
+                  ),
+                )}
               </Text>
               <Text size="xs" c="dimmed">
                 {formatYear(movie.release_date)} • ★ {formatRating(movie.vote_average)}

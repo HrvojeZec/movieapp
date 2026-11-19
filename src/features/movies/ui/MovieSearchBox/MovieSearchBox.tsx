@@ -71,6 +71,7 @@ export function MovieSearchBox({
         <Box className={classes.dropdown}>
           <ScrollArea.Autosize mah={DROPDOWN_MAX_HEIGHT}>
             <SuggestionList
+              query={search.query}
               id={listId}
               label="Suggestions"
               movies={search.suggestions}

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Phones get a full-screen menu instead of the drawer: it slides in from the left over the
+  blurred page, rows come in one after another, the profile (or a sign-in card) sits on top, and
+  a swipe to the left, the X or Escape closes it. Plan-locked links show the plan they need
+- The bell swings and its count pops when a new notification arrives; the sidebar's favorites
+  count pops when it grows
+- Search suggestions (header, phone menu and Ctrl+K) mark the typed text in each title
 - A sidebar for navigation and the library: Browse (Home, Most Watched, Search, Pricing),
   Library (Favorites with their count, Watchlist, Watched, Lists) and For you (Recommendations,
   Stats), with the account at the bottom. Features the plan doesn't include show a lock and the
@@ -201,7 +207,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The header is slimmer: search and notifications only, turning to glass once the page scrolls.
-  Phones keep the menu button; its drawer now also has the account and Logout
+  Phones keep the menu button
 - The profile's favorites count rolls its digits into place like an odometer instead of counting
   up; screen readers and text search get the plain number. Shared springs, a magnetic hover and a
   growing bar wrapper are ready for the upcoming dashboard and buttons. The vendored CountUp

@@ -11,11 +11,14 @@ import {
   ScrollArea,
   Text,
 } from "@mantine/core";
+import { usePrevious } from "@mantine/hooks";
 import { Bell } from "lucide-react";
+import { motion } from "motion/react";
 import { useMarkNotificationsRead } from "@/features/notifications/hooks/useMarkNotificationsRead";
 import { useNotifications } from "@/features/notifications/hooks/useNotifications";
 import type { NotificationDto } from "@/features/notifications/types";
 import { formatRelativeTime } from "@/shared/lib/format";
+import { SPRINGS } from "@/shared/ui/motion/motion.constants";
 import classes from "./NotificationsMenu.module.scss";
 
 const MENU_WIDTH = 340;
@@ -23,11 +26,18 @@ const LIST_MAX_HEIGHT = 380;
 const BADGE = { size: 16, offset: 6 };
 // Bigger counts don't fit the badge, and the exact number stops mattering
 const BADGE_MAX = 9;
+// A swing that dies down, in degrees; the bell hangs from its top
+const RING_KEYFRAMES = [0, -18, 14, -10, 6, -3, 0];
+const RING_SECONDS = 0.8;
+const POP_FROM_SCALE = 0.4;
 
 /** Bell with the unread count and the latest notifications; opening one marks it as read. */
 export function NotificationsMenu() {
   const { notifications, unreadCount, isPending } = useNotifications();
   const { markRead, markAllRead } = useMarkNotificationsRead();
+  // Undefined until the first load, so existing unread notifications don't ring on page load
+  const previousCount = usePrevious(isPending ? undefined : unreadCount);
+  const arrived = previousCount !== undefined && unreadCount > previousCount;
 
   return (
     <Menu shadow="md" width={MENU_WIDTH} position="bottom-end">
@@ -37,7 +47,18 @@ export function NotificationsMenu() {
         size={BADGE.size}
         offset={BADGE.offset}
         color="red"
-        label={unreadCount > BADGE_MAX ? `${BADGE_MAX}+` : unreadCount}
+        label={
+          // Remounted per count, so a new count pops in when it grows
+          <motion.span
+            key={unreadCount}
+            className={classes.badgeLabel}
+            initial={arrived ? { scale: POP_FROM_SCALE } : false}
+            animate={{ scale: 1 }}
+            transition={SPRINGS.bouncy}
+          >
+            {unreadCount > BADGE_MAX ? `${BADGE_MAX}+` : unreadCount}
+          </motion.span>
+        }
         disabled={unreadCount === 0}
         classNames={{ indicator: classes.badge }}
       >
@@ -48,7 +69,14 @@ export function NotificationsMenu() {
             c="white"
             aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
           >
-            <Bell size={18} />
+            <motion.span
+              key={unreadCount}
+              className={classes.bell}
+              animate={arrived ? { rotate: RING_KEYFRAMES } : undefined}
+              transition={{ duration: RING_SECONDS, ease: "easeOut" }}
+            >
+              <Bell size={18} />
+            </motion.span>
           </ActionIcon>
         </Menu.Target>
       </Indicator>
