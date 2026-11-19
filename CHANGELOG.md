@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Opening a movie from a card makes its poster fly into the movie page (React `<ViewTransition>`;
+  only the clicked card takes part, so a movie shown in two rows still animates). Going back is a
+  plain navigation, and browsers without view transitions simply skip the animation
+- A faint film grain over the home page hero, still with reduced motion and paused off screen
 - Action buttons celebrate what they add: the watchlist bookmark drops in and swings, the
   watched eye blinks and gets a check, the heart pops on a spring (removing stays quiet). Play
   trailer, Subscribe and New list lean towards the pointer. Prices roll to the new amount when
@@ -291,6 +295,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Skeletons of genre rows still below the screen no longer shimmer, which kept an idle home
+  page busy (about 9% CPU)
 - The pricing page listed the watchlist, custom lists, recommendations and statistics as "Coming
   soon" after they shipped, and left out advanced filters and the watched history. Paid plan
   features now come from the same list the server checks access with, so the two can't drift
