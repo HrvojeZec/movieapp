@@ -6,7 +6,7 @@ import { useAuth } from "@/entities/user/hooks/useAuth";
 import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
 import { GRID_COLUMNS } from "@/entities/movie/constants";
 import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
-import { MovieCard } from "@/entities/movie/ui/MovieCard/MovieCard";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { watchedHistoryQuery } from "@/entities/watched/api/queries";
 import { useInfiniteScroll } from "@/shared/hooks/useInfiniteScroll";
@@ -68,7 +68,7 @@ function WatchedContent() {
             return (
               <Reveal key={entry.movieId} index={index}>
                 <Stack gap={6}>
-                  <MovieCard movie={movie} />
+                  <ActionMovieCard movie={movie} />
                   <Text size="xs" c="dimmed" ta="center">
                     Watched {formatDate(entry.watchedAt)}
                   </Text>

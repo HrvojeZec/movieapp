@@ -3,7 +3,7 @@ import { Alert, Container, SimpleGrid, Stack, Text } from "@mantine/core";
 import { Info, Sparkles } from "lucide-react";
 import { ProtectedRoute } from "@/entities/user/ui/ProtectedRoute/ProtectedRoute";
 import { GRID_COLUMNS } from "@/entities/movie/constants";
-import { MovieCard } from "@/entities/movie/ui/MovieCard/MovieCard";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { useRecommendations } from "@/entities/recommendation/hooks/useRecommendations";
 import { LockedFeature } from "@/entities/user/ui/LockedFeature/LockedFeature";
@@ -53,7 +53,7 @@ function RecommendationsContent() {
           {data.results.map((movie, index) => (
             <Reveal key={movie.id} index={index}>
               <Stack gap={6}>
-                <MovieCard movie={movie} />
+                <ActionMovieCard movie={movie} />
                 <Text size="xs" c="dimmed" ta="center" lineClamp={2}>
                   {movie.reason}
                 </Text>

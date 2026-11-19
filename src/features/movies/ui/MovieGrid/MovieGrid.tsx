@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { SimpleGrid } from "@mantine/core";
 import { GRID_COLUMNS, GRID_SKELETON_COUNT } from "@/entities/movie/constants";
 import type { Movie } from "@/entities/movie/types";
-import { MovieCard } from "@/entities/movie/ui/MovieCard/MovieCard";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieCardSkeleton } from "@/entities/movie/ui/MovieCardSkeleton/MovieCardSkeleton";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 
@@ -21,9 +21,9 @@ export const MovieGrid = ({ movies, loading, renderCard }: MovieGridProps) => (
       : movies.map((movie, index) => (
           <Reveal key={movie.id} index={index}>
             {renderCard ? (
-              renderCard(movie, <MovieCard movie={movie} />)
+              renderCard(movie, <ActionMovieCard movie={movie} />)
             ) : (
-              <MovieCard movie={movie} />
+              <ActionMovieCard movie={movie} />
             )}
           </Reveal>
         ))}

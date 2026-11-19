@@ -24,7 +24,7 @@ import { ListsUpgradeNotice } from "@/features/lists/ui/ListsUpgradeNotice/Lists
 import { ReorderList } from "@/features/lists/ui/ReorderList/ReorderList";
 import { GRID_COLUMNS } from "@/entities/movie/constants";
 import { useMoviesByIds } from "@/entities/movie/hooks/useMoviesByIds";
-import { MovieCard } from "@/entities/movie/ui/MovieCard/MovieCard";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieGrid } from "@/features/movies/ui/MovieGrid/MovieGrid";
 import { useEntitlements } from "@/entities/user/hooks/useEntitlements";
 import { useAppRouter } from "@/shared/hooks/useAppRouter";
@@ -175,7 +175,7 @@ function ListContent({ listId }: { listId: string }) {
                     label="Remove"
                     onRemove={() => removeWithUndo(String(movie.id), movie.title)}
                   >
-                    <MovieCard movie={movie} />
+                    <ActionMovieCard movie={movie} />
                   </SwipeToRemove>
                   <Button
                     variant="subtle"

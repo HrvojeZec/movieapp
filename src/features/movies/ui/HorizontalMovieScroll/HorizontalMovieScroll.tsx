@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Box, Group, ScrollArea } from "@mantine/core";
 import { ROW_CARD_WIDTH, ROW_SKELETON_COUNT } from "@/entities/movie/constants";
 import type { MovieSummary } from "@/entities/movie/types";
-import { MovieCard } from "@/entities/movie/ui/MovieCard/MovieCard";
+import { ActionMovieCard } from "@/features/movies/ui/ActionMovieCard/ActionMovieCard";
 import { MovieCardSkeleton } from "@/entities/movie/ui/MovieCardSkeleton/MovieCardSkeleton";
 import { Reveal } from "@/shared/ui/motion/Reveal";
 import { SectionTitle } from "@/shared/ui/SectionTitle/SectionTitle";
@@ -40,7 +40,7 @@ export const HorizontalMovieScroll = ({
           : movies.map((movie, index) => (
               <Reveal key={movie.id} index={index} className={classes.item}>
                 <Box w={ROW_CARD_WIDTH}>
-                  <MovieCard movie={movie} size="sm" />
+                  <ActionMovieCard movie={movie} size="sm" />
                 </Box>
               </Reveal>
             ))}
