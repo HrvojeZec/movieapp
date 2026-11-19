@@ -93,6 +93,9 @@ async function syncAndNotify(subscriptionId: string, event: Stripe.Event): Promi
     return;
   }
 
+  // A late event of an older subscription mustn't tell the user their current one ended
+  if (user.subscriptionId !== subscriptionId) return;
+
   const notification = getSubscriptionNotification(event);
   if (!notification) return;
   try {

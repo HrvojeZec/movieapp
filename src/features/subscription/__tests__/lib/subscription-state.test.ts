@@ -1,6 +1,9 @@
 import type Stripe from "stripe";
 import { describe, expect, it } from "vitest";
-import { toSubscriptionFields } from "@/features/subscription/lib/subscription-state";
+import {
+  pickCurrentSubscription,
+  toSubscriptionFields,
+} from "@/features/subscription/lib/subscription-state";
 
 // Stripe times are Unix seconds
 const PERIOD_END = 1_800_000_000;
@@ -96,5 +99,35 @@ describe("toSubscriptionFields", () => {
 
   it("an unknown price maps to the basic plan", () => {
     expect(toSubscriptionFields(subscription(), () => null).subscriptionPlan).toBe("basic");
+  });
+});
+
+describe("pickCurrentSubscription", () => {
+  const sub = (id: string, status: Stripe.Subscription.Status, created: number) =>
+    subscription({ id, status, created });
+
+  it("prefers a subscription that grants access over a newer one that ended", () => {
+    const current = sub("sub_new", "active", 200);
+    const ended = sub("sub_old", "canceled", 300);
+
+    expect(pickCurrentSubscription([ended, current])?.id).toBe("sub_new");
+  });
+
+  it("takes the newest among those that grant access", () => {
+    const older = sub("sub_1", "active", 100);
+    const newer = sub("sub_2", "trialing", 200);
+
+    expect(pickCurrentSubscription([older, newer])?.id).toBe("sub_2");
+  });
+
+  it("takes the newest when none grants access, so the last ending is shown", () => {
+    const first = sub("sub_1", "canceled", 100);
+    const last = sub("sub_2", "incomplete_expired", 200);
+
+    expect(pickCurrentSubscription([last, first])?.id).toBe("sub_2");
+  });
+
+  it("returns null for a customer without subscriptions", () => {
+    expect(pickCurrentSubscription([])).toBeNull();
   });
 });
