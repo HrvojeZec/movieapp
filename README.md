@@ -103,22 +103,39 @@ flowchart LR
   Cron[Vercel Cron] -->|daily reminders| Next
 ```
 
-The code is organized by feature, in layers that only import downwards:
+The code follows [Feature-Sliced Design](https://feature-sliced.design), adapted to the Next.js
+App Router: layers that only import downwards, each split into slices.
 
 ```
 src/
-├── app/        Routes only: thin pages (metadata + a view) and API route handlers
-├── shell/      The app frame: layout, header, sidebar, phone menu
-├── features/   One folder per feature: auth, movies, favorites, watchlist, watched, lists,
-│               recommendations, stats, subscription, notifications, profile
-├── shared/     Code used by several features, with no business logic (UI pieces, helpers, theme)
+├── app/        Next.js routes: thin pages (metadata + a view), layouts, API route handlers
+├── views/      One folder per page: home, movie-details, stats, pricing, profile, …
+├── widgets/    Large blocks: app-shell (layout, header, sidebar, phone menu, footer),
+│               movie-collections (grids and rows of cards with their actions), movie-hero,
+│               stats-dashboard
+├── features/   What a user does: auth, toggle-favorite, toggle-watchlist, mark-watched,
+│               manage-lists, checkout, manage-subscription, search-movies, discover-filters,
+│               customize-dashboard
+├── entities/   The domain: user, subscription, notification, movie, favorites, watchlist,
+│               watched, movie-list, recommendation, stats
+├── shared/     Reusable pieces with no business logic: UI, helpers, HTTP client, theme
 └── server/     Server-only infrastructure: database, models, HTTP helpers, rate limits, email
 ```
 
-Each feature keeps the same inner layout: `api/` (client fetchers and query keys), `hooks/`, `ui/`,
-`views/`, `lib/` (pure functions), `validations/` (zod schemas), `server/` (database, Stripe, TMDB)
-and `__tests__/`. ESLint enforces the boundaries: client code can't import server modules, and
-`shared` can't import features or the shell.
+- **Next.js first.** `src/app` stays the router; the FSD "pages" layer is called `views`,
+  because Next.js would treat `src/pages` as routes.
+- **Entities** hold data access (fetchers, query keys, read hooks), types, rules, server services
+  and the display of one object, such as the movie card. **Features** are actions: a button or form,
+  its hook and mutation. The movie card doesn't know about the favorite button; the
+  `movie-collections` widget passes the buttons in.
+- **Inside a slice** the segments are `api/`, `hooks/`, `ui/`, `lib/` (pure functions),
+  `store/`, `validations/` (zod), `server/` and `__tests__/`. There are no `index.ts` barrels:
+  in Next.js they mix server and client code.
+- **The boundaries are enforced by ESLint**
+  ([`scripts/layer-rules.mjs`](scripts/layer-rules.mjs), unit tested): a slice imports only from
+  layers below it, slices of one layer don't import each other, client code can't import server
+  code, and entities import other entities only along one acyclic table (for example `user`
+  builds on `subscription`, which builds on `notification`).
 
 A few decisions behind it:
 
@@ -243,9 +260,10 @@ hand with the same header.
 
 - **Server-side sessions** (or short-lived tokens with refresh tokens), so a logout or a password
   change could end every session at once.
-- **A clean split between the movie catalogue and the library features.** Movie cards and the movie
-  page show the buttons of favorites, watchlist, watched and lists, so those features and `movies`
-  import each other. A composition layer above them would remove the cycle.
+- **Start with the layers.** The code began as one folder per feature, and the movie card ended up
+  importing the favorite, watchlist and watched buttons while those imported the card, a cycle.
+  Moving to Feature-Sliced Design layers late meant five pull requests of moves; starting with them
+  would have kept the dependencies one way from the first commit.
 - **Component tests.** Unit tests run without a DOM and cover the logic; the components and hooks
   are covered only end to end. React Testing Library would catch UI regressions faster.
 - **Error monitoring** (such as Sentry's free plan) instead of server logs alone.
