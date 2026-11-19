@@ -1,10 +1,20 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
+import { SERVER_ONLY, layerImportRules, readSlices } from "./scripts/layer-rules.mjs";
 
-const SERVER_ONLY = {
-  group: ["@/server/*", "@/features/*/server/*", "@/entities/*/server/*"],
-  message: "Server-only module: import it from route handlers or other server code.",
+// Which entities each entity may import; acyclic, checked against the folders in src/entities
+const ENTITY_DEPS = {
+  notification: [],
+  subscription: ["notification"],
+  user: ["subscription"],
+  movie: ["user"],
+  favorites: ["user", "movie", "subscription"],
+  watchlist: ["user", "movie", "subscription"],
+  "movie-list": ["user", "movie", "subscription"],
+  watched: ["user", "movie"],
+  recommendation: ["user", "movie"],
+  stats: ["user", "movie"],
 };
 
 const eslintConfig = [
@@ -32,48 +42,14 @@ const eslintConfig = [
       ],
     },
   },
+  // Layers import only downwards, and server code stays out of the browser bundle
+  ...layerImportRules({
+    slices: readSlices(new URL("./src/", import.meta.url)),
+    entityDeps: ENTITY_DEPS,
+  }),
   {
-    // Client code must not pull server-only modules (DB, Stripe, secrets) into the browser bundle
-    files: [
-      "src/features/*/api/**",
-      "src/features/*/hooks/**",
-      "src/features/*/lib/**",
-      "src/features/*/ui/**",
-      "src/views/**",
-      "src/features/*/store/**",
-      "src/features/*/constants.ts",
-      "src/features/*/types.ts",
-      "src/entities/*/api/**",
-      "src/entities/*/hooks/**",
-      "src/entities/*/lib/**",
-      "src/entities/*/ui/**",
-      "src/entities/*/store/**",
-      "src/entities/*/constants.ts",
-      "src/entities/*/types.ts",
-      "src/widgets/**",
-      "src/app/providers.tsx",
-    ],
-    rules: {
-      "no-restricted-imports": ["error", { patterns: [SERVER_ONLY] }],
-    },
-  },
-  {
-    // The bottom layer: every other layer builds on shared, never the other way round
-    files: ["src/shared/**"],
-    rules: {
-      "no-restricted-imports": [
-        "error",
-        {
-          patterns: [
-            SERVER_ONLY,
-            {
-              group: ["@/entities/*", "@/features/*", "@/views/*", "@/widgets/*"],
-              message: "shared must not depend on the layers above it; move the code up.",
-            },
-          ],
-        },
-      ],
-    },
+    files: ["src/app/providers.tsx"],
+    rules: { "no-restricted-imports": ["error", { patterns: [SERVER_ONLY] }] },
   },
   // Must stay last so it can disable stylistic rules that conflict with Prettier
   prettier,
