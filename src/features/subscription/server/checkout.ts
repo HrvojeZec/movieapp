@@ -16,6 +16,8 @@ import {
 } from "./subscriptions";
 
 const STRIPE_INTEGRATION_IDENTIFIER = "movieapp_subscription_qvhrtmke";
+// More than a few open checkouts means many tabs; the rate limit keeps it at 10 a minute anyway
+const OPEN_CHECKOUTS_LIMIT = 10;
 
 /**
  * Creating the customer up front lets webhooks map events to the user by customer ID,
@@ -24,14 +26,30 @@ const STRIPE_INTEGRATION_IDENTIFIER = "movieapp_subscription_qvhrtmke";
 async function getOrCreateStripeCustomer(user: IUser): Promise<string> {
   if (user.stripeCustomerId) return user.stripeCustomerId;
 
-  const customer = await getStripe().customers.create({
-    email: user.email,
-    name: user.name,
-    metadata: { userId: user._id.toString() },
-  });
+  const userId = user._id.toString();
+  // Two first checkouts at once get the same customer instead of one each
+  const customer = await getStripe().customers.create(
+    { email: user.email, name: user.name, metadata: { userId } },
+    { idempotencyKey: `customer-${userId}` },
+  );
   user.stripeCustomerId = customer.id;
   await user.save();
   return customer.id;
+}
+
+/**
+ * Closes the customer's checkouts that are still open. The active-subscription check only runs
+ * when a checkout starts, so two tabs with a checkout each could otherwise both be paid.
+ */
+async function expireOpenCheckouts(customer: string): Promise<void> {
+  const stripe = getStripe();
+  const { data } = await stripe.checkout.sessions.list({
+    customer,
+    status: "open",
+    limit: OPEN_CHECKOUTS_LIMIT,
+  });
+  // One that completed in the meantime can't be expired; the subscription sync handles it
+  await Promise.allSettled(data.map((session) => stripe.checkout.sessions.expire(session.id)));
 }
 
 /** Starts a hosted Checkout for the plan and returns the URL to redirect the user to. */
@@ -56,9 +74,12 @@ export async function createSubscriptionCheckout(
     throw new RouteError(HTTP_STATUS.CONFLICT, "You already have an active subscription");
   }
 
+  const customer = await getOrCreateStripeCustomer(user);
+  await expireOpenCheckouts(customer);
+
   const session = await getStripe().checkout.sessions.create({
     mode: "subscription",
-    customer: await getOrCreateStripeCustomer(user),
+    customer,
     client_reference_id: userId,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
