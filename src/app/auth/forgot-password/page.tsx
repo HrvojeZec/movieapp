@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ForgotPasswordView } from "@/features/auth/views/ForgotPasswordView";
+import { ForgotPasswordView } from "@/views/forgot-password/ForgotPasswordView";
 
 export const metadata: Metadata = { title: "Forgot password" };
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PricingView } from "@/features/subscription/views/PricingView";
+import { PricingView } from "@/views/pricing/PricingView";
 
 export const metadata: Metadata = { title: "Pricing" };
 

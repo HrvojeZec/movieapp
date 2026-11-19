@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { SubscriptionSuccessView } from "@/features/subscription/views/SubscriptionSuccessView";
+import { SubscriptionSuccessView } from "@/views/subscription-success/SubscriptionSuccessView";
 
 export const metadata: Metadata = { title: "Subscription confirmed" };
 

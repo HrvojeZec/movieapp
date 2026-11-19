@@ -39,7 +39,7 @@ const eslintConfig = [
       "src/features/*/hooks/**",
       "src/features/*/lib/**",
       "src/features/*/ui/**",
-      "src/features/*/views/**",
+      "src/views/**",
       "src/features/*/store/**",
       "src/features/*/constants.ts",
       "src/features/*/types.ts",

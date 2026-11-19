@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FavoritesView } from "@/features/favorites/views/FavoritesView";
+import { FavoritesView } from "@/views/favorites/FavoritesView";
 
 export const metadata: Metadata = { title: "My Favorites" };
 

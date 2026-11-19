@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { SearchView } from "@/features/movies/views/SearchView";
+import { SearchView } from "@/views/search/SearchView";
 
 export const metadata: Metadata = { title: "Search" };
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WatchlistView } from "@/features/watchlist/views/WatchlistView";
+import { WatchlistView } from "@/views/watchlist/WatchlistView";
 
 export const metadata: Metadata = { title: "My Watchlist" };
 
