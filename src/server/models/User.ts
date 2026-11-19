@@ -5,7 +5,7 @@ import { WIDGET_TYPES, WIDGET_VIEWS } from "@/features/stats/constants";
 import type { LayoutItem } from "@/features/stats/types";
 
 // Each extra round doubles the hashing time; 12 keeps brute force expensive and logins fast enough
-const BCRYPT_SALT_ROUNDS = 12;
+export const BCRYPT_SALT_ROUNDS = 12;
 
 export interface IUser extends Document {
   email: string;

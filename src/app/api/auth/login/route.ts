@@ -1,4 +1,4 @@
-import { findUserByEmail, recordLogin } from "@/features/auth/server/users";
+import { recordLogin, verifyCredentials } from "@/features/auth/server/users";
 import { startSession } from "@/features/auth/server/session";
 import { loginSchema } from "@/features/auth/validations/auth.schema";
 import { getClientIp } from "@/server/http/client-ip";
@@ -12,9 +12,10 @@ export const POST = withRouteHandler("Login", async (request) => {
   const { email, password } = await parseJson(request, loginSchema);
   await enforceRateLimit("login", `${getClientIp(request)}:${email}`);
 
-  const user = await findUserByEmail(email);
-  // The same answer for an unknown email and a wrong password, so accounts can't be enumerated
-  if (!user || !(await user.comparePassword(password))) {
+  const user = await verifyCredentials(email, password);
+  // The same answer (and time) for an unknown email and a wrong password, so accounts can't be
+  // enumerated
+  if (!user) {
     throw new RouteError(HTTP_STATUS.UNAUTHORIZED, "Invalid credentials");
   }
 
