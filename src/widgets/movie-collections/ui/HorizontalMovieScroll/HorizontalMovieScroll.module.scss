@@ -1,0 +1,20 @@
+// A hovered card lifts by 8px, and the viewport clips vertically (scrollbars="x"), so the track
+// gets room above it; the negative margin keeps the row where it was
+$lift-room: 12px;
+// Cards right of the visible part never scroll into view, so they keep Reveal's starting offset
+// (REVEAL_OFFSET in motion.constants.ts). With less room below, they overflow the viewport, and
+// scrolling a card into view (focus, find in page) shifts the row up and cuts off its top.
+$reveal-room: 24px;
+
+.scroll {
+  margin-top: -$lift-room;
+}
+
+.track {
+  padding-top: $lift-room;
+  padding-bottom: $reveal-room;
+}
+
+.item {
+  flex-shrink: 0;
+}

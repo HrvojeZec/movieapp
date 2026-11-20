@@ -1,0 +1,76 @@
+.heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  height: 100%;
+}
+
+// Sized by its width; it only shrinks when the widget is too short for it
+.calendar {
+  display: block;
+  flex: 0 1 auto;
+  min-height: 0;
+  width: 100%;
+  height: auto;
+}
+
+.label {
+  font-size: 8px;
+  fill: var(--mantine-color-dimmed);
+}
+
+// One hue, dark to bright: more activity reads brighter on the dark surface
+.heatmap [data-level="0"] {
+  fill: var(--heat-0);
+  background-color: var(--heat-0);
+}
+
+.heatmap [data-level="1"] {
+  fill: var(--heat-1);
+  background-color: var(--heat-1);
+}
+
+.heatmap [data-level="2"] {
+  fill: var(--heat-2);
+  background-color: var(--heat-2);
+}
+
+.heatmap [data-level="3"] {
+  fill: var(--heat-3);
+  background-color: var(--heat-3);
+}
+
+.heatmap [data-level="4"] {
+  fill: var(--heat-4);
+  background-color: var(--heat-4);
+}
+
+.cell {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cell-in 400ms ease-out both;
+  animation-delay: calc(var(--week) * 10ms);
+
+  &:hover {
+    stroke: var(--mantine-color-white);
+    stroke-width: 1;
+  }
+}
+
+@keyframes cell-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+.footer {
+  min-height: 20px;
+  margin-top: auto;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}

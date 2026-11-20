@@ -1,0 +1,52 @@
+// The page background comes from body; AppShell would otherwise paint over it
+.root,
+.main,
+.header {
+  background-color: transparent;
+}
+
+// AppShell.Main is at least as tall as the viewport; the page grows so the footer stays at the
+// bottom even on short pages
+.main {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.page {
+  flex: 1;
+}
+
+// Its width follows --sidebar-width (the one size we animate outside transform/opacity). The
+// glass is on the sidebar inside: with backdrop-filter here, the part of the tablet panel that
+// opens past this box rendered see-through. Overflow stays visible for that panel.
+.navbar {
+  overflow: visible;
+  border-right: 1px solid var(--surface-border);
+  background: none;
+  transition: width 200ms ease;
+
+  // Phones use the menu button; a hidden sidebar would still be "visible" to tests and readers
+  @media (max-width: 47.99em) {
+    display: none;
+  }
+}
+
+// First thing a keyboard reaches; shown only while focused
+.skipLink {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 8px 16px;
+  border-radius: var(--mantine-radius-sm);
+  background-color: var(--primary-600);
+  color: var(--mantine-color-white);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: none;
+  }
+}

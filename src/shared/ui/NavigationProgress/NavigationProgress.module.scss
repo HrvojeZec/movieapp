@@ -1,0 +1,30 @@
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  // Above the fixed header (100) and modals (200)
+  z-index: 1000;
+  background: var(--primary-500);
+  box-shadow: 0 0 8px var(--primary-glow);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  pointer-events: none;
+
+  // Slows down as it goes, so it never looks finished before the page arrives
+  &[data-phase="loading"] {
+    opacity: 1;
+    transform: scaleX(0.85);
+    transition: transform 10s cubic-bezier(0.1, 0.7, 0.2, 1);
+  }
+
+  &[data-phase="done"] {
+    opacity: 0;
+    transform: scaleX(1);
+    transition:
+      transform 0.2s ease-out,
+      opacity 0.25s ease 0.2s;
+  }
+}

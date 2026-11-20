@@ -1,0 +1,51 @@
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+  height: 100%;
+}
+
+// Large and faint in the corner, behind the number; the frame's body clips it
+.watermark {
+  position: absolute;
+  right: -18px;
+  bottom: -22px;
+  color: var(--mantine-color-white);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.badge {
+  position: relative;
+}
+
+.value {
+  display: block;
+  font-size: 2rem;
+  line-height: 1.1;
+
+  .tile[data-large] & {
+    font-size: 3rem;
+  }
+}
+
+.spark {
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin-top: var(--mantine-spacing-xs);
+  overflow: visible;
+}
+
+.sparkArea {
+  fill: color-mix(in srgb, var(--primary-500) 15%, transparent);
+}
+
+.sparkLine {
+  fill: none;
+  stroke: var(--primary-500);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}

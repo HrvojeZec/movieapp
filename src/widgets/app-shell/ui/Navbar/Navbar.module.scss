@@ -1,0 +1,28 @@
+// Clear over the top of the page; glass with a thin shadow once content scrolls beneath it
+.header {
+  height: 100%;
+  padding: 8px 16px;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+
+  &[data-scrolled] {
+    border-bottom-color: var(--surface-border);
+    background-color: rgba(17, 24, 39, 0.7);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(20px);
+  }
+}
+
+.link {
+  text-decoration: none;
+}
+
+// The toggle's icon lines up with the sidebar's icons below it
+.start {
+  @media (min-width: 48em) {
+    padding-left: 3px;
+  }
+}

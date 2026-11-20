@@ -1,0 +1,22 @@
+.heart {
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &.favorited {
+    color: var(--danger-500);
+    transform: scale(1.1);
+  }
+}
+
+// Floating over a poster
+.overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.pop {
+  display: inline-flex;
+}

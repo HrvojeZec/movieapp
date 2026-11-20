@@ -1,0 +1,34 @@
+.filters {
+  padding: var(--mantine-spacing-md);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--mantine-radius-md);
+}
+
+.input {
+  background-color: var(--input-bg);
+}
+
+.dropdown {
+  background-color: var(--gray-800);
+}
+
+// Fixed widths on larger screens; on a phone every input takes the full row
+.short,
+.medium,
+.wide {
+  width: 100%;
+}
+
+@media (min-width: 48em) {
+  .short {
+    width: 150px;
+  }
+
+  .medium {
+    width: 190px;
+  }
+
+  .wide {
+    width: 400px;
+  }
+}

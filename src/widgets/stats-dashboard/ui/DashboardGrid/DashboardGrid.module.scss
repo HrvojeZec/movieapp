@@ -1,0 +1,61 @@
+.board {
+  position: relative;
+
+  // While customizing, faint dots mark where the grid's cells start
+  &[data-editing] {
+    background-image: radial-gradient(circle, var(--input-bg-strong) 1.5px, transparent 2px);
+    background-position: calc(var(--gap) / -2) calc(var(--gap) / -2);
+    background-size: calc(var(--cell-w) + var(--gap)) calc(var(--row-h) + var(--gap));
+  }
+}
+
+.cell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+// Where the moved widget lands when it's let go; it breathes softly while a widget is carried
+.placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 2px dashed var(--primary-500);
+  border-radius: var(--mantine-radius-sm);
+  background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+  animation: landing-pulse 1.4s ease-in-out infinite;
+}
+
+// Where the pointer aims when the widget can't go there
+.refused {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  border: 2px dashed color-mix(in srgb, var(--danger-500) 80%, transparent);
+  border-radius: var(--mantine-radius-sm);
+  background-color: color-mix(in srgb, var(--danger-500) 8%, transparent);
+  pointer-events: none;
+}
+
+.refusedLabel {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--danger-500) 85%, black);
+  color: var(--mantine-color-white);
+}
+
+@keyframes landing-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+// During a gesture the widgets the pointer sweeps over show no hover effects or text selection
+:global(:root[data-dragging]) .board [data-widget-body] {
+  pointer-events: none;
+  user-select: none;
+}

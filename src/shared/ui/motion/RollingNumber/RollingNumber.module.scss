@@ -1,0 +1,36 @@
+.root {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.digits {
+  display: inline;
+}
+
+// Sized and baseline-aligned by an invisible copy of its digit; clip-path (unlike overflow)
+// keeps the inline-block on the text baseline
+.slot {
+  position: relative;
+  display: inline-block;
+  clip-path: inset(0);
+
+  &::before {
+    content: attr(data-digit);
+    visibility: hidden;
+  }
+}
+
+.column {
+  position: absolute;
+  inset: 0 0 auto;
+  text-align: center;
+  white-space: pre;
+
+  &::before {
+    content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9";
+  }
+}
+
+.static::before {
+  content: attr(data-char);
+}

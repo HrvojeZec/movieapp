@@ -1,0 +1,22 @@
+.option {
+  width: 100%;
+  border-radius: 4px;
+
+  &:hover,
+  &.active {
+    background-color: var(--primary-glow-soft);
+  }
+}
+
+.poster {
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+// The typed text, bold and in the accent color rather than a yellow marker
+.match {
+  padding: 0;
+  background: none;
+  color: var(--primary-400);
+  font-weight: 700;
+}

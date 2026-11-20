@@ -1,88 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  findUserByEmail,
-  generateToken,
-  updateLastLogin,
-} from "@/lib/auth/serverAuth";
-import { loginSchema } from "@/lib/validation/validation";
-import { z } from "zod";
+import { recordLogin, verifyCredentials } from "@/entities/user/server/users";
+import { startSession } from "@/entities/user/server/session";
+import { loginSchema } from "@/features/auth/validations/auth.schema";
+import { getClientIp } from "@/server/http/client-ip";
+import { parseJson } from "@/server/http/parse";
+import { RouteError } from "@/server/http/route-error";
+import { HTTP_STATUS } from "@/shared/lib/http-status";
+import { withRouteHandler } from "@/server/http/route-handler";
+import { enforceRateLimit } from "@/server/rate-limit/enforce";
 
-export async function POST(request: NextRequest) {
-  let email: string;
-  let password: string;
+export const POST = withRouteHandler("Login", async (request) => {
+  const { email, password } = await parseJson(request, loginSchema);
+  await enforceRateLimit("login", `${getClientIp(request)}:${email}`);
 
-  try {
-    const requestData = await request.json();
-
-    const validatedData = loginSchema.parse(requestData);
-    email = validatedData.email;
-    password = validatedData.password;
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const errors = error.issues.map((err) => ({
-        field: err.path.join("."),
-        message: err.message,
-      }));
-
-      return NextResponse.json(
-        {
-          message: "Validation failed",
-          errors,
-        },
-        { status: 400 }
-      );
-    }
-
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+  const user = await verifyCredentials(email, password);
+  // The same answer (and time) for an unknown email and a wrong password, so accounts can't be
+  // enumerated
+  if (!user) {
+    throw new RouteError(HTTP_STATUS.UNAUTHORIZED, "Invalid credentials");
   }
 
-  try {
-    const user = await findUserByEmail(email);
-    if (!user) {
-      return NextResponse.json(
-        { message: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
-    const isValidPassword = await user.comparePassword(password);
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { message: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
-    await updateLastLogin(user._id.toString());
-
-    const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
-      name: user.name,
-    });
-
-    const userResponse = {
-      id: user._id.toString(),
-      email: user.email,
-      name: user.name,
-      favorites: user.favorites,
-      createdAt: user.createdAt,
-      lastLogin: new Date(),
-    };
-
-    return NextResponse.json({
-      token,
-      user: userResponse,
-    });
-  } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}
+  // Same shape as /api/user/profile, so subscription details are available right after login
+  return startSession(await recordLogin(user));
+});

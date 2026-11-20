@@ -1,0 +1,41 @@
+.backdrop {
+  position: relative;
+  isolation: isolate;
+  background-size: cover;
+  background-position: center;
+
+  // A dark veil over the picture, fading into the page at the bottom: some backdrops are white
+  // skies or pale walls, and the text must read on all of them (the E2E test measures it)
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(0deg, var(--gray-900) 0%, transparent 30%),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--gray-900) 92%, transparent) 0%,
+        color-mix(in srgb, var(--gray-900) 80%, transparent) 55%,
+        color-mix(in srgb, var(--gray-900) 70%, transparent) 100%
+      );
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.poster {
+  border-radius: 12px;
+}
+
+// Year, runtime and genres: solid glass chips; outlines let the picture show through the text
+.chip {
+  border: 1px solid var(--surface-border);
+  background-color: color-mix(in srgb, var(--gray-900) 75%, transparent);
+  color: var(--gray-100);
+  backdrop-filter: blur(8px);
+}

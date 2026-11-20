@@ -1,0 +1,95 @@
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+  height: 100%;
+  transition:
+    box-shadow 150ms ease,
+    outline-color 150ms ease;
+
+  &[data-editing] {
+    outline: 1px dashed var(--surface-border);
+  }
+
+  &[data-active] {
+    outline: 2px solid var(--primary-500);
+    box-shadow: var(--shadow-lift);
+  }
+
+  // Over a spot it can't take: a red edge (the shake comes from the drag handler)
+  &[data-blocked] {
+    outline-color: var(--danger-500);
+    box-shadow:
+      var(--shadow-lift),
+      0 0 0 4px color-mix(in srgb, var(--danger-500) 25%, transparent);
+  }
+
+  // Pulled past its size limit: the edge flashes red once, then stays tinted
+  &[data-limit] {
+    outline-color: color-mix(in srgb, var(--danger-500) 70%, transparent);
+    animation: limit-flash 360ms ease-out;
+  }
+}
+
+@keyframes limit-flash {
+  30% {
+    outline-color: var(--danger-500);
+    box-shadow:
+      var(--shadow-lift),
+      0 0 0 6px color-mix(in srgb, var(--danger-500) 35%, transparent);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+
+  // Dragging must not scroll the page on touch screens
+  &[data-draggable] {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+}
+
+.title {
+  min-width: 0;
+}
+
+// Edit controls fade in when customizing starts
+.controls,
+.resize {
+  animation: controls-in 180ms ease-out both;
+}
+
+@keyframes controls-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.grip {
+  cursor: grab;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.resize {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--mantine-color-dimmed);
+  cursor: nwse-resize;
+  touch-action: none;
+}

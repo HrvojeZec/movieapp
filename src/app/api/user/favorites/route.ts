@@ -1,52 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { requireSession } from "@/entities/user/server/session";
+import { setFavorite } from "@/entities/favorites/server/favorites";
 import {
-  verifyToken,
-  updateUserFavorites,
-  logUserActivity,
-} from "@/lib/auth/serverAuth";
+  INVALID_MOVIE_ID,
+  addFavoriteSchema,
+} from "@/entities/favorites/validations/favorites.schema";
+import { parseJson } from "@/server/http/parse";
+import { withRouteHandler } from "@/server/http/route-handler";
 
-export async function PUT(request: NextRequest) {
-  try {
-    const token = request.cookies.get("token")?.value;
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+// POST /api/user/favorites { movieId } adds a movie; removal is DELETE /api/user/favorites/[movieId]
+export const POST = withRouteHandler("Add favorite", async (request) => {
+  const { userId } = requireSession(request);
+  const { movieId } = await parseJson(request, addFavoriteSchema, INVALID_MOVIE_ID);
 
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-    }
-
-    const { favorites, movieId, action } = await request.json();
-
-    if (!Array.isArray(favorites)) {
-      return NextResponse.json(
-        { message: "Favorites must be an array" },
-        { status: 400 }
-      );
-    }
-
-    const updatedUser = await updateUserFavorites(decoded.userId, favorites);
-    if (!updatedUser) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    if (movieId && action) {
-      await logUserActivity(
-        decoded.userId,
-        action === "add" ? "favorite" : "unfavorite",
-        movieId
-      );
-    }
-
-    return NextResponse.json({
-      user: updatedUser,
-    });
-  } catch (error) {
-    console.error("Update favorites error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}
+  return NextResponse.json({ favorites: await setFavorite(userId, movieId, true) });
+});

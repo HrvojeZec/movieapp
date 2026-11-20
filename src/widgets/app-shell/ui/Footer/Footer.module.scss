@@ -1,0 +1,30 @@
+.footer {
+  margin-top: var(--mantine-spacing-xl);
+  padding: var(--mantine-spacing-xl) 0;
+  border-top: 1px solid var(--surface-border);
+  background: rgba(17, 24, 39, 0.6);
+}
+
+.link {
+  color: var(--mantine-color-dimmed);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: white;
+  }
+}
+
+.tmdbLink {
+  color: var(--primary-400);
+}
+
+.tmdbLogo {
+  display: inline-flex;
+  opacity: 0.8;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+  }
+}
