@@ -16,6 +16,9 @@ test("a renewing yearly plan shows its price and renewal date", async ({ page })
   await expect(panel).toContainText("Yearly");
   await expect(panel).toContainText("$99.90 per year");
   await expect(panel).toContainText("Renews on November 17, 2027");
+  // The plan's summary lists what it unlocks today, nothing "coming soon"
+  await expect(panel).toContainText("watchlist, custom lists and advanced filters");
+  await expect(panel).not.toContainText(/coming soon/i);
 });
 
 test("a canceled plan shows when it ends", async ({ page }) => {
