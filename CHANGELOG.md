@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The production build no longer warns about Sass division, which Dart Sass 2.0 removes: the
+  subscription ticket halves its notch size by multiplying (the compiled CSS is unchanged)
+
 ## [1.0.1] - 2026-11-20
 
 ### Fixed
