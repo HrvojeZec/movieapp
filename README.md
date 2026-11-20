@@ -9,7 +9,9 @@ A movie discovery platform with accounts, three subscription plans and a persona
 and search movies from TMDB, keep favorites, a watchlist, a watched history and your own lists, get
 recommendations and a customizable stats dashboard. Payments run through Stripe in test mode.
 
-**Live demo:** _the link is added with the v1.0.0 release._
+**Live demo:** [moviehub-hrvoje-zec.vercel.app](https://moviehub-hrvoje-zec.vercel.app). Payments
+run in Stripe test mode: subscribe with the card 4242 4242 4242 4242. The demo doesn't send emails
+yet (welcome, reminders, password reset); notifications still show in the bell.
 
 ![Home page](docs/screenshots/home.png)
 
