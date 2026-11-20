@@ -5,9 +5,9 @@ import { AlertTriangle, CreditCard, Crown } from "lucide-react";
 import type { AuthUser } from "@/entities/user/types";
 import {
   PLAN_BADGE_COLORS,
-  PLAN_SUMMARIES,
   SUBSCRIPTION_STATUS_DISPLAY,
 } from "@/features/manage-subscription/constants";
+import { describePlan } from "@/features/manage-subscription/lib/plan-summary";
 import { SUBSCRIPTION_PLANS } from "@/entities/subscription/constants";
 import { CancelSubscriptionModal } from "@/features/manage-subscription/ui/CancelSubscriptionModal/CancelSubscriptionModal";
 import { useManageSubscription } from "@/features/manage-subscription/hooks/useManageSubscription";
@@ -69,7 +69,7 @@ export function SubscriptionPanel({ user }: { user: AuthUser }) {
         </Group>
 
         <Text c="gray.3" size="sm">
-          {PLAN_SUMMARIES[plan]}
+          {describePlan(plan)}
         </Text>
 
         {billing && (

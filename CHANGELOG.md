@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-20
+
+### Fixed
+
+- The subscription panel in the profile said the watchlist, custom lists, recommendations and
+  viewing statistics were "coming soon", although they all work; each plan's summary is now built
+  from the features the server unlocks, so it can't fall behind again
+
 ## [1.0.0] - 2026-11-20
 
 ### Added
@@ -474,6 +482,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version: movie browsing and search (TMDB), registration and login, favorites,
   subscription plans with Stripe
 
-[Unreleased]: https://github.com/HrvojeZec/movieapp/compare/v1.0.0...develop
+[Unreleased]: https://github.com/HrvojeZec/movieapp/compare/v1.0.1...develop
+[1.0.1]: https://github.com/HrvojeZec/movieapp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/HrvojeZec/movieapp/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/HrvojeZec/movieapp/releases/tag/v0.1.0
