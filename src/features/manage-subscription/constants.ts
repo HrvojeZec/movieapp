@@ -1,18 +1,9 @@
-import { FAVORITES_LIMIT } from "@/entities/subscription/constants";
 import type { SubscriptionPlan } from "@/entities/subscription/types";
 
 export const PLAN_BADGE_COLORS: Record<SubscriptionPlan, string> = {
   basic: "gray",
   premium: "blue",
   pro: "orange",
-};
-
-// What each plan includes today; features that are still to come say so
-export const PLAN_SUMMARIES: Record<SubscriptionPlan, string> = {
-  basic: `Browse and search movies, watch trailers and save up to ${FAVORITES_LIMIT} favorites.`,
-  premium:
-    "Everything in Basic, with unlimited favorites. Watchlist and custom lists are coming soon.",
-  pro: "Everything in Premium. Recommendations and viewing statistics are coming soon.",
 };
 
 interface StatusDisplay {

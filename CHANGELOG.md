@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The subscription panel in the profile said the watchlist, custom lists, recommendations and
+  viewing statistics were "coming soon", although they all work; each plan's summary is now built
+  from the features the server unlocks, so it can't fall behind again
+
 ## [1.0.0] - 2026-11-20
 
 ### Added
