@@ -2,7 +2,9 @@ import { HOUR_MS } from "@/shared/lib/time";
 
 // Shared by the zod schemas and the User model, so both always enforce the same limits
 export const PASSWORD_MIN_LENGTH = 6;
-export const PASSWORD_MAX_LENGTH = 128;
+// bcrypt only reads the first 72 bytes; anything after them would be silently ignored
+export const PASSWORD_MAX_LENGTH = 72;
+export const PASSWORD_MAX_BYTES = 72;
 export const NAME_MIN_LENGTH = 2;
 export const NAME_MAX_LENGTH = 50;
 
