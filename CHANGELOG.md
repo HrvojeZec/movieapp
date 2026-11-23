@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- An About & credits page, linked from the footer: what MovieHub is (a non-commercial demo), the
+  TMDB attribution and data rules, YouTube trailers and the open-source code it is built on
+- A Demo notice at the top of the pricing page: payments run in Stripe test mode and the test card
+  to use, before any Subscribe button (it replaces the note under the plans)
+
+### Changed
+
+- Dependabot no longer proposes ESLint 10: the React, import and jsx-a11y plugins in
+  eslint-config-next support ESLint 9 at most
+
+### Security
+
+- Changing the password ends every session opened before it, so a stolen session cookie stops
+  working; sessions of deleted or deactivated accounts end too
+- Login attempts are also limited per account (30 an hour from any address), so many addresses
+  can't keep guessing one account's password
+- New passwords are limited to 72 bytes, the part bcrypt actually checks
+- Confirming a checkout is rate limited like starting one, as each confirmation calls Stripe
+- Trailers are only embedded when their key is a valid YouTube video ID
+
 ### Fixed
 
 - The production build no longer warns about Sass division, which Dart Sass 2.0 removes: the

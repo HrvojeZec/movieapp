@@ -13,7 +13,7 @@ import { HTTP_STATUS } from "@/shared/lib/http-status";
 export const DELETE = withRouteHandler(
   "Unmark as watched",
   async (request, { params }: { params: Promise<{ movieId: string }> }) => {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     const movieId = parseWith(watchedMovieIdSchema, (await params).movieId, INVALID_MOVIE_ID);
 
     await unmarkWatched(userId, movieId);

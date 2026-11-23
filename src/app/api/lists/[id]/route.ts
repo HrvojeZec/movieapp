@@ -10,7 +10,7 @@ type Context = { params: Promise<{ id: string }> };
 
 // GET /api/lists/:id: one of the user's lists with its movies, on every plan
 export const GET = withRouteHandler("Get movie list", async (request, { params }: Context) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   return NextResponse.json(
     { list: await getList(userId, (await params).id) },
     { headers: { "Cache-Control": "private, no-store" } },
@@ -19,7 +19,7 @@ export const GET = withRouteHandler("Get movie list", async (request, { params }
 
 // PATCH /api/lists/:id { name }: Premium and Pro
 export const PATCH = withRouteHandler("Rename movie list", async (request, { params }: Context) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   const { name } = await parseJson(request, renameListSchema);
   return NextResponse.json({ list: await renameList(userId, (await params).id, name) });
 });
@@ -28,7 +28,7 @@ export const PATCH = withRouteHandler("Rename movie list", async (request, { par
 export const DELETE = withRouteHandler(
   "Delete movie list",
   async (request, { params }: Context) => {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     await deleteList(userId, (await params).id);
     return new NextResponse(null, { status: HTTP_STATUS.NO_CONTENT });
   },

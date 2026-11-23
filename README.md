@@ -256,8 +256,10 @@ at all.
 
 ## Known limitations
 
-- **Sessions are stateless JWTs.** Logging out or changing the password doesn't end sessions on
-  other devices until their token expires (7 days).
+- **Logging out ends only the session on that device.** Changing the password ends every session,
+  but there's no separate "log out everywhere" button.
+- **Signing up tells whether an email already has an account.** Login and password reset answer
+  the same either way; hiding it at sign-up too would need email verification first.
 - **Email goes through a Gmail account,** about 500 messages a day (the app stops at 400), and may
   land in the Promotions tab. A custom domain with a transactional email service would fix both.
 - **Payments are test mode only.** This is a portfolio project; no real subscriptions are sold.
@@ -268,8 +270,9 @@ at all.
 
 ## What I'd do differently
 
-- **Server-side sessions** (or short-lived tokens with refresh tokens), so a logout or a password
-  change could end every session at once.
+- **Short-lived access tokens with refresh tokens.** Sessions are JWTs, so every request also
+  reads the account's session version from the database to see whether a password change ended
+  it; short-lived tokens would check that only when they are refreshed.
 - **Start with the layers.** The code began as one folder per feature, and the movie card ended up
   importing the favorite, watchlist and watched buttons while those imported the card, a cycle.
   Moving to Feature-Sliced Design layers late meant five pull requests of moves; starting with them
