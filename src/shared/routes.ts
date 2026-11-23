@@ -1,6 +1,7 @@
 // Every client-side path in one place, so a renamed route is a one-line change
 export const ROUTES = {
   home: "/",
+  about: "/about",
   login: "/auth/login",
   register: "/auth/register",
   forgotPassword: "/auth/forgot-password",

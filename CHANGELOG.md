@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- An About & credits page, linked from the footer: what MovieHub is (a non-commercial demo), the
+  TMDB attribution and data rules, YouTube trailers and the open-source code it is built on
+
 ### Fixed
 
 - The production build no longer warns about Sass division, which Dart Sass 2.0 removes: the

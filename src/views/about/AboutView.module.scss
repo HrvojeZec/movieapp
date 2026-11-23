@@ -1,0 +1,14 @@
+.link {
+  color: var(--primary-400);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
+
+.tmdbLogo {
+  display: inline-flex;
+  align-self: flex-start;
+}
