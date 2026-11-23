@@ -1,5 +1,5 @@
 import { expect, test } from "./fixtures";
-import { registerViaApi } from "./helpers";
+import { clickAndSave, registerViaApi } from "./helpers";
 
 test("a logged-in user can add and remove a favorite", async ({ page }) => {
   await registerViaApi(page);
@@ -7,7 +7,11 @@ test("a logged-in user can add and remove a favorite", async ({ page }) => {
   await page.goto("/movie/550");
   await expect(page.getByRole("heading", { name: "Fight Club" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Add to favorites" }).click();
+  await clickAndSave(
+    page,
+    page.getByRole("button", { name: "Add to favorites" }),
+    "/api/user/favorites",
+  );
   await expect(page.getByRole("button", { name: "Remove from favorites" })).toHaveAttribute(
     "aria-pressed",
     "true",
@@ -21,7 +25,11 @@ test("a logged-in user can add and remove a favorite", async ({ page }) => {
   await expect(page.getByText("Fight Club").first()).toBeVisible();
 
   await page.goto("/movie/550");
-  await page.getByRole("button", { name: "Remove from favorites" }).click();
+  await clickAndSave(
+    page,
+    page.getByRole("button", { name: "Remove from favorites" }),
+    "/api/user/favorites/550",
+  );
   await expect(page.getByRole("button", { name: "Add to favorites" })).toBeVisible();
 
   await page.goto("/favorites");

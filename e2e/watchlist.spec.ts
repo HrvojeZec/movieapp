@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
-import { registerViaApi, seedSubscription, seedWatchlist } from "./helpers";
+import { clickAndSave, registerViaApi, seedSubscription, seedWatchlist } from "./helpers";
 
 const PERIOD_END = new Date("2027-11-18T12:00:00Z");
 
@@ -13,7 +13,11 @@ test("a premium user saves a movie and finds it on the watchlist", async ({ page
   });
 
   await page.goto("/movie/550");
-  await page.getByRole("button", { name: "Add to watchlist" }).click();
+  await clickAndSave(
+    page,
+    page.getByRole("button", { name: "Add to watchlist" }),
+    "/api/user/watchlist",
+  );
   await expect(page.getByRole("button", { name: "On your watchlist" })).toBeVisible();
 
   await page.goto("/watchlist");
