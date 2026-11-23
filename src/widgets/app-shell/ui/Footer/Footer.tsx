@@ -3,18 +3,17 @@ import Link from "next/link";
 import { Anchor, Box, Container, Group, Stack, Text } from "@mantine/core";
 import { Film } from "lucide-react";
 import { ROUTES } from "@/shared/routes";
+import { TMDB_LOGO, TMDB_NOTICE, TMDB_URL } from "@/shared/tmdb-attribution";
 import { COLORS } from "@/shared/theme/colors";
 import classes from "./Footer.module.scss";
 
-const TMDB_URL = "https://www.themoviedb.org";
-// TMDB's official logo (public/tmdb-logo.svg, 273×36): shown smaller than our own name, as their
-// attribution rules require
-const TMDB_LOGO = { src: "/tmdb-logo.svg", width: 122, height: 16 };
+const TMDB_LOGO_SIZE = { width: 122, height: 16 };
 
 const FOOTER_LINKS = [
   { label: "Most Watched", href: ROUTES.mostWatched },
   { label: "Search", href: ROUTES.search() },
   { label: "Pricing", href: ROUTES.pricing },
+  { label: "About & credits", href: ROUTES.about },
 ];
 
 export function Footer() {
@@ -49,7 +48,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className={classes.tmdbLogo}
             >
-              <Image {...TMDB_LOGO} alt="TMDB (The Movie Database)" />
+              <Image src={TMDB_LOGO.src} alt={TMDB_LOGO.alt} {...TMDB_LOGO_SIZE} />
             </a>
             <Text size="sm" c="dimmed">
               Movie data and images from{" "}
@@ -61,8 +60,7 @@ export function Footer() {
               >
                 TMDB
               </Anchor>
-              . This website uses TMDB and the TMDB APIs but is not endorsed, certified, or
-              otherwise approved by TMDB.
+              . {TMDB_NOTICE}
             </Text>
           </Group>
 

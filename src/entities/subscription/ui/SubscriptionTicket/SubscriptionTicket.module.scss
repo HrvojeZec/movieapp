@@ -60,7 +60,7 @@ $notch: 20px;
   &::after {
     content: "";
     position: absolute;
-    left: -($notch / 2) - 1px;
+    left: -($notch * 0.5) - 1px;
     width: $notch;
     height: $notch;
     border-radius: 50%;
@@ -68,11 +68,11 @@ $notch: 20px;
   }
 
   &::before {
-    top: -($notch / 2);
+    top: -($notch * 0.5);
   }
 
   &::after {
-    bottom: -($notch / 2);
+    bottom: -($notch * 0.5);
   }
 }
 
@@ -104,17 +104,17 @@ $notch: 20px;
 
     &::before,
     &::after {
-      top: -($notch / 2) - 1px;
+      top: -($notch * 0.5) - 1px;
       bottom: auto;
     }
 
     &::before {
-      left: -($notch / 2);
+      left: -($notch * 0.5);
     }
 
     &::after {
       left: auto;
-      right: -($notch / 2);
+      right: -($notch * 0.5);
     }
   }
 

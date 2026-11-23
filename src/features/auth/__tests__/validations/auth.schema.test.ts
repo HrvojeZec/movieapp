@@ -29,9 +29,16 @@ describe("registerSchema", () => {
     ["no uppercase", "secret123"],
     ["no lowercase", "SECRET123"],
     ["no digit", "SecretPass"],
-    ["too long", "Aa1" + "x".repeat(126)],
+    ["longer than bcrypt reads (72 characters)", "Aa1" + "x".repeat(70)],
+    // 2 bytes each in UTF-8: 39 characters, but 75 bytes
+    ["longer than bcrypt reads (72 bytes)", "Aa1" + "č".repeat(36)],
   ])("rejects a password that is %s", (_, password) => {
     expect(registerSchema.safeParse({ ...validUser, password }).success).toBe(false);
+  });
+
+  it("accepts a password of exactly 72 characters", () => {
+    const password = "Aa1" + "x".repeat(69);
+    expect(registerSchema.safeParse({ ...validUser, password }).success).toBe(true);
   });
 
   it("accepts Croatian letters in the name", () => {

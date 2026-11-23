@@ -14,7 +14,7 @@ const PRIVATE = { "Cache-Control": "private, no-store" };
 
 // GET /api/lists?movieId=550: the user's lists; with a movie, each says whether it holds it
 export const GET = withRouteHandler("List movie lists", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   const movieIdParam = request.nextUrl.searchParams.get("movieId");
   const movieId =
     movieIdParam === null
@@ -26,7 +26,7 @@ export const GET = withRouteHandler("List movie lists", async (request) => {
 
 // POST /api/lists { name, movieId? }: Premium and Pro
 export const POST = withRouteHandler("Create movie list", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   const { name, movieId } = await parseJson(request, createListSchema);
 
   return NextResponse.json(

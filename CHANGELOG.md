@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-23
+
+### Added
+
+- An About & credits page, linked from the footer: what MovieHub is (a non-commercial demo), the
+  TMDB attribution and data rules, YouTube trailers and the open-source code it is built on (#107)
+- A Demo notice at the top of the pricing page: payments run in Stripe test mode and the test card
+  to use, before any Subscribe button (it replaces the note under the plans) (#107)
+
+### Changed
+
+- Dependabot no longer proposes ESLint 10: the React, import and jsx-a11y plugins in
+  eslint-config-next support ESLint 9 at most (#109)
+- Dependencies updated: Mantine 9.8.1, lucide-react 1.73 (a major release; the icon names used
+  here are unchanged), Motion 14.14, Nodemailer 10.6, Sass 1.108.2, Upstash Ratelimit 2.2.1 and
+  Playwright 1.65.1 (#104, #105)
+
+### Security
+
+- Changing the password ends every session opened before it, so a stolen session cookie stops
+  working; sessions of deleted or deactivated accounts end too
+- Login attempts are also limited per account (30 an hour from any address), so many addresses
+  can't keep guessing one account's password
+- New passwords are limited to 72 bytes, the part bcrypt actually checks
+- Confirming a checkout is rate limited like starting one, as each confirmation calls Stripe
+- Trailers are only embedded when their key is a valid YouTube video ID
+
+All in #108.
+
+### Fixed
+
+- The production build no longer warns about Sass division, which Dart Sass 2.0 removes: the
+  subscription ticket halves its notch size by multiplying (the compiled CSS is unchanged) (#103)
+
 ## [1.0.1] - 2026-11-20
 
 ### Fixed
@@ -482,7 +516,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version: movie browsing and search (TMDB), registration and login, favorites,
   subscription plans with Stripe
 
-[Unreleased]: https://github.com/HrvojeZec/movieapp/compare/v1.0.1...develop
+[Unreleased]: https://github.com/HrvojeZec/movieapp/compare/v1.1.0...develop
+[1.1.0]: https://github.com/HrvojeZec/movieapp/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/HrvojeZec/movieapp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/HrvojeZec/movieapp/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/HrvojeZec/movieapp/releases/tag/v0.1.0

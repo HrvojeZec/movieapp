@@ -6,7 +6,7 @@ import { requireFeature } from "@/entities/subscription/server/entitlements";
 import { withRouteHandler } from "@/server/http/route-handler";
 
 const handle = withRouteHandler("User stats", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   // Genres of favorites come from TMDB, so the request shares the TMDB limit
   await limitTmdbRequest(request);
   await requireFeature(userId, "stats");

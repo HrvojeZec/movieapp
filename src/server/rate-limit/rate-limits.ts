@@ -13,6 +13,13 @@ export const RATE_LIMITS = {
     windowMs: 15 * MINUTE_MS,
     message: "Too many login attempts.",
   },
+  // Per email, from any address: the per-IP limit alone lets a botnet guess one account's password
+  // without end. Higher, so a stranger can't easily lock the owner out
+  loginAccount: {
+    requests: 30,
+    windowMs: HOUR_MS,
+    message: "Too many login attempts for this account.",
+  },
   // Per IP: stops scripted sign-ups
   register: { requests: 5, windowMs: HOUR_MS, message: "Too many sign-ups from this network." },
   // Per IP and email: each request may send an email, so an address can't be flooded with them
@@ -25,7 +32,7 @@ export const RATE_LIMITS = {
   resetPassword: { requests: 10, windowMs: HOUR_MS, message: "Too many password reset attempts." },
   // Per IP: protects the TMDB API quota shared by all users
   tmdb: { requests: 60, windowMs: MINUTE_MS, message: "Too many requests." },
-  // Per user: every attempt creates a Stripe Checkout Session
+  // Per user: every attempt creates a Stripe Checkout Session, every confirmation reads one
   checkout: { requests: 10, windowMs: MINUTE_MS, message: "Too many checkout attempts." },
   // Per user: cancel, resume and billing portal each call Stripe
   subscription: { requests: 10, windowMs: MINUTE_MS, message: "Too many subscription changes." },
