@@ -7,13 +7,13 @@ import { parseJson } from "@/server/http/parse";
 import { withRouteHandler } from "@/server/http/route-handler";
 
 const read = withRouteHandler("Get dashboard layout", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   await requireFeature(userId, "stats");
   return NextResponse.json({ layout: await getDashboardLayout(userId) });
 });
 
 const save = withRouteHandler("Save dashboard layout", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   await requireFeature(userId, "stats");
   const { layout } = await parseJson(request, dashboardLayoutSchema);
   return NextResponse.json({ layout: await saveDashboardLayout(userId, layout) });

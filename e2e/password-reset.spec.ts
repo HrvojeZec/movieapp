@@ -44,6 +44,27 @@ test("a user can reset a forgotten password", async ({ page }) => {
   await getLastEmail(user.email, "Your password was changed");
 });
 
+test("a password reset ends the sessions that were open before it", async ({ page }) => {
+  const user = await registerViaApi(page);
+  const oldSession = await page.context().cookies();
+  await page.context().clearCookies();
+
+  const resetPath = await requestResetLink(page, user);
+  await chooseNewPassword(page, resetPath);
+  await expect(page).toHaveURL("/auth/login");
+
+  // Whoever still holds the old session cookie (say, someone who stole it) is logged out
+  await page.context().addCookies(oldSession);
+  expect((await page.request.get("/api/user/profile")).status()).toBe(401);
+
+  // Logging in with the new password works straight away
+  const login = await page.request.post("/api/auth/login", {
+    data: { email: user.email, password: NEW_PASSWORD },
+  });
+  expect(login.status()).toBe(200);
+  expect((await page.request.get("/api/user/profile")).status()).toBe(200);
+});
+
 test("a used reset link is rejected", async ({ page }) => {
   const user = await registerViaApi(page);
   await page.context().clearCookies();

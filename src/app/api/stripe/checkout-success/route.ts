@@ -7,7 +7,7 @@ import { withRouteHandler } from "@/server/http/route-handler";
 import { enforceRateLimit } from "@/server/rate-limit/enforce";
 
 export const POST = withRouteHandler("Checkout success", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   await enforceRateLimit("checkout", userId);
   const { sessionId } = await parseJson(
     request,

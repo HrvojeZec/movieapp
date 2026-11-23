@@ -21,5 +21,5 @@ export const POST = withRouteHandler("Login", async (request) => {
   }
 
   // Same shape as /api/user/profile, so subscription details are available right after login
-  return startSession(await recordLogin(user));
+  return startSession(await recordLogin(user), user.sessionVersion);
 });

@@ -5,7 +5,7 @@ import { notFound } from "@/server/http/route-error";
 import { withRouteHandler } from "@/server/http/route-handler";
 
 export const GET = withRouteHandler("Get profile", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
 
   const user = await findUserById(userId);
   if (!user) {

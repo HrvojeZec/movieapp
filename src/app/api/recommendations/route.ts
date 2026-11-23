@@ -11,7 +11,7 @@ const NO_STORE = "private, no-store";
 export async function GET(request: NextRequest) {
   let response: NextResponse;
   try {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     await limitTmdbRequest(request);
     await requireFeature(userId, "recommendations");
     response = NextResponse.json(await getRecommendations(userId));
