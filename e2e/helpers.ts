@@ -1,8 +1,22 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 import { getE2EDatabase } from "./db";
 
 // Every test user matches this pattern, so global teardown can delete exactly these users.
 export const E2E_EMAIL_PATTERN = /^e2e-[a-z0-9-]+@example\.com$/;
+
+/**
+ * Clicks a button whose change shows at once (optimistic update) and waits until the server has
+ * stored it. Navigating away before that would cancel the request, and the next page would load
+ * without the change.
+ */
+export async function clickAndSave(page: Page, button: Locator, path: string): Promise<void> {
+  const saved = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === path && response.request().method() !== "GET",
+  );
+  await button.click();
+  expect((await saved).ok()).toBe(true);
+}
 
 export interface TestUser {
   name: string;

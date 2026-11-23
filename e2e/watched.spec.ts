@@ -1,11 +1,15 @@
 import { expect, test } from "./fixtures";
-import { registerViaApi, seedWatchlist } from "./helpers";
+import { clickAndSave, registerViaApi, seedWatchlist } from "./helpers";
 
 test("any user can mark a movie as watched and see it in their history", async ({ page }) => {
   await registerViaApi(page);
 
   await page.goto("/movie/550");
-  await page.getByRole("button", { name: "Mark as watched" }).click();
+  await clickAndSave(
+    page,
+    page.getByRole("button", { name: "Mark as watched" }),
+    "/api/user/watched",
+  );
   await expect(page.getByRole("button", { name: "Watched", exact: true })).toBeVisible();
 
   await page.goto("/watched");
