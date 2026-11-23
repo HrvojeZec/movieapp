@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - An About & credits page, linked from the footer: what MovieHub is (a non-commercial demo), the
   TMDB attribution and data rules, YouTube trailers and the open-source code it is built on
+- A Demo notice at the top of the pricing page: payments run in Stripe test mode and the test card
+  to use, before any Subscribe button (it replaces the note under the plans)
 
 ### Fixed
 
