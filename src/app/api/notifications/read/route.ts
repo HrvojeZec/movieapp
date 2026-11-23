@@ -7,7 +7,7 @@ import { withRouteHandler } from "@/server/http/route-handler";
 
 // POST /api/notifications/read: { ids } or { all: true }; answers with the remaining unread count
 export const POST = withRouteHandler("Mark notifications read", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   const selection = await parseJson(request, markReadSchema, "Invalid notifications");
 
   const unreadCount = await markNotificationsRead(userId, selection);

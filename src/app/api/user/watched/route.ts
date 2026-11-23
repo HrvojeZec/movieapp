@@ -12,7 +12,7 @@ import { HTTP_STATUS } from "@/shared/lib/http-status";
 
 // GET /api/user/watched?page=2: the history, newest first
 export const GET = withRouteHandler("List watched movies", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   const page = parseWith(watchedPageSchema, request.nextUrl.searchParams.get("page") ?? undefined);
 
   return NextResponse.json(await listWatched(userId, page), {
@@ -22,7 +22,7 @@ export const GET = withRouteHandler("List watched movies", async (request) => {
 
 // POST /api/user/watched { movieId }: every plan; removal is DELETE .../[movieId]
 export const POST = withRouteHandler("Mark as watched", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   const { movieId } = await parseJson(request, markWatchedSchema, INVALID_MOVIE_ID);
 
   await markWatched(userId, movieId);

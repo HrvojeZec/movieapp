@@ -8,7 +8,23 @@ test("the pricing page lists what each plan unlocks, all of it available", async
     await expect(page.getByText(feature, { exact: true })).toBeVisible();
   }
   await expect(page.getByText(/coming soon/i)).toHaveCount(0);
-  await expect(page.getByText("4242 4242 4242 4242")).toBeVisible();
+});
+
+test("the pricing page says up front that payments are a demo", async ({ page }) => {
+  await page.goto("/subscription/pricing");
+
+  const notice = page.getByRole("note", { name: "Demo" });
+  await expect(notice).toContainText("no real money is ever charged");
+  await expect(notice).toContainText("4242 4242 4242 4242");
+  // Above the plans, so nobody reaches a Subscribe button without seeing it
+  const noticeBox = await notice.boundingBox();
+  const firstPlan = await page
+    .getByRole("button", { name: /Subscribe to|Free/ })
+    .first()
+    .boundingBox();
+  expect(noticeBox!.y).toBeLessThan(firstPlan!.y);
+  // Said once, not repeated under the plans
+  await expect(page.getByText("4242 4242 4242 4242")).toHaveCount(1);
 });
 
 test("the pricing page switches between monthly and yearly prices", async ({ page }) => {
@@ -82,6 +98,20 @@ test("no plan is marked as current until the session has loaded", async ({ page 
 
   releaseSession();
   await expect(page.getByRole("button", { name: "Current Plan" })).toHaveCount(1);
+});
+
+test("confirming checkouts is rate limited, as each one calls Stripe", async ({ page }) => {
+  await registerViaApi(page);
+  const confirm = () =>
+    page.request.post("/api/stripe/checkout-success", { data: { sessionId: "not-a-session" } });
+
+  // Shares the 10 a minute of starting a checkout; a bad ID is counted before it is checked
+  for (let i = 0; i < 10; i++) {
+    expect((await confirm()).status()).toBe(400);
+  }
+  const blocked = await confirm();
+  expect(blocked.status()).toBe(429);
+  expect(Number(blocked.headers()["retry-after"])).toBeGreaterThan(0);
 });
 
 // Stripe's hosted payment isn't automated, so the confirmation call is answered here

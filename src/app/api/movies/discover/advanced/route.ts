@@ -17,7 +17,7 @@ const NO_STORE = "private, no-store";
 export async function GET(request: NextRequest) {
   let response: NextResponse;
   try {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     await limitTmdbRequest(request);
     const filters = advancedDiscoverQuerySchema.parse(searchParamsToObject(request.url));
     await requireFeature(userId, "advancedFilters");

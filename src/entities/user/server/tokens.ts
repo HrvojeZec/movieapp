@@ -10,6 +10,8 @@ export interface AuthToken {
   userId: string;
   email: string;
   name: string;
+  /** The account's session version when the token was issued; missing in older tokens (= 0). */
+  sessionVersion?: number;
 }
 
 export const TOKEN_TTL_SECONDS = 7 * DAY_IN_SECONDS;

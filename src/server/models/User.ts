@@ -31,6 +31,7 @@ export interface IUser extends Document {
   cancelAt?: Date | null;
   trialEnd?: Date | null;
   hasUsedTrial: boolean;
+  sessionVersion?: number;
   passwordResetTokenHash?: string;
   passwordResetExpires?: Date;
   createdAt: Date;
@@ -141,6 +142,9 @@ const UserSchema = new Schema<IUser>(
     trialEnd: { type: Date, default: null },
     // One free trial per account, even after canceling
     hasUsedTrial: { type: Boolean, default: false },
+    // Every session cookie carries the version it was issued with; changing the password raises
+    // it, which ends all older sessions (see entities/user/server/session.ts)
+    sessionVersion: { type: Number, default: 0 },
     // Only a hash of the emailed token; never loaded unless a query asks for it
     passwordResetTokenHash: { type: String, select: false },
     passwordResetExpires: { type: Date, select: false },
@@ -164,6 +168,7 @@ UserSchema.index({ passwordResetTokenHash: 1 }, { sparse: true });
 // A rejected promise (e.g. bcrypt fails) aborts the save
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
+  if (!this.isNew) this.sessionVersion = (this.sessionVersion ?? 0) + 1;
 
   const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
   this.password = await bcrypt.hash(this.password, salt);

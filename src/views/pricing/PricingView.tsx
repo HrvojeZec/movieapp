@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
-import { Container, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Alert, Container, SegmentedControl, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { FlaskConical } from "lucide-react";
+import { APP_NAME } from "@/shared/constants";
 import { useAuth } from "@/entities/user/hooks/useAuth";
 import { SUBSCRIPTION_PLANS, TRIAL_DAYS } from "@/entities/subscription/constants";
 import { useCheckout } from "@/features/checkout/hooks/useCheckout";
@@ -59,6 +61,21 @@ export function PricingView() {
           />
         </div>
 
+        {/* A note, not an alert: it is there on load and screen readers shouldn't announce it */}
+        <Alert
+          role="note"
+          title="Demo"
+          icon={<FlaskConical size={18} />}
+          color="yellow"
+          variant="light"
+          w="100%"
+          maw={720}
+        >
+          {APP_NAME} is a portfolio project. Payments run in Stripe test mode, so no real money is
+          ever charged. Subscribe with the card 4242 4242 4242 4242, any future expiry date and any
+          CVC.
+        </Alert>
+
         <Stack gap={6} align="center">
           <SegmentedControl
             aria-label="Billing period"
@@ -98,11 +115,6 @@ export function PricingView() {
             );
           })}
         </SimpleGrid>
-
-        <Text ta="center" c="dimmed" size="sm">
-          Payments run in Stripe test mode. Use card 4242 4242 4242 4242 with any future date and
-          any CVC.
-        </Text>
       </Stack>
     </Container>
   );

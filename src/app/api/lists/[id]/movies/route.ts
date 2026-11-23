@@ -12,7 +12,7 @@ import { withRouteHandler } from "@/server/http/route-handler";
 export const POST = withRouteHandler(
   "Add movie to list",
   async (request, { params }: { params: Promise<{ id: string }> }) => {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     const { movieId } = await parseJson(request, addListMovieSchema, INVALID_MOVIE_ID);
     return NextResponse.json({ list: await addMovieToList(userId, (await params).id, movieId) });
   },
