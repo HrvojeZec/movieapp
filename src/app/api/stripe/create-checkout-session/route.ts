@@ -7,7 +7,7 @@ import { withRouteHandler } from "@/server/http/route-handler";
 import { enforceRateLimit } from "@/server/rate-limit/enforce";
 
 export const POST = withRouteHandler("Create checkout session", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   await enforceRateLimit("checkout", userId);
   const { plan, interval } = await parseJson(request, checkoutSessionSchema, "Invalid plan");
 

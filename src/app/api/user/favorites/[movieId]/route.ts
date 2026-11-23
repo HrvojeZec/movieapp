@@ -12,7 +12,7 @@ import { withRouteHandler } from "@/server/http/route-handler";
 export const DELETE = withRouteHandler(
   "Remove favorite",
   async (request, { params }: { params: Promise<{ movieId: string }> }) => {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     const movieId = parseWith(favoriteMovieIdSchema, (await params).movieId, INVALID_MOVIE_ID);
 
     return NextResponse.json({ favorites: await setFavorite(userId, movieId, false) });

@@ -12,7 +12,7 @@ const noContent = () => new NextResponse(null, { status: HTTP_STATUS.NO_CONTENT 
 // POST /api/user/activity/view { movieId }: the movie page reports a visit. Anonymous visits
 // aren't recorded but still answer 204, so the page needn't know whether anyone is logged in.
 export const POST = withRouteHandler("Record movie view", async (request) => {
-  const session = getSessionUser(request);
+  const session = await getSessionUser(request);
   if (!session) return noContent();
 
   const { movieId } = await parseJson(request, movieViewSchema, INVALID_MOVIE_ID);

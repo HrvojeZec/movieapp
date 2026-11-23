@@ -9,7 +9,7 @@ import { withRouteHandler } from "@/server/http/route-handler";
 export const PATCH = withRouteHandler(
   "Reorder movie list",
   async (request, { params }: { params: Promise<{ id: string }> }) => {
-    const { userId } = requireSession(request);
+    const { userId } = await requireSession(request);
     const { movieIds } = await parseJson(request, reorderListSchema);
     return NextResponse.json({ list: await reorderList(userId, (await params).id, movieIds) });
   },

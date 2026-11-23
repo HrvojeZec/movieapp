@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   NAME_MAX_LENGTH,
   NAME_MIN_LENGTH,
+  PASSWORD_MAX_BYTES,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   PASSWORD_RESET_TOKEN_BYTES,
@@ -20,6 +21,11 @@ const newPasswordSchema = z
   .string()
   .min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters long`)
   .max(PASSWORD_MAX_LENGTH, `Password cannot exceed ${PASSWORD_MAX_LENGTH} characters`)
+  // Letters like č take 2 bytes, emoji 4, so a shorter password can still be too long for bcrypt
+  .refine(
+    (password) => new TextEncoder().encode(password).length <= PASSWORD_MAX_BYTES,
+    "Password is too long; letters like č and emoji count as more than one character",
+  )
   .regex(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
     "Password must contain at least one lowercase letter, one uppercase letter, and one number",

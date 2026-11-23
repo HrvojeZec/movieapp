@@ -6,7 +6,7 @@ import { enforceRateLimit } from "@/server/rate-limit/enforce";
 
 // POST /api/subscription/portal: a Stripe Customer Portal URL for the card, invoices and plan
 export const POST = withRouteHandler("Billing portal", async (request) => {
-  const { userId } = requireSession(request);
+  const { userId } = await requireSession(request);
   await enforceRateLimit("subscription", userId);
 
   const url = await createPortalSession(userId);
