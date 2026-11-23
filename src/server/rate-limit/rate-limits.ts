@@ -13,6 +13,13 @@ export const RATE_LIMITS = {
     windowMs: 15 * MINUTE_MS,
     message: "Too many login attempts.",
   },
+  // Per email, from any address: the per-IP limit alone lets a botnet guess one account's password
+  // without end. Higher, so a stranger can't easily lock the owner out
+  loginAccount: {
+    requests: 30,
+    windowMs: HOUR_MS,
+    message: "Too many login attempts for this account.",
+  },
   // Per IP: stops scripted sign-ups
   register: { requests: 5, windowMs: HOUR_MS, message: "Too many sign-ups from this network." },
   // Per IP and email: each request may send an email, so an address can't be flooded with them

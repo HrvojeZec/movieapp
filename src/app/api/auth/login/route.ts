@@ -11,6 +11,7 @@ import { enforceRateLimit } from "@/server/rate-limit/enforce";
 export const POST = withRouteHandler("Login", async (request) => {
   const { email, password } = await parseJson(request, loginSchema);
   await enforceRateLimit("login", `${getClientIp(request)}:${email}`);
+  await enforceRateLimit("loginAccount", email);
 
   const user = await verifyCredentials(email, password);
   // The same answer (and time) for an unknown email and a wrong password, so accounts can't be

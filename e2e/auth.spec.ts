@@ -67,6 +67,25 @@ test("login with a wrong password is rejected", async ({ page }) => {
   await expect(page).toHaveURL("/auth/login");
 });
 
+test("password guessing from many addresses is still limited per account", async ({ page }) => {
+  const user = await registerViaApi(page);
+  await page.request.post("/api/auth/logout");
+  // A new address for every attempt, as a botnet would use, so the per-address limit never trips
+  const attemptFrom = (address: string) =>
+    page.request.post("/api/auth/login", {
+      data: { email: user.email, password: "WrongPass123" },
+      headers: { "x-forwarded-for": `${address}-${user.email}` },
+    });
+
+  // The account allows 30 attempts an hour, whatever address they come from
+  for (let i = 0; i < 30; i++) {
+    expect((await attemptFrom(`guess-${i}`)).status()).toBe(401);
+  }
+  const blocked = await attemptFrom("guess-last");
+  expect(blocked.status()).toBe(429);
+  expect((await blocked.json()).message).toMatch(/^Too many login attempts for this account./);
+});
+
 test("repeated logins to one account are blocked with a retry time", async ({ page }) => {
   const user = await registerViaApi(page);
   await page.request.post("/api/auth/logout");
