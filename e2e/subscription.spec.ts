@@ -100,6 +100,20 @@ test("no plan is marked as current until the session has loaded", async ({ page 
   await expect(page.getByRole("button", { name: "Current Plan" })).toHaveCount(1);
 });
 
+test("confirming checkouts is rate limited, as each one calls Stripe", async ({ page }) => {
+  await registerViaApi(page);
+  const confirm = () =>
+    page.request.post("/api/stripe/checkout-success", { data: { sessionId: "not-a-session" } });
+
+  // Shares the 10 a minute of starting a checkout; a bad ID is counted before it is checked
+  for (let i = 0; i < 10; i++) {
+    expect((await confirm()).status()).toBe(400);
+  }
+  const blocked = await confirm();
+  expect(blocked.status()).toBe(429);
+  expect(Number(blocked.headers()["retry-after"])).toBeGreaterThan(0);
+});
+
 // Stripe's hosted payment isn't automated, so the confirmation call is answered here
 async function confirmCheckoutAs(page: Page, response: { status: number; body: unknown }) {
   await page.route("**/api/stripe/checkout-success", (route) =>

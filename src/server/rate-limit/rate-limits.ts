@@ -32,7 +32,7 @@ export const RATE_LIMITS = {
   resetPassword: { requests: 10, windowMs: HOUR_MS, message: "Too many password reset attempts." },
   // Per IP: protects the TMDB API quota shared by all users
   tmdb: { requests: 60, windowMs: MINUTE_MS, message: "Too many requests." },
-  // Per user: every attempt creates a Stripe Checkout Session
+  // Per user: every attempt creates a Stripe Checkout Session, every confirmation reads one
   checkout: { requests: 10, windowMs: MINUTE_MS, message: "Too many checkout attempts." },
   // Per user: cancel, resume and billing portal each call Stripe
   subscription: { requests: 10, windowMs: MINUTE_MS, message: "Too many subscription changes." },
